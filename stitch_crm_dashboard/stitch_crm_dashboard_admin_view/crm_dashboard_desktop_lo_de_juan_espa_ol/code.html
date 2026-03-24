@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CRM Dashboard | Lo de Juan</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              // Brand Colors from Logo
+              "brand-red": "#E3524F",
+              "brand-blue": "#00AEEF",
+              "brand-yellow": "#FFD100",
+              "brand-green": "#00A651",
+              "primary": "#007AFF", // From DESIGN_SYSTEM_8
+              "surface-container-low": "#F8F9FA",
+              "background": "#FFFFFF",
+              "surface-container-highest": "#E9ECEF",
+              "outline": "#6C757D",
+              "on-surface": "#212529",
+              "on-surface-variant": "#495057",
+            },
+            fontFamily: {
+              "headline": ["Manrope", "sans-serif"],
+              "body": ["Manrope", "sans-serif"],
+              "label": ["Manrope", "sans-serif"]
+            },
+            borderRadius: {
+              "DEFAULT": "8px", 
+              "lg": "12px", 
+              "xl": "16px", 
+              "2xl": "24px",
+              "3xl": "32px",
+              "full": "9999px"
+            },
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+        }
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #FFFFFF;
+            color: #212529;
+        }
+        .editorial-shadow {
+            box-shadow: 0px 12px 30px rgba(0, 0, 0, 0.06);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f8f9fa;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #dee2e6;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #adb5bd;
+        }
+    </style>
+</head>
+<body class="flex min-h-screen overflow-hidden bg-background">
+<!-- Navigation Drawer -->
+<aside class="bg-[#F8F9FA] h-screen w-72 flex-shrink-0 flex flex-col p-6 gap-2 z-40 border-r border-gray-100">
+<div class="flex items-center gap-2 mb-10 px-2">
+<img alt="Lo de Juan Logo" class="h-12 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ADBb0ujiPqRlaxiX2uMsz76cLRcIAC89SosZ-WoII4-Rlw-yJ8hlC0vbDHEW6ahJ3E0BJWZE2AVHddVl4RL8Fx4rU0V23wHA4CP_zbYe142ZLVxcDBe_9Q9HhyjBtdOwYyCKVmkA_gorqlkkdmERlnQTSqXPklAWoEmhb3OGPijCBTmSsF-jC6d2s0JyP59ag48ablP45saZMo8cD2URSBBMsV2PdzHyisokeuyUUhLRcE8gfybNN_vKb849gM_guNo2kxyf5D1P2dwlvw"/>
+</div>
+<nav class="flex flex-col gap-2 h-full">
+<a class="bg-white text-brand-blue font-bold rounded-xl shadow-sm p-4 flex items-center gap-4 transition-all hover:shadow-md" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-sm">Dashboard</span>
+</a>
+<a class="text-slate-500 p-4 flex items-center gap-4 hover:bg-white/50 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="mail">mail</span>
+<span class="text-sm">Mensajes</span>
+<span class="ml-auto bg-brand-red text-white text-[10px] px-2 py-0.5 rounded-full font-bold">12</span>
+</a>
+<a class="text-slate-500 p-4 flex items-center gap-4 hover:bg-white/50 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="text-sm">Calendario</span>
+</a>
+<a class="text-slate-500 p-4 flex items-center gap-4 hover:bg-white/50 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="event">event</span>
+<span class="text-sm">Eventos</span>
+</a>
+<a class="text-slate-500 p-4 flex items-center gap-4 hover:bg-white/50 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="text-sm">Inventario</span>
+</a>
+<div class="mt-auto pt-4 border-t border-gray-200">
+<a class="text-slate-500 p-4 flex items-center gap-4 hover:bg-white/50 rounded-xl transition-all mb-4" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-sm">Configuración</span>
+</a>
+<div class="bg-white shadow-sm border border-gray-100 rounded-2xl p-4 flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-brand-blue/10 flex items-center justify-center text-brand-blue font-bold text-sm">
+                    JD
+                </div>
+<div class="flex flex-col min-w-0">
+<span class="text-xs font-bold text-on-surface truncate">Julian Deering</span>
+<span class="text-[10px] text-on-surface-variant uppercase tracking-tighter">Admin Principal</span>
+</div>
+</div>
+</div>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+<!-- Top App Bar -->
+<header class="h-20 flex items-center justify-between px-10 flex-shrink-0 sticky top-0 z-30 bg-background/80 backdrop-blur-md border-b border-gray-50">
+<div class="flex flex-col">
+<h1 class="text-2xl font-black tracking-tight text-on-surface font-headline">Resumen General</h1>
+<p class="text-xs text-on-surface-variant font-medium">Bienvenido de nuevo, Julian. Tienes 4 tareas críticas hoy.</p>
+</div>
+<div class="flex items-center gap-6">
+<!-- Search Bar -->
+<div class="hidden xl:flex items-center bg-gray-100 px-4 py-2 rounded-full w-80">
+<span class="material-symbols-outlined text-outline text-lg" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-xs w-full ml-2 text-on-surface-variant" placeholder="Buscar eventos, clientes..." type="text"/>
+</div>
+<div class="flex items-center gap-3">
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-gray-100 transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="w-10 h-10 rounded-full bg-gray-100 overflow-hidden border-2 border-white shadow-sm cursor-pointer">
+<img class="w-full h-full object-cover" data-alt="Profile photo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1d6dU_FQguCGZZvv22udtn2qjyJGcRqXNtkcg1-sBMCQEMPGvByDxl02RTMjiChV2DtPwa1BmRH5wBQZgg-2HChR-cDwuNl4QUXo_7MpSsukhfV1YIhpEoYWgNphpTvgzftg5G62D8R4Nu722hunCV3s5JRhSloPo1EvVCgEMixPE-_qswPDGnxGssOYz9Srnl7bWY9yTOlTOwalhmb7AsMgU2Bbio1RdvS8EGEJZJdyjLVF_ldNT-Cf5vIDhSYKJQhPYERad0UrU"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="px-10 pb-12 w-full max-w-[1600px] mx-auto">
+<!-- Quick Stats Row -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 my-10">
+<div class="bg-white p-6 rounded-3xl editorial-shadow flex flex-col justify-between border border-gray-100">
+<div class="flex justify-between items-start mb-4">
+<span class="p-2 bg-brand-green/10 rounded-xl">
+<span class="material-symbols-outlined text-brand-green" data-icon="payments">payments</span>
+</span>
+<span class="text-[10px] text-brand-green font-bold bg-brand-green/10 px-2 py-1 rounded-full">+12% vs abr</span>
+</div>
+<div>
+<span class="text-[10px] font-bold text-outline tracking-widest uppercase mb-1 block">Ventas Mayo</span>
+<span class="text-3xl font-black text-on-surface leading-none">€24.850</span>
+</div>
+</div>
+<div class="bg-white p-6 rounded-3xl editorial-shadow flex flex-col justify-between border border-gray-100">
+<div class="flex justify-between items-start mb-4">
+<span class="p-2 bg-brand-blue/10 rounded-xl">
+<span class="material-symbols-outlined text-brand-blue" data-icon="event_available">event_available</span>
+</span>
+<span class="text-[10px] text-brand-blue font-bold bg-brand-blue/10 px-2 py-1 rounded-full">Próxima semana</span>
+</div>
+<div>
+<span class="text-[10px] font-bold text-outline tracking-widest uppercase mb-1 block">Eventos Pendientes</span>
+<span class="text-3xl font-black text-on-surface leading-none">8</span>
+</div>
+</div>
+<div class="bg-white p-6 rounded-3xl editorial-shadow flex flex-col justify-between border border-gray-100">
+<div class="flex justify-between items-start mb-4">
+<span class="p-2 bg-brand-yellow/10 rounded-xl">
+<span class="material-symbols-outlined text-brand-yellow" data-icon="trending_up">trending_up</span>
+</span>
+<span class="text-[10px] text-brand-yellow font-bold bg-brand-yellow/10 px-2 py-1 rounded-full">Excelente</span>
+</div>
+<div>
+<span class="text-[10px] font-bold text-outline tracking-widest uppercase mb-1 block">Lead Rate</span>
+<span class="text-3xl font-black text-on-surface leading-none">34%</span>
+</div>
+</div>
+<div class="bg-white p-6 rounded-3xl editorial-shadow flex flex-col justify-between border border-gray-100">
+<div class="flex justify-between items-start mb-4">
+<span class="p-2 bg-brand-red/10 rounded-xl">
+<span class="material-symbols-outlined text-brand-red" data-icon="forum">forum</span>
+</span>
+</div>
+<div>
+<span class="text-[10px] font-bold text-outline tracking-widest uppercase mb-1 block">Consultas hoy</span>
+<span class="text-3xl font-black text-on-surface leading-none">22</span>
+</div>
+</div>
+</section>
+<!-- Main Layout Grid -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+<!-- Inbox Column -->
+<div class="xl:col-span-5 flex flex-col gap-6">
+<div class="flex items-center justify-between px-2">
+<h3 class="font-headline text-2xl font-bold text-on-surface">Bandeja de Entrada</h3>
+<div class="bg-brand-blue/10 px-3 py-1 rounded-full text-[10px] font-bold text-brand-blue tracking-wider uppercase">12 Mensajes Nuevos</div>
+</div>
+<div class="flex flex-col gap-4">
+<!-- Message Item -->
+<div class="bg-white editorial-shadow p-6 rounded-2xl border border-gray-100 hover:scale-[1.01] transition-all cursor-pointer group">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center border border-gray-100">
+<span class="material-symbols-outlined text-brand-blue" data-icon="account_circle">account_circle</span>
+</div>
+<div>
+<h4 class="text-sm font-bold text-on-surface group-hover:text-brand-blue transition-colors">Elena Rodriguez</h4>
+<p class="text-[11px] text-on-surface-variant font-medium">Boda Jardín Secreto • WhatsApp</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-brand-green text-xl" data-icon="chat">chat</span>
+</div>
+<p class="text-sm text-on-surface-variant line-clamp-2 leading-relaxed mb-4">¿Sería posible incluir una opción vegana en el plato principal para el evento del próximo mes?</p>
+<div class="flex items-center justify-between text-[11px] text-outline pt-3 border-t border-gray-50">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span> Hace 5 minutos</span>
+<span class="bg-brand-yellow/20 text-on-surface px-3 py-1 rounded-full font-bold">Pendiente</span>
+</div>
+</div>
+<!-- Message Item -->
+<div class="bg-white/60 editorial-shadow p-6 rounded-2xl border border-gray-100 opacity-80 transition-all hover:opacity-100 group">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center text-sm font-black text-outline border border-gray-100">
+                                    MP
+                                </div>
+<div>
+<h4 class="text-sm font-bold text-on-surface">Mateo Pineda</h4>
+<p class="text-[11px] text-on-surface-variant font-medium">Confirmación Menú • Facebook</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-brand-blue text-xl" data-icon="social_leaderboard">social_leaderboard</span>
+</div>
+<p class="text-sm text-on-surface-variant line-clamp-2 leading-relaxed mb-4">Perfecto, nos quedamos con el Menú Degustación Signature. Mañana realizamos el depósito.</p>
+<div class="flex items-center justify-between text-[11px] text-outline pt-3 border-t border-gray-50">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span> Hace 2 horas</span>
+<span class="uppercase tracking-wider font-bold">Respondido</span>
+</div>
+</div>
+</div>
+<button class="mt-2 w-full py-5 rounded-2xl border-2 border-dashed border-gray-200 text-on-surface-variant text-xs font-black uppercase tracking-widest hover:bg-gray-50 transition-colors">
+                    Ver todas las conversaciones
+                </button>
+</div>
+<!-- Calendar Column -->
+<div class="xl:col-span-7 flex flex-col gap-6">
+<div class="flex items-center justify-between px-2">
+<div class="flex items-center gap-4">
+<h3 class="font-headline text-2xl font-bold text-on-surface">Calendario Operativo</h3>
+<div class="flex items-center bg-white px-4 py-1.5 rounded-full shadow-sm border border-gray-100">
+<span class="text-sm font-bold text-on-surface">Mayo 2024</span>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="p-2 rounded-xl bg-white shadow-sm border border-gray-100 text-brand-blue hover:bg-gray-50 transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="p-2 rounded-xl bg-white shadow-sm border border-gray-100 text-brand-blue hover:bg-gray-50 transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="bg-white editorial-shadow rounded-3xl overflow-hidden border border-gray-100">
+<div class="calendar-grid bg-gray-50 border-b border-gray-100">
+<div class="py-4 text-center text-[11px] font-black text-outline tracking-widest uppercase">Lunes</div>
+<div class="py-4 text-center text-[11px] font-black text-outline tracking-widest uppercase">Martes</div>
+<div class="py-4 text-center text-[11px] font-black text-outline tracking-widest uppercase">Miércoles</div>
+<div class="py-4 text-center text-[11px] font-black text-outline tracking-widest uppercase">Jueves</div>
+<div class="py-4 text-center text-[11px] font-black text-outline tracking-widest uppercase">Viernes</div>
+<div class="py-4 text-center text-[11px] font-black text-brand-red tracking-widest uppercase">Sábado</div>
+<div class="py-4 text-center text-[11px] font-black text-brand-red tracking-widest uppercase">Domingo</div>
+</div>
+<div class="calendar-grid">
+<div class="min-h-[140px] p-3 border-r border-b border-gray-50 bg-gray-50/20"></div>
+<div class="min-h-[140px] p-3 border-r border-b border-gray-50 bg-gray-50/20"></div>
+<div class="min-h-[140px] p-3 border-r border-b border-gray-50 text-gray-300 text-xs font-bold">1</div>
+<div class="min-h-[140px] p-3 border-r border-b border-gray-50 text-gray-300 text-xs font-bold">2</div>
+<!-- Day with Event -->
+<div class="min-h-[140px] p-3 border-r border-b border-gray-50 group hover:bg-gray-50 transition-colors relative">
+<span class="text-xs font-bold text-on-surface-variant">3</span>
+<div class="mt-2 bg-brand-blue/10 border-l-4 border-brand-blue p-2 rounded shadow-sm">
+<p class="text-[10px] font-bold text-brand-blue truncate uppercase">Gala Benéfica</p>
+<p class="text-[10px] text-brand-blue/70">Salón Imperial • 19:00</p>
+</div>
+</div>
+<div class="min-h-[140px] p-3 border-r border-b border-gray-50 text-on-surface-variant text-xs font-bold">4</div>
+<div class="min-h-[140px] p-3 border-b border-gray-50 text-on-surface-variant text-xs font-bold">5</div>
+<!-- Row 2 -->
+<div class="min-h-[140px] p-3 border-r border-b border-gray-50 text-on-surface-variant text-xs font-bold">6</div>
+<div class="min-h-[140px] p-3 border-r border-b border-gray-50 text-on-surface-variant text-xs font-bold">7</div>
+<div class="min-h-[140px] p-3 border-r border-b border-gray-50 text-on-surface-variant text-xs font-bold">8</div>
+<div class="min-h-[140px] p-3 border-r border-b border-gray-50 text-on-surface-variant text-xs font-bold">9</div>
+<!-- Multi-day Block -->
+<div class="min-h-[140px] p-3 border-r border-b border-gray-50 bg-brand-yellow/5">
+<span class="text-xs font-bold text-on-surface-variant">10</span>
+<div class="mt-2 bg-brand-yellow/20 border-l-4 border-brand-yellow p-2 rounded shadow-sm">
+<p class="text-[10px] font-bold text-on-surface truncate uppercase">Mantenimiento</p>
+<p class="text-[10px] text-on-surface-variant">Cocina Central</p>
+</div>
+</div>
+<div class="min-h-[140px] p-3 border-r border-b border-gray-50 text-on-surface-variant text-xs font-bold">11</div>
+<div class="min-h-[140px] p-3 border-b border-gray-50 text-on-surface-variant text-xs font-bold">12</div>
+<!-- Focus Day -->
+<div class="min-h-[140px] p-3 border-r border-b border-gray-50 ring-2 ring-inset ring-brand-blue/10 bg-brand-blue/5 relative overflow-hidden">
+<span class="text-xs font-bold text-brand-blue">13</span>
+<div class="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity bg-brand-blue/5 cursor-pointer">
+<span class="material-symbols-outlined text-brand-blue scale-150" data-icon="add_circle">add_circle</span>
+</div>
+</div>
+<div class="min-h-[140px] p-3 border-r border-b border-gray-50 text-on-surface-variant text-xs font-bold">14</div>
+<div class="min-h-[140px] p-3 border-r border-b border-gray-50">
+<span class="text-xs font-bold text-on-surface-variant">15</span>
+<div class="mt-2 bg-brand-green/10 border-l-4 border-brand-green p-2 rounded shadow-sm">
+<p class="text-[10px] font-bold text-brand-green truncate uppercase">Boda Pineda</p>
+</div>
+</div>
+<div class="min-h-[140px] p-3 border-r border-b border-gray-50 text-on-surface-variant text-xs font-bold">16</div>
+<div class="min-h-[140px] p-3 border-r border-b border-gray-50 text-on-surface-variant text-xs font-bold">17</div>
+<div class="min-h-[140px] p-3 border-r border-b border-gray-50 text-on-surface-variant text-xs font-bold">18</div>
+<div class="min-h-[140px] p-3 border-b border-gray-50 text-on-surface-variant text-xs font-bold">19</div>
+</div>
+</div>
+<!-- Status Legend -->
+<div class="flex gap-8 px-4 py-4 bg-gray-50 rounded-2xl border border-gray-100 items-center justify-center">
+<div class="flex items-center gap-3">
+<span class="w-3 h-3 rounded-full bg-brand-blue shadow-sm shadow-brand-blue/20"></span>
+<span class="text-[11px] font-black uppercase tracking-widest text-outline">Reservado</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="w-3 h-3 rounded-full bg-brand-yellow shadow-sm shadow-brand-yellow/20"></span>
+<span class="text-[11px] font-black uppercase tracking-widest text-outline">Mantenimiento</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="w-3 h-3 rounded-full border-2 border-gray-300"></span>
+<span class="text-[11px] font-black uppercase tracking-widest text-outline">Disponible</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="w-full pt-16 pb-8 flex flex-col md:flex-row justify-between items-center gap-6 border-t border-gray-100 mt-16">
+<p class="text-[10px] font-bold uppercase tracking-[0.2em] text-outline">
+                © 2024 Lo de Juan. Events as Art.
+            </p>
+<div class="flex gap-10">
+<a class="text-[10px] font-bold uppercase tracking-[0.2em] text-outline hover:text-brand-blue transition-colors underline underline-offset-8 decoration-brand-blue/30" href="#">Privacy Policy</a>
+<a class="text-[10px] font-bold uppercase tracking-[0.2em] text-outline hover:text-brand-blue transition-colors underline underline-offset-8 decoration-brand-blue/30" href="#">Terms</a>
+<a class="text-[10px] font-bold uppercase tracking-[0.2em] text-outline hover:text-brand-blue transition-colors underline underline-offset-8 decoration-brand-blue/30" href="#">Contact</a>
+</div>
+</footer>
+</div>
+</main>
+<!-- Contextual FAB -->
+<button class="fixed bottom-10 right-10 w-16 h-16 bg-brand-red text-white rounded-2xl shadow-2xl flex items-center justify-center hover:scale-110 transition-all z-50 editorial-shadow">
+<span class="material-symbols-outlined text-3xl" data-icon="add">add</span>
+</button>
+</body></html>

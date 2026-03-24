@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Inventario | Lo de Juan CRM</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-fixed": "#ffdea9",
+              "on-primary-fixed": "#410007",
+              "error": "#ba1a1a",
+              "surface": "#f8f9fa",
+              "surface-container-lowest": "#ffffff",
+              "on-secondary-fixed-variant": "#30476a",
+              "secondary-fixed": "#d5e3ff",
+              "inverse-surface": "#2e3132",
+              "on-tertiary-fixed": "#271900",
+              "on-primary": "#ffffff",
+              "on-primary-fixed-variant": "#92001c",
+              "surface-variant": "#e1e3e4",
+              "outline-variant": "#c1c6d7",
+              "on-error": "#ffffff",
+              "on-primary-container": "#fffbff",
+              "surface-container-highest": "#e1e3e4",
+              "on-secondary": "#ffffff",
+              "secondary": "#485f84",
+              "secondary-container": "#bbd3fd",
+              "on-secondary-container": "#445a7f",
+              "on-tertiary": "#ffffff",
+              "primary-fixed": "#ffdad8",
+              "error-container": "#ffdad6",
+              "surface-bright": "#f8f9fa",
+              "on-tertiary-container": "#fffbff",
+              "surface-container-low": "#f3f4f5",
+              "on-secondary-fixed": "#001b3c",
+              "on-surface-variant": "#414755",
+              "on-error-container": "#93000a",
+              "background": "#f8f9fa",
+              "on-surface": "#191c1d",
+              "secondary-fixed-dim": "#b0c7f1",
+              "tertiary-fixed-dim": "#ffba27",
+              "inverse-on-surface": "#f0f1f2",
+              "primary": "#b7102a",
+              "surface-tint": "#bb152c",
+              "on-background": "#191c1d",
+              "inverse-primary": "#ffb3b1",
+              "surface-container": "#edeeef",
+              "outline": "#717786",
+              "tertiary-container": "#996c00",
+              "tertiary": "#7a5500",
+              "surface-container-high": "#e7e8e9",
+              "on-tertiary-fixed-variant": "#5e4100",
+              "surface-dim": "#d9dadb",
+              "primary-fixed-dim": "#ffb3b1",
+              "primary-container": "#db313f"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 border-r-0 bg-slate-50 dark:bg-slate-950 flex flex-col p-4 gap-2 z-50">
+<div class="text-xl font-black text-red-600 mb-8 px-4">Lo de Juan</div>
+<div class="flex items-center gap-3 px-4 py-3 mb-6">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Admin User Profile Avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBP4TtIcdfPbfuRZJYt1ZKL-fusc0mhJHZ2CqC04Hf1bhB34_8DPuKk31eo8cKi7W-Q1M7X_3qhPGwXaxr4fnhwn8yCILkXX2d_Fi-R669dT-YAmCJcOPdeujanhuMPeJ-5hQk0mrCjfAyn5N3NZZohYQAjcG8dQt2UOg_GujLeX6yh2tWbN5LH_MjJNQZVM78WRMXVTYGaeUEZtNbk2IaINte07kjfSIXcp-Qfpd5G5mNxkML2zCIznhsJlnU5yAtZqOdOoKdGjpAs"/>
+</div>
+<div class="flex flex-col">
+<span class="font-manrope text-sm font-semibold text-on-surface">Panel de Juan</span>
+<span class="text-xs text-slate-500">Gerente de Catering</span>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 px-4 py-3 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined">chat</span>
+<span class="font-manrope text-sm font-semibold">Mensajes</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 px-4 py-3 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="font-manrope text-sm font-semibold">Calendario</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 px-4 py-3 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined">event</span>
+<span class="font-manrope text-sm font-semibold">Eventos</span>
+</a>
+<!-- Active State: Inventory -->
+<a class="flex items-center gap-3 bg-white dark:bg-slate-900 text-red-600 shadow-sm rounded-xl px-4 py-3" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+<span class="font-manrope text-sm font-semibold">Inventario</span>
+</a>
+</nav>
+<button class="mt-4 mx-4 bg-gradient-to-br from-primary to-primary-container text-white py-3 px-6 rounded-full font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 active:scale-95 transition-transform">
+<span class="material-symbols-outlined">add</span>
+            Nuevo Evento
+        </button>
+<div class="mt-auto border-t border-slate-200 pt-4 space-y-1">
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 px-4 py-3 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-manrope text-sm font-semibold">Configuración</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 px-4 py-3 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-manrope text-sm font-semibold">Cerrar Sesión</span>
+</a>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="ml-64 min-h-screen p-8 lg:p-12">
+<header class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+<div>
+<h1 class="text-4xl font-extrabold tracking-tighter text-on-surface mb-2">Gestión de Inventario</h1>
+<p class="text-on-surface-variant max-w-lg">Rastrea y gestiona activos, mobiliario y decoración en todas las ubicaciones activas.</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+<input class="pl-11 pr-6 py-3 bg-surface-container-low border-none rounded-xl focus:ring-2 focus:ring-primary/30 focus:bg-white transition-all w-64 text-sm font-medium" placeholder="Buscar activos..." type="text"/>
+</div>
+<button class="bg-surface-container-high p-3 rounded-xl text-on-surface-variant hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</div>
+</header>
+<!-- Stats Bento Section -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+<div class="bg-surface-container-low p-6 rounded-xl">
+<span class="text-xs font-bold tracking-widest uppercase text-slate-400 mb-4 block">Total de Activos</span>
+<div class="flex items-end gap-2">
+<span class="text-4xl font-black text-on-surface">1,482</span>
+<span class="text-sm font-bold text-green-600 pb-1">+12%</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-6 rounded-xl">
+<span class="text-xs font-bold tracking-widest uppercase text-slate-400 mb-4 block">En Evento</span>
+<div class="flex items-end gap-2">
+<span class="text-4xl font-black text-on-surface">342</span>
+<span class="text-sm font-bold text-red-600 pb-1">Ocupado</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-6 rounded-xl">
+<span class="text-xs font-bold tracking-widest uppercase text-slate-400 mb-4 block">Alertas de Stock Bajo</span>
+<div class="flex items-end gap-2">
+<span class="text-4xl font-black text-tertiary">08</span>
+<span class="text-sm font-bold text-tertiary pb-1">Revisar</span>
+</div>
+</div>
+</section>
+<!-- Table Container -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container text-on-surface-variant">
+<th class="px-6 py-4 text-xs font-bold tracking-widest uppercase">Artículo</th>
+<th class="px-6 py-4 text-xs font-bold tracking-widest uppercase">Categoría</th>
+<th class="px-6 py-4 text-xs font-bold tracking-widest uppercase">Nivel de Stock</th>
+<th class="px-6 py-4 text-xs font-bold tracking-widest uppercase">Estado</th>
+<th class="px-6 py-4 text-xs font-bold tracking-widest uppercase">Ubicación</th>
+<th class="px-6 py-4 text-xs font-bold tracking-widest uppercase text-right">Acciones</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100">
+<!-- Row 1 -->
+<tr class="hover:bg-slate-50 transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Modern wooden chair for events" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGzP25-bwXMyx1h7EJ2Y8L7uhgIboODSWR57xmgE8YzrU61Jq9Wyt6XopyPhgIw9FE-8pBCH3r4fm6N436e7P1PZuWanjIbEHb9n9HowCpiO9nDZW4wzPQrLWDvQGsZYlDEI72MwQksnaSUXfp4HNz0ndHrI5EqlbYUDN-gfSXvXEnEGa5jSJ8W6xfNElMLccS9lLX9cn2CjK2wEANPDRXhJrGWPFviGgbIwprc_Nh_kEFvO8wsWoTPW7XdzN-sn_f4auL2tpS43eQ"/>
+</div>
+<div>
+<div class="font-bold text-on-surface">Sillas de Madera Nórdicas</div>
+<div class="text-xs text-slate-400">ID: INV-2024-001</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="text-sm font-medium text-on-secondary-container bg-secondary-container/30 px-3 py-1 rounded-full">Mobiliario</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2">
+<div class="w-24 h-2 bg-slate-100 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 85%"></div>
+</div>
+<span class="text-sm font-bold">425 / 500</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="flex items-center gap-1.5 text-xs font-bold text-green-600">
+<span class="w-2 h-2 rounded-full bg-green-500"></span>
+                                En Stock
+                            </span>
+</td>
+<td class="px-6 py-5 text-sm text-slate-500 font-medium">Almacén A</td>
+<td class="px-6 py-5 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-slate-50 transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Elegant table settings and decor" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbilk_sxYCE7eub-iBNINENoGahyS-WjAVBAlQ1Zxx0EG64RS3VoRgKnSsg-Y0szWrcp2R3WErwAsWdEEMVePCxcpr1vUuxPJkn50T74JVZOXJl8gZPcqOUI0IoyWeuJtKPruofvGU_lxwGWuPeKoohco_ZP7AP9sx64UJE3uoghPc1GuwQq-EpaXIHwVq-Km5WtKfwVHNNJ46A5BSPIvs5cwMBwbFwED7_JwnRiyhl0sVF1uMNyyeqyPXVPZWoW_mc0ULTHUtHLyY"/>
+</div>
+<div>
+<div class="font-bold text-on-surface">Manteles de Lino (Blanco)</div>
+<div class="text-xs text-slate-400">ID: INV-2024-042</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="text-sm font-medium text-tertiary bg-tertiary-fixed px-3 py-1 rounded-full">Decoración</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2">
+<div class="w-24 h-2 bg-slate-100 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 20%"></div>
+</div>
+<span class="text-sm font-bold">12 / 60</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="flex items-center gap-1.5 text-xs font-bold text-primary">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                                En Evento
+                            </span>
+</td>
+<td class="px-6 py-5 text-sm text-slate-500 font-medium">Grand Hotel Plaza</td>
+<td class="px-6 py-5 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-slate-50 transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Professional catering silverware" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJEoxqsC23SB4ztd3qRvt_VFdMyTZ6Z1bGEyMcD3vSbXlbZi9NlKRNTVJIdR7uaM31t7TqWX3GMuMwlsjl0IMVXfRl8lXyjjIo4TpATPi8AxkziqPm9TOnFPUMjd_Y2MQfLYtGHJwTDK-TSuW7Lt5kY-7Gxd7el7cf2OV5QUrhWA_rI94e9QArHGrNA3yW1GgDVWSld67CRW9A2fw_wR8-7GSxKuGka7H57TnJP7hpSJwbTAgp9npGg4V0lPTu7znsNey_n_a29bg8"/>
+</div>
+<div>
+<div class="font-bold text-on-surface">Juego de Cubiertos (12 piezas)</div>
+<div class="text-xs text-slate-400">ID: INV-2024-118</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="text-sm font-medium text-on-secondary-container bg-secondary-container/30 px-3 py-1 rounded-full">Suministros de Catering</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2">
+<div class="w-24 h-2 bg-slate-100 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 95%"></div>
+</div>
+<span class="text-sm font-bold">142 / 150</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="flex items-center gap-1.5 text-xs font-bold text-green-600">
+<span class="w-2 h-2 rounded-full bg-green-500"></span>
+                                En Stock
+                            </span>
+</td>
+<td class="px-6 py-5 text-sm text-slate-500 font-medium">Almacén B</td>
+<td class="px-6 py-5 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-slate-50 transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Industrial round event table" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVp_qhDkpfzhsoS9cZzcEF3si4nDqJVTKdZZmEaaRqxHv5J1DeKIOlfVl2U9sUY1RFQ3znLWoZuw7NnM3dLx1dsOHbviTMv00GGAVRIldEM-aCTjvIUmY9-AYGso52G-vFzAY4Q78b-ewih1cbtW3kOtmPWO3y5XwAPTiAGqpR4U16H8vX-4PhZKO2dHC46eBg01bDlYDwe_Bg53AN6TEnLg2DWuYMpntzX0BTXQ9znP7BdY0tVs32M7jTrorPZrkoq2SVUMVL-qkO"/>
+</div>
+<div>
+<div class="font-bold text-on-surface">Mesas de Banquete Redondas</div>
+<div class="text-xs text-slate-400">ID: INV-2024-009</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="text-sm font-medium text-on-secondary-container bg-secondary-container/30 px-3 py-1 rounded-full">Mobiliario</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2">
+<div class="w-24 h-2 bg-slate-100 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 60%"></div>
+</div>
+<span class="text-sm font-bold">12 / 20</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="flex items-center gap-1.5 text-xs font-bold text-primary">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+                                En Evento
+                            </span>
+</td>
+<td class="px-6 py-5 text-sm text-slate-500 font-medium">Skyline Terrace</td>
+<td class="px-6 py-5 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Pagination -->
+<div class="px-6 py-4 flex items-center justify-between border-t border-slate-100 bg-surface-container-low">
+<span class="text-xs font-bold tracking-widest uppercase text-slate-400">Mostrando 1 a 4 de 128 artículos</span>
+<div class="flex items-center gap-2">
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-primary">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-primary text-white font-bold text-xs">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-600 font-bold text-xs hover:border-primary">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-600 font-bold text-xs hover:border-primary">3</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-primary">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Branding Dot Indicator (Fixed Corner) -->
+<div class="fixed bottom-6 right-6 flex gap-2">
+<div class="w-3 h-3 rounded-full bg-primary opacity-20"></div>
+<div class="w-3 h-3 rounded-full bg-tertiary opacity-20"></div>
+<div class="w-3 h-3 rounded-full bg-secondary opacity-20"></div>
+<div class="w-3 h-3 rounded-full bg-green-500 opacity-20"></div>
+</div>
+</body></html>

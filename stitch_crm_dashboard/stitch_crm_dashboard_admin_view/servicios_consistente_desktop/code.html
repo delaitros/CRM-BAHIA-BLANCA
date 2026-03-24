@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Espacios Increíbles - Lo de Juan</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-fixed": "#ffdea9",
+              "on-primary-fixed": "#410007",
+              "error": "#ba1a1a",
+              "surface": "#f8f9fa",
+              "surface-container-lowest": "#ffffff",
+              "on-secondary-fixed-variant": "#30476a",
+              "secondary-fixed": "#d5e3ff",
+              "inverse-surface": "#2e3132",
+              "on-tertiary-fixed": "#271900",
+              "on-primary": "#ffffff",
+              "on-primary-fixed-variant": "#92001c",
+              "surface-variant": "#e1e3e4",
+              "outline-variant": "#c1c6d7",
+              "on-error": "#ffffff",
+              "on-primary-container": "#fffbff",
+              "surface-container-highest": "#e1e3e4",
+              "on-secondary": "#ffffff",
+              "secondary": "#485f84",
+              "secondary-container": "#bbd3fd",
+              "on-secondary-container": "#445a7f",
+              "on-tertiary": "#ffffff",
+              "primary-fixed": "#ffdad8",
+              "error-container": "#ffdad6",
+              "surface-bright": "#f8f9fa",
+              "on-tertiary-container": "#fffbff",
+              "surface-container-low": "#f3f4f5",
+              "on-secondary-fixed": "#001b3c",
+              "on-surface-variant": "#414755",
+              "on-error-container": "#93000a",
+              "background": "#f8f9fa",
+              "on-surface": "#191c1d",
+              "secondary-fixed-dim": "#b0c7f1",
+              "tertiary-fixed-dim": "#ffba27",
+              "inverse-on-surface": "#f0f1f2",
+              "primary": "#b7102a",
+              "surface-tint": "#bb152c",
+              "on-background": "#191c1d",
+              "inverse-primary": "#ffb3b1",
+              "surface-container": "#edeeef",
+              "outline": "#717786",
+              "tertiary-container": "#996c00",
+              "tertiary": "#7a5500",
+              "surface-container-high": "#e7e8e9",
+              "on-tertiary-fixed-variant": "#5e4100",
+              "surface-dim": "#d9dadb",
+              "primary-fixed-dim": "#ffb3b1",
+              "primary-container": "#db313f"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-nav {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .primary-gradient {
+            background: linear-gradient(135deg, #b7102a 0%, #db313f 100%);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl shadow-sm dark:shadow-none">
+<div class="flex justify-between items-center px-8 h-20 max-w-7xl mx-auto">
+<div class="text-2xl font-black tracking-tighter text-slate-900 dark:text-slate-50">Lo de Juan</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors font-manrope text-sm font-semibold tracking-tight" href="#">Inicio</a>
+<a class="text-[#b7102a] dark:text-[#db313f] border-b-2 border-[#b7102a] pb-1 font-manrope text-sm font-semibold tracking-tight" href="#">Espacios</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors font-manrope text-sm font-semibold tracking-tight" href="#">Atracciones</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors font-manrope text-sm font-semibold tracking-tight" href="#">Galería</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors font-manrope text-sm font-semibold tracking-tight" href="#">Contacto</a>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer">account_circle</span>
+<button class="primary-gradient text-on-primary px-6 py-2 rounded-full font-bold text-sm shadow-lg hover:opacity-80 transition-opacity active:scale-95 duration-200">
+                Reservar
+            </button>
+</div>
+</div>
+</nav>
+<main class="pt-24 pb-20">
+<!-- Hero Section -->
+<section class="px-6 max-w-7xl mx-auto mt-12 mb-24">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-end">
+<div class="md:col-span-7">
+<span class="text-primary font-bold tracking-[0.2em] uppercase text-xs mb-4 block">Nuestras Instalaciones</span>
+<h1 class="text-5xl md:text-7xl font-black tracking-tighter text-on-surface mb-6 leading-[1.1]">
+                    Espacios <span class="text-primary">Que Inspiran Aventura.</span>
+</h1>
+<p class="text-lg text-on-surface-variant max-w-xl leading-relaxed">
+                    Diseñamos entornos únicos donde la diversión y el diseño convergen. Desde áreas de juego de vanguardia hasta circuitos de aventura, creamos el escenario perfecto para tu próximo gran evento.
+                </p>
+</div>
+<div class="md:col-span-5 hidden md:block text-right">
+<div class="inline-flex gap-2">
+<div class="w-3 h-3 rounded-full bg-primary"></div>
+<div class="w-3 h-3 rounded-full bg-tertiary-fixed-dim"></div>
+<div class="w-3 h-3 rounded-full bg-secondary"></div>
+<div class="w-3 h-3 rounded-full bg-green-500"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Bento Grid Spaces -->
+<section class="px-6 max-w-7xl mx-auto mb-32">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Space 1: Áreas de Juego Modernas -->
+<div class="md:col-span-2 bg-surface-container-low rounded-xl p-8 flex flex-col justify-between min-h-[400px] overflow-hidden relative group">
+<div class="relative z-10">
+<div class="bg-primary-fixed p-3 rounded-xl w-fit mb-6">
+<span class="material-symbols-outlined text-primary" data-icon="rocket_launch">rocket_launch</span>
+</div>
+<h3 class="text-3xl font-extrabold tracking-tight mb-4">Áreas de Juego Modernas</h3>
+<p class="text-on-surface-variant max-w-md">Espacios diseñados con estética contemporánea y materiales seguros. Juegos modulares, zonas interactivas y rincones de creatividad pura para todas las edades.</p>
+</div>
+<div class="mt-8 flex gap-4 overflow-x-auto pb-4 relative z-10">
+<span class="bg-white/80 backdrop-blur px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider">Módulos Pro</span>
+<span class="bg-white/80 backdrop-blur px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider">Zonas Tech</span>
+<span class="bg-white/80 backdrop-blur px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider">Arte Libre</span>
+</div>
+<div class="absolute right-0 bottom-0 w-1/2 h-full opacity-10 pointer-events-none group-hover:scale-110 transition-transform duration-700">
+<img class="w-full h-full object-cover" data-alt="Área de juegos moderna con diseño minimalista" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4LHyxZ_dOMYbSO85IrflpfYSAR9RJE-az3U6a5JxOqDEBuqGqU_fuyyttg1fqz5fVaHtldiM9rehNnHumZ13z1irj-6cxcD5JjT9IYWcMXgabyA0SnhepMcE0vttlvq9I6AyTZv-MU0vJNPYQRBQFgWNOIZ5ONU59WXEubNQRt9_wr1sSLbR3FvdfEHQ_zZGYy0O_jSj79AIicje3fqwVyh7JjOj-hh7b7Ubh0GR09KDJil-Xof-bz78V7_QP2CYzOSDwniP35RK2"/>
+</div>
+</div>
+<!-- Space 2: Diversión Acuática -->
+<div class="bg-secondary-container rounded-xl p-8 flex flex-col justify-between group">
+<div>
+<div class="bg-white/50 p-3 rounded-xl w-fit mb-6">
+<span class="material-symbols-outlined text-secondary" data-icon="waves">waves</span>
+</div>
+<h3 class="text-2xl font-extrabold tracking-tight mb-4">Diversión Acuática</h3>
+<p class="text-on-surface-variant text-sm">Piscinas climatizadas, juegos de agua rítmicos y ambientación tipo resort urbano para eventos refrescantes y dinámicos.</p>
+</div>
+<div class="mt-12 rounded-xl overflow-hidden h-48">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Piscina de diseño con juegos de agua" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQDSFa_b85kXEzDZEWTQT7iRXzzzK--Q-CGViRHC3RpY5_psx4Mop0RjsFjpeseo4D24Pt1RGfCPBjU23-ryRk9OtoUefGHMIoI3lp-1-VVQ_BaK9fDHsQ1ss19ot80tOF7-tb_6kD_uWvAoUrTgdaD145GMrh8zukR--XvM6n_w1ZgLeOaBEu6vcuWbgUMGJlqPtmhB-xq_9pUGY-b0JkXyn_EySBTsg3nk45A1gAcHgkMLFImkhJVMdqlTCVHePw5f_RlokUQwFy"/>
+</div>
+</div>
+<!-- Space 3: Circuitos de Aventura -->
+<div class="bg-surface-container rounded-xl p-8 flex flex-col justify-between group">
+<div>
+<div class="bg-tertiary-fixed p-3 rounded-xl w-fit mb-6">
+<span class="material-symbols-outlined text-tertiary" data-icon="landscape">landscape</span>
+</div>
+<h3 class="text-2xl font-extrabold tracking-tight mb-4">Circuitos de Aventura</h3>
+<p class="text-on-surface-variant text-sm">Desafíos físicos integrados al paisaje: puentes colgantes, muros de escalada y recorridos sensoriales únicos.</p>
+</div>
+<div class="mt-12 rounded-xl overflow-hidden h-48">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Circuito de aventura outdoor" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjjhvWZOvtRMCHmjtKEkNAiYEN4YmnASLVhLmiuU0F5lU4ZeyVxhnnusTBm5I7qjfeMibUFDqxfwEWjtLUpdsm20o0bqMmuQ0M8Gij6wwFMRB-tHyErltR_5uv4eS6KHlN5nW2oZi5sWHRVJCQkRvYfoMrKdXkoOZHdKRvT5vd_tRE7GCo0f-1i6BUNPphVFwGykkG7nU2CIokjRA_52W38QQ2bacL__IcXd9Tqt11b3ZdCFtaCiP4yxFL28JILQed3HgLvKQskGwU"/>
+</div>
+</div>
+<!-- Space 4: Catering General (Small Elegant Section) -->
+<div class="md:col-span-2 bg-surface-container-highest rounded-xl p-8 flex items-center gap-8 relative overflow-hidden group border border-outline-variant/30">
+<div class="relative z-10 md:w-1/2">
+<div class="bg-white p-3 rounded-xl w-fit mb-4">
+<span class="material-symbols-outlined text-primary" data-icon="restaurant">restaurant</span>
+</div>
+<h3 class="text-xl font-extrabold tracking-tight mb-2">Catering General</h3>
+<p class="text-on-surface-variant text-sm">Acompañamos tu experiencia con opciones gastronómicas flexibles y adaptables. Desde snacks saludables hasta menús corporativos livianos, diseñados para complementar tu evento sin complicaciones.</p>
+</div>
+<div class="absolute right-0 top-0 bottom-0 w-1/3 hidden md:block">
+<img class="w-full h-full object-cover opacity-40 grayscale group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700" data-alt="Mesa de catering elegante y minimalista" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA44b6YFWe2ExwgsUNLdiKZ4UM0Rebeg0Qp2Mu2HaRnfTQItQ3To3xCcKLr3o_qLdXVW6OUZazL7vJOlZkPCXqcn45-dzFzrshop2ydClbPReWvEhPmEmtBzBSn_5tN_ptCdmSyjERgqyZBPZo0RKnoWfx34JM63T3a0YArBkIg9leGYEF4fTLLNqOUTauqLoHPLtV4nMqkuJMk4pF2YIVdfFna9uBMrZYb5jI-FSk8cVbBuvpN0hb51znfjjQLedEQx047b-UrkBJ-"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Contact Section -->
+<section class="px-6 max-w-7xl mx-auto mb-32" id="contact">
+<div class="bg-white rounded-[2.5rem] overflow-hidden shadow-sm flex flex-col lg:flex-row border border-surface-container">
+<!-- Form Area -->
+<div class="lg:w-1/2 p-8 md:p-16">
+<h2 class="text-4xl font-black tracking-tighter mb-2">Reserva tu Espacio</h2>
+<p class="text-on-surface-variant mb-12">Cuéntanos sobre tu visión y te ayudaremos a elegir el área ideal para tu evento.</p>
+<form class="space-y-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="text-[10px] uppercase tracking-[0.2em] font-black text-on-surface-variant px-1">Nombre Completo</label>
+<input class="w-full bg-surface-container-low border-none rounded-xl p-4 focus:ring-2 focus:ring-primary/20 transition-all outline-none" placeholder="Juan Pérez" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="text-[10px] uppercase tracking-[0.2em] font-black text-on-surface-variant px-1">Correo Electrónico</label>
+<input class="w-full bg-surface-container-low border-none rounded-xl p-4 focus:ring-2 focus:ring-primary/20 transition-all outline-none" placeholder="hola@juan.com" type="email"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-[10px] uppercase tracking-[0.2em] font-black text-on-surface-variant px-1">Espacio de Interés</label>
+<select class="w-full bg-surface-container-low border-none rounded-xl p-4 focus:ring-2 focus:ring-primary/20 transition-all outline-none appearance-none">
+<option>Áreas de Juego Modernas</option>
+<option>Diversión Acuática</option>
+<option>Circuitos de Aventura</option>
+<option>Producción Integral de Espacio</option>
+</select>
+</div>
+<div class="space-y-2">
+<label class="text-[10px] uppercase tracking-[0.2em] font-black text-on-surface-variant px-1">Mensaje</label>
+<textarea class="w-full bg-surface-container-low border-none rounded-xl p-4 focus:ring-2 focus:ring-primary/20 transition-all outline-none resize-none" placeholder="Detalles de tu evento (fecha, cantidad de personas...)" rows="4"></textarea>
+</div>
+<button class="w-full primary-gradient text-on-primary py-5 rounded-full font-black text-sm tracking-widest uppercase shadow-xl hover:scale-[1.01] transition-transform active:scale-95">
+                        Consultar Disponibilidad
+                    </button>
+</form>
+<div class="mt-12 pt-12 border-t border-surface-container flex flex-wrap gap-8">
+<div>
+<p class="text-[10px] uppercase tracking-widest font-black text-on-surface-variant mb-2">WhatsApp</p>
+<a class="flex items-center gap-2 text-primary font-bold group" href="https://wa.me/123456789">
+<span class="material-symbols-outlined text-xl" data-icon="chat">chat</span>
+                            +1 234 567 890
+                        </a>
+</div>
+<div>
+<p class="text-[10px] uppercase tracking-widest font-black text-on-surface-variant mb-2">Redes Sociales</p>
+<div class="flex gap-4">
+<a class="text-on-surface hover:text-primary transition-colors font-bold" href="#">Instagram</a>
+<a class="text-on-surface hover:text-primary transition-colors font-bold" href="#">LinkedIn</a>
+</div>
+</div>
+</div>
+</div>
+<!-- Map & Location Area -->
+<div class="lg:w-1/2 min-h-[500px] relative bg-slate-200">
+<img class="w-full h-full object-cover" data-alt="Mapa estilizado de Palermo Hollywood" data-location="Buenos Aires" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfeR94YCbZc4aTEAFVx6F1niJCS-i6ESWJvuO0lfqLDrZGO-3Z4x_Mh2nPyp_HpgDu42eNwLVDPPI-Nh9DNkBHvN9QAyPyEFnG2S_OvlzLGcKAuOgiW-ZY8vvjSUQqClWUqsZdVFqpt0MsyUNIfCDuhUXZP_oB--1zlQEGYPPPG6HpeWEeTUOE-DNiLcM83rmFKzt1JTNLAhsThHtyG_I5sK-fnR3q7sccA3is5SQ-dO7BrTJnmODAvaLPI3sQ23pDwvSoUPD3XYDQ"/>
+<div class="absolute inset-0 bg-primary/10 pointer-events-none"></div>
+<div class="absolute bottom-8 left-8 right-8 bg-white/80 backdrop-blur-xl p-8 rounded-2xl shadow-2xl">
+<div class="flex items-start gap-4">
+<div class="bg-primary p-2 rounded-lg shrink-0">
+<span class="material-symbols-outlined text-white" data-icon="location_on">location_on</span>
+</div>
+<div>
+<h4 class="font-black text-lg tracking-tight">Visita Nuestro Estudio</h4>
+<p class="text-sm text-on-surface-variant leading-relaxed">
+                                Calle de la Alegría 1234,<br/>
+                                Palermo Hollywood, Buenos Aires
+                            </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- CTA Floating Dot -->
+<div class="fixed bottom-8 right-8 z-40 flex flex-col items-center gap-3">
+<div class="bg-white/90 backdrop-blur px-4 py-2 rounded-full shadow-lg border border-white/20 text-[10px] font-black uppercase tracking-widest text-on-surface-variant opacity-0 hover:opacity-100 transition-opacity">
+            Chat en Vivo
+        </div>
+<a class="w-16 h-16 rounded-full bg-green-500 shadow-2xl flex items-center justify-center text-white hover:scale-110 active:scale-90 transition-all" href="https://wa.me/123456789">
+<span class="material-symbols-outlined text-3xl" data-icon="chat" data-weight="fill">chat</span>
+</a>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-12 px-6 mt-auto bg-slate-50 dark:bg-slate-800/50">
+<div class="flex flex-col md:flex-row justify-between items-center gap-6 max-w-7xl mx-auto border-t border-slate-100 dark:border-slate-800 pt-12">
+<div class="font-manrope text-xs tracking-widest uppercase text-slate-400 dark:text-slate-500">
+            © 2024 Lo de Juan. Espacios Increíbles para Eventos Únicos.
+        </div>
+<div class="flex gap-8">
+<a class="font-manrope text-xs tracking-widest uppercase text-slate-400 dark:text-slate-500 hover:text-red-500 transition-colors" href="#">Política de Privacidad</a>
+<a class="font-manrope text-xs tracking-widest uppercase text-slate-400 dark:text-slate-500 hover:text-red-500 transition-colors" href="#">Términos de Servicio</a>
+<a class="font-manrope text-xs tracking-widest uppercase text-slate-400 dark:text-slate-500 hover:text-red-500 transition-colors" href="#">FAQ</a>
+<a class="font-manrope text-xs tracking-widest uppercase text-slate-400 dark:text-slate-500 hover:text-red-500 transition-colors" href="#">Instagram</a>
+</div>
+</div>
+</footer>
+</body></html>

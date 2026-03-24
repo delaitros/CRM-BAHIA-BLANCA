@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Galería | Lo de Juan</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary": "#ffffff",
+              "outline-variant": "#c1c6d7",
+              "on-secondary-fixed-variant": "#30476a",
+              "on-background": "#191c1d",
+              "surface-container-high": "#e7e8e9",
+              "outline": "#717786",
+              "on-surface": "#191c1d",
+              "inverse-primary": "#ffb3b1",
+              "error-container": "#ffdad6",
+              "secondary-fixed": "#d5e3ff",
+              "primary": "#b7102a",
+              "surface-tint": "#bb152c",
+              "surface-bright": "#f8f9fa",
+              "on-secondary-container": "#445a7f",
+              "tertiary-fixed-dim": "#ffba27",
+              "primary-container": "#db313f",
+              "on-tertiary-container": "#fffbff",
+              "on-surface-variant": "#414755",
+              "tertiary-fixed": "#ffdea9",
+              "on-tertiary": "#ffffff",
+              "primary-fixed-dim": "#ffb3b1",
+              "secondary-container": "#bbd3fd",
+              "background": "#f8f9fa",
+              "on-tertiary-fixed-variant": "#5e4100",
+              "on-tertiary-fixed": "#271900",
+              "on-primary-container": "#fffbff",
+              "surface-container-highest": "#e1e3e4",
+              "on-error": "#ffffff",
+              "inverse-surface": "#2e3132",
+              "on-secondary-fixed": "#001b3c",
+              "on-primary-fixed": "#410007",
+              "on-error-container": "#93000a",
+              "error": "#ba1a1a",
+              "tertiary": "#7a5500",
+              "surface-variant": "#e1e3e4",
+              "surface": "#f8f9fa",
+              "secondary-fixed-dim": "#b0c7f1",
+              "tertiary-container": "#996c00",
+              "surface-dim": "#d9dadb",
+              "on-primary-fixed-variant": "#92001c",
+              "surface-container-lowest": "#ffffff",
+              "primary-fixed": "#ffdad8",
+              "surface-container-low": "#f3f4f5",
+              "secondary": "#485f84",
+              "inverse-on-surface": "#f0f1f2",
+              "surface-container": "#edeeef",
+              "on-primary": "#ffffff"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="bg-background text-on-surface selection:bg-primary-container selection:text-white">
+<!-- Top Navigation Bar -->
+<nav class="fixed top-0 w-full z-50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl shadow-sm">
+<div class="flex justify-between items-center w-full px-8 py-4 max-w-7xl mx-auto">
+<div class="flex items-center gap-3">
+<img alt="Lo de Juan Logo" class="h-10 w-auto" data-alt="minimalist logo for Lo de Juan event space with elegant clean lines and modern aesthetic" src="data:image/png;base64,{{DATA:IMAGE:IMAGE_21}}"/>
+<span class="text-2xl font-black tracking-tighter text-slate-900 dark:text-slate-50">Lo de Juan</span>
+</div>
+<div class="hidden md:flex items-center space-x-8 font-manrope text-sm font-medium tracking-tight">
+<a class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors" href="#">Inicio</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors" href="#">Espacios</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors" href="#">Atracciones</a>
+<a class="text-[#b7102a] dark:text-[#db313f] font-bold border-b-2 border-[#b7102a] pb-1" href="#">Galería</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors" href="#">Contacto</a>
+</div>
+<button class="bg-gradient-to-br from-primary to-primary-container text-white px-6 py-2.5 rounded-full font-bold text-sm hover:opacity-90 transition-opacity active:scale-95 duration-200">
+                Reservar Ahora
+            </button>
+</div>
+</nav>
+<main class="pt-32 pb-24 px-6 md:px-12 max-w-7xl mx-auto">
+<!-- Editorial Header Section -->
+<header class="mb-20 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-8">
+<div class="max-w-2xl">
+<span class="text-primary font-bold tracking-[0.2em] text-xs uppercase mb-4 block">Nuestro Portafolio</span>
+<h1 class="text-5xl md:text-7xl font-extrabold text-on-surface tracking-tight leading-none mb-6">
+                    Momentos que <br/><span class="text-primary">perduran.</span>
+</h1>
+<p class="text-on-surface-variant text-lg md:text-xl font-light leading-relaxed">
+                    Un recorrido visual por las historias que hemos ayudado a escribir. Desde la magia de la infancia hasta la elegancia de las grandes uniones.
+                </p>
+</div>
+<div class="flex flex-wrap gap-3 md:mb-2">
+<button class="px-6 py-2 rounded-full bg-primary text-white text-sm font-bold transition-all shadow-md">Todos</button>
+<button class="px-6 py-2 rounded-full bg-surface-container-high text-on-surface-variant text-sm font-medium hover:bg-surface-container-highest transition-all">Bodas</button>
+<button class="px-6 py-2 rounded-full bg-surface-container-high text-on-surface-variant text-sm font-medium hover:bg-surface-container-highest transition-all">15 Años</button>
+<button class="px-6 py-2 rounded-full bg-surface-container-high text-on-surface-variant text-sm font-medium hover:bg-surface-container-highest transition-all">Infantiles</button>
+</div>
+</header>
+<!-- Modern Art Gallery Grid (Bento Style & Asymmetry) -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
+<!-- Big Hero Feature -->
+<div class="md:col-span-8 group relative overflow-hidden rounded-xl bg-surface-container-low aspect-[16/10] md:aspect-auto md:h-[600px]">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="luxurious outdoor wedding reception at dusk with elegant floral arrangements and warm fairy lights reflecting on crystal glassware" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDK8yRrU83_sk9nTjW4EKMdmaVUY9a0ixbP8R8Fcd_wWaF7vJraYYDk-hiZYzcQin0zXpnXy7NKF6QegEPfER2TukG2DSQUx9ogYRr-pNJiAMSNzj_YgzRQcp9EwGlRYMVgbg1j-_viImkLdfrUWXorMtFknJ6bK2qtTWoD5kjZmswqOijc32kB1w3RE9oA23wvYNxjQOKWX_V591Ry7-Jb_JI-7HD0kc4vvzNsglqrL9oTkS-Cw-QUC7UttLIa3C40lfrz4984nfCE"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8">
+<span class="text-white/80 text-sm font-bold tracking-widest uppercase mb-2">Bodas</span>
+<h3 class="text-white text-3xl font-bold">Unión en el Jardín</h3>
+</div>
+</div>
+<!-- Vertical Side Detail -->
+<div class="md:col-span-4 group relative overflow-hidden rounded-xl bg-surface-container-low h-[400px] md:h-[600px]">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="modern minimalist quinceañera celebration with soft pink and gold decor and sophisticated atmospheric lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDatImGrfXBmZ9ugQnyCsebntBx_dWCy9Zd-fus6iK8lxboXtuEaphJVrb3OaRzJ6T_moYW2yzrVuZULthaqeNXC_1Y8TSkAgQDpFBXAMEhVRWQbp1M7u0ROkw2hxC-G3_OlDyfNCIGFsUW_53ydj4U7t92alIW1sr44IRio7QibFaq7oNehxfWGKpzsauBYBDsnYAxTBC-ZOXPzRgvNC_KiSHw_I0rBNEvKX6bwC1DKS-Rb2N15iq4u-zNeC9dtAcFLeG4mK1RUma3"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8">
+<span class="text-white/80 text-sm font-bold tracking-widest uppercase mb-2">15 Años</span>
+<h3 class="text-white text-3xl font-bold">Noche de Gala</h3>
+</div>
+</div>
+<!-- Row 2: Smaller Detail Cards -->
+<div class="md:col-span-4 group relative overflow-hidden rounded-xl bg-surface-container-low aspect-square">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="joyful children's birthday party with vibrant balloons and a whimsical cake setting on a sunny afternoon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCL0p3HDlY9PL__qE7ZoB_Ph0r_ZAuYLoEKBx2PSemn-W72XbRqz_tGBWdF-eWktHlbG-pxBbRkVfIVp4Crp9AurnxPlKp4Un1x76BnH8vyb6rvlrYvmFXnFq84QjhhSDsvjIhd8nkCN7KRXvb29vTFNckWc0REWoG9lGdNlBqk4CYY8shX6mOk98w9FjTDY-aVkMCsPz1ZLMIagaR8X4AIR7FAK8OoqZjQN4ZTH6I8YRi0D7IbIwsnrLlVxrxw6Gy6VSRNSOiLGU8a"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8">
+<span class="text-white/80 text-sm font-bold tracking-widest uppercase mb-2">Infantiles</span>
+<h3 class="text-white text-2xl font-bold">Aventura Mágica</h3>
+</div>
+</div>
+<div class="md:col-span-4 group relative overflow-hidden rounded-xl bg-surface-container-low aspect-square">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="close-up of artisan cocktails being prepared at a premium event bar with warm moody lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqkMnopXlyuU7ctfzunWAKOa9ZNh4E2gOLpUYEdgTG__PCD4Ft6wTRD28c03fRjBghxbGtP98jjbmw7T3uJ7gpxc1iP9uz1HF1TYFUio-8NNv8IpVAByTosXeFKtEWHJ_iBoltDPpvRJBATKE7FW-fchjq1JDjXMIlwib93Qxh6XgD4vJnwa8sl5pZAzX0Nh1CBq4YtUKmYFuwjCWiGyjmZ_3SX8fNgg8FI1rlawAzDVKM5JzuUx-vFboLf6Vi241L6tXrnZevCW4H"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8">
+<span class="text-white/80 text-sm font-bold tracking-widest uppercase mb-2">Sociales</span>
+<h3 class="text-white text-2xl font-bold">Brindis Especial</h3>
+</div>
+</div>
+<div class="md:col-span-4 group relative overflow-hidden rounded-xl bg-surface-container-low aspect-square">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="aerial view of an elegantly set long table for a corporate event with white linens and eucalyptus centerpieces" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwAWwRa_ewrjuDDdx4tvcGHSSa1eIGJnAS34SPvzkqtJITW0IK-GpTy6wLvQEhDDcZtEV3gUN7yGGR_6hmzqphrIFWriqxhGfUxmvbBxvxPVBqzb2W5J53CQJXxoGy4YCsow1PzJPu2m_YyEizNERrnT-LmuIgFLD7KbyQ_TzNbiL6_W0NsV7W82_13isX4lSpLWFCApEzx7mv7mVyvKg92xMocIPMt8_rx2pA0qQPcWaFhWdwvQWSpOpO1gNwkwgD1rdKj60Re51n"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8">
+<span class="text-white/80 text-sm font-bold tracking-widest uppercase mb-2">Corporativos</span>
+<h3 class="text-white text-2xl font-bold">Cenas de Autor</h3>
+</div>
+</div>
+<!-- Large Wide Footer-ish Gallery Item -->
+<div class="md:col-span-12 group relative overflow-hidden rounded-xl bg-surface-container-low h-[300px] md:h-[450px]">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="wide shot of a vibrant dance floor during a celebration with colorful lighting and energetic atmosphere" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB05VLplAz_g4wDwxt5OzihOMLFQl08Y_qgUI65EUqpatxD9yLqZxnSUz-jYfkFJPZu6pFmeoREa-ux85huXULmKsamWy_0FMR-WtoilL77BwHVqA7HHFks2UVLSw9xvuIBBv8gQgKpQ4I8Nocfp4oUQGnh1BzeBfObg9G8hgfG979bdWdnxDtLyu5pB6pbPKtBC1d7JRt1vzjG6-zh4o4FxTI12CizRXmaQYTWc_vgxjAETshL0fCz73K-1QGieSXV_EiuBWYvqb9L"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8">
+<span class="text-white/80 text-sm font-bold tracking-widest uppercase mb-2">Experiencias</span>
+<h3 class="text-white text-3xl font-bold">La Fiesta no Termina</h3>
+</div>
+</div>
+</div>
+<!-- Pagination / Load More -->
+<div class="mt-20 text-center">
+<button class="inline-flex items-center gap-2 px-8 py-4 bg-surface-container-lowest border border-outline-variant/30 rounded-full text-on-surface font-semibold hover:bg-surface-container-low transition-all">
+                Cargar más memorias
+                <span class="material-symbols-outlined">expand_more</span>
+</button>
+</div>
+</main>
+<!-- Call to Action Section -->
+<section class="bg-surface-container-low py-24 mb-24 px-6">
+<div class="max-w-4xl mx-auto text-center">
+<h2 class="text-4xl md:text-5xl font-extrabold text-on-surface mb-8">¿Listo para crear tu propia historia?</h2>
+<p class="text-on-surface-variant text-lg mb-12">Estamos aquí para transformar tu visión en una realidad inolvidable. Hablemos sobre tu próximo evento.</p>
+<div class="flex flex-col md:flex-row justify-center gap-4">
+<button class="bg-primary text-white px-10 py-4 rounded-full font-bold text-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+                    Reservar Cita
+                    <span class="material-symbols-outlined">calendar_month</span>
+</button>
+<button class="bg-surface-container-lowest text-on-surface px-10 py-4 rounded-full font-bold text-lg border border-outline-variant/50 hover:bg-white transition-all">
+                    Ver Presupuestos
+                </button>
+</div>
+</div>
+</section>
+<!-- Brand Dots (Scroll Progress Indicator Mockup) -->
+<div class="fixed right-6 top-1/2 -translate-y-1/2 hidden lg:flex flex-col gap-4 z-40">
+<div class="w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_10px_rgba(183,16,42,0.5)]"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-tertiary-fixed-dim/40 backdrop-blur-sm"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-secondary-container/40 backdrop-blur-sm"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-outline-variant/40 backdrop-blur-sm"></div>
+</div>
+<!-- Footer -->
+<footer class="bg-slate-50 dark:bg-slate-950 w-full py-12 border-t border-slate-200/50 dark:border-slate-800/50">
+<div class="max-w-7xl mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex flex-col items-center md:items-start gap-2">
+<span class="text-lg font-bold text-slate-900 dark:text-slate-100">Lo de Juan</span>
+<p class="font-manrope text-sm text-slate-500 dark:text-slate-400">© 2024 Lo de Juan. Todos los derechos reservados.</p>
+</div>
+<div class="flex gap-8">
+<a class="font-manrope text-sm text-slate-500 dark:text-slate-400 hover:text-[#b7102a] transition-colors hover:underline decoration-[#b7102a] underline-offset-4" href="#">Instagram</a>
+<a class="font-manrope text-sm text-slate-500 dark:text-slate-400 hover:text-[#b7102a] transition-colors hover:underline decoration-[#b7102a] underline-offset-4" href="#">WhatsApp</a>
+<a class="font-manrope text-sm text-slate-500 dark:text-slate-400 hover:text-[#b7102a] transition-colors hover:underline decoration-[#b7102a] underline-offset-4" href="#">Facebook</a>
+<a class="font-manrope text-sm text-slate-500 dark:text-slate-400 hover:text-[#b7102a] transition-colors hover:underline decoration-[#b7102a] underline-offset-4" href="#">Ubicación</a>
+</div>
+</div>
+</footer>
+</body></html>
