@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contacto | Lo de Juan</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "tertiary-fixed": "#ffdea9",
+            "on-primary-fixed": "#410007",
+            "error": "#ba1a1a",
+            "surface": "#f8f9fa",
+            "surface-container-lowest": "#ffffff",
+            "on-secondary-fixed-variant": "#30476a",
+            "secondary-fixed": "#d5e3ff",
+            "inverse-surface": "#2e3132",
+            "on-tertiary-fixed": "#271900",
+            "on-primary": "#ffffff",
+            "on-primary-fixed-variant": "#92001c",
+            "surface-variant": "#e1e3e4",
+            "outline-variant": "#c1c6d7",
+            "on-error": "#ffffff",
+            "on-primary-container": "#fffbff",
+            "surface-container-highest": "#e1e3e4",
+            "on-secondary": "#ffffff",
+            "secondary": "#485f84",
+            "secondary-container": "#bbd3fd",
+            "on-secondary-container": "#445a7f",
+            "on-tertiary": "#ffffff",
+            "primary-fixed": "#ffdad8",
+            "error-container": "#ffdad6",
+            "surface-bright": "#f8f9fa",
+            "on-tertiary-container": "#fffbff",
+            "surface-container-low": "#f3f4f5",
+            "on-secondary-fixed": "#001b3c",
+            "on-surface-variant": "#414755",
+            "on-error-container": "#93000a",
+            "background": "#f8f9fa",
+            "on-surface": "#191c1d",
+            "secondary-fixed-dim": "#b0c7f1",
+            "tertiary-fixed-dim": "#ffba27",
+            "inverse-on-surface": "#f0f1f2",
+            "primary": "#b7102a",
+            "surface-tint": "#bb152c",
+            "on-background": "#191c1d",
+            "inverse-primary": "#ffb3b1",
+            "surface-container": "#edeeef",
+            "outline": "#717786",
+            "tertiary-container": "#996c00",
+            "tertiary": "#7a5500",
+            "surface-container-high": "#e7e8e9",
+            "on-tertiary-fixed-variant": "#5e4100",
+            "surface-dim": "#d9dadb",
+            "primary-fixed-dim": "#ffb3b1",
+            "primary-container": "#db313f"
+          },
+          fontFamily: {
+            "headline": ["Manrope", "sans-serif"],
+            "body": ["Manrope", "sans-serif"],
+            "label": ["Manrope", "sans-serif"]
+          },
+          borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+        },
+      },
+    }
+  </script>
+</head>
+<body class="font-body bg-background text-on-background antialiased">
+
+  <!-- Navigation -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-white/70 backdrop-blur-xl shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo -->
+        <a href="index.html" class="text-xl font-extrabold font-headline text-primary tracking-tight">Lo de Juan</a>
+
+        <!-- Desktop Nav -->
+        <div class="hidden md:flex items-center gap-8">
+          <a href="index.html" class="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors">Inicio</a>
+          <a href="servicios.html" class="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors">Espacios</a>
+          <a href="atracciones.html" class="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors">Atracciones</a>
+          <a href="galeria.html" class="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors">Galería</a>
+          <a href="contacto.html" class="text-sm font-semibold text-[#b7102a] border-b-2 border-[#b7102a] pb-1">Contacto</a>
+        </div>
+
+        <!-- Reservar Button (Desktop) -->
+        <div class="hidden md:block">
+          <a href="contacto.html" class="inline-flex items-center gap-2 bg-gradient-to-br from-primary to-primary-container text-on-primary px-5 py-2.5 rounded-full text-sm font-semibold hover:opacity-90 transition-opacity active:scale-95 duration-200">
+            <span class="material-symbols-outlined text-[18px]">calendar_month</span>
+            Reservar
+          </a>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button id="menuBtn" class="md:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-surface-container-high transition-colors" aria-label="Abrir menú">
+          <span class="material-symbols-outlined text-on-surface">menu</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu Panel -->
+  <div id="mobileMenu" class="fixed inset-0 z-[60] pointer-events-none opacity-0 transition-opacity duration-300">
+    <div class="absolute inset-0 bg-on-surface/40" id="menuOverlay"></div>
+    <div id="menuPanel" class="absolute top-0 right-0 w-72 h-full bg-surface-container-lowest shadow-2xl translate-x-full transition-transform duration-300 flex flex-col">
+      <div class="flex items-center justify-between p-4 border-b border-outline-variant/30">
+        <span class="text-lg font-bold font-headline text-primary">Lo de Juan</span>
+        <button id="menuClose" class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface-container-high transition-colors">
+          <span class="material-symbols-outlined text-on-surface">close</span>
+        </button>
+      </div>
+      <nav class="flex flex-col gap-1 p-4">
+        <a href="index.html" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-surface-container-high text-on-surface-variant font-medium text-sm transition-colors">
+          <span class="material-symbols-outlined text-[20px]">home</span> Inicio
+        </a>
+        <a href="servicios.html" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-surface-container-high text-on-surface-variant font-medium text-sm transition-colors">
+          <span class="material-symbols-outlined text-[20px]">space_dashboard</span> Espacios
+        </a>
+        <a href="atracciones.html" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-surface-container-high text-on-surface-variant font-medium text-sm transition-colors">
+          <span class="material-symbols-outlined text-[20px]">attractions</span> Atracciones
+        </a>
+        <a href="galeria.html" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-surface-container-high text-on-surface-variant font-medium text-sm transition-colors">
+          <span class="material-symbols-outlined text-[20px]">photo_library</span> Galería
+        </a>
+        <a href="contacto.html" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary-fixed/30 text-primary font-semibold text-sm">
+          <span class="material-symbols-outlined text-[20px]">mail</span> Contacto
+        </a>
+      </nav>
+      <div class="mt-auto p-4">
+        <a href="contacto.html" class="flex items-center justify-center gap-2 w-full bg-primary text-on-primary py-3 rounded-full font-semibold text-sm hover:bg-primary-container transition-colors">
+          <span class="material-symbols-outlined text-[18px]">calendar_month</span>
+          Reservar Ahora
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="pt-32 pb-20 px-6 max-w-7xl mx-auto">
+
+    <!-- Header Section -->
+    <header class="mb-16 md:mb-24 text-center md:text-left">
+      <span class="text-primary font-bold tracking-[0.2em] text-xs uppercase mb-4 block">Hablemos</span>
+      <h1 class="text-5xl md:text-7xl font-extrabold text-on-surface tracking-tight leading-[1.1] max-w-3xl">
+        Hablemos de tu próximo evento
+      </h1>
+      <p class="mt-6 text-on-surface-variant text-lg md:text-xl max-w-2xl leading-relaxed">
+        Estamos aquí para convertir tus ideas en experiencias inolvidables. Envíanos un mensaje y nuestro equipo se pondrá en contacto contigo a la brevedad.
+      </p>
+    </header>
+
+    <!-- Main Content Layout (Bento-inspired Grid) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+      <!-- Contact Form Card -->
+      <div class="lg:col-span-7 bg-surface-container-lowest rounded-xl p-8 md:p-12 shadow-[0_24px_40px_rgba(25,28,29,0.04)]">
+        <form class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-2">
+              <label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-1">Nombre Completo</label>
+              <input class="w-full bg-surface-container-low border-none rounded-lg p-4 focus:ring-2 focus:ring-primary/30 focus:bg-surface-container-lowest transition-all placeholder:text-outline" placeholder="Juan Pérez" type="text" />
+            </div>
+            <div class="space-y-2">
+              <label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-1">Correo Electrónico</label>
+              <input class="w-full bg-surface-container-low border-none rounded-lg p-4 focus:ring-2 focus:ring-primary/30 focus:bg-surface-container-lowest transition-all placeholder:text-outline" placeholder="hola@ejemplo.com" type="email" />
+            </div>
+          </div>
+          <div class="space-y-2">
+            <label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-1">Tipo de Evento</label>
+            <select class="w-full bg-surface-container-low border-none rounded-lg p-4 focus:ring-2 focus:ring-primary/30 focus:bg-surface-container-lowest transition-all text-on-surface-variant">
+              <option>Evento Social</option>
+              <option>Casamiento</option>
+              <option>Cumpleaños</option>
+              <option>Corporativo</option>
+              <option>Otro</option>
+            </select>
+          </div>
+          <div class="space-y-2">
+            <label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-1">Tu Mensaje</label>
+            <textarea class="w-full bg-surface-container-low border-none rounded-lg p-4 focus:ring-2 focus:ring-primary/30 focus:bg-surface-container-lowest transition-all placeholder:text-outline" placeholder="Cuéntanos un poco más sobre lo que tienes en mente..." rows="5"></textarea>
+          </div>
+          <button class="w-full md:w-auto bg-gradient-to-br from-primary to-primary-container text-on-primary px-10 py-4 rounded-full font-bold text-lg hover:opacity-90 transition-all flex items-center justify-center gap-2 group shadow-lg" type="submit">
+            Enviar Consulta
+            <span class="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">send</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Side Info Panels -->
+      <div class="lg:col-span-5 space-y-8">
+
+        <!-- Quick Contact Card -->
+        <div class="bg-surface-container-low rounded-xl p-8 flex flex-col justify-between min-h-[280px]">
+          <div>
+            <h3 class="text-2xl font-bold mb-6">Canales Directos</h3>
+            <div class="space-y-6">
+              <a class="flex items-center gap-4 group" href="#">
+                <div class="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                  <span class="material-symbols-outlined">chat</span>
+                </div>
+                <div>
+                  <p class="text-xs font-bold uppercase tracking-tighter text-on-surface-variant">WhatsApp</p>
+                  <p class="text-lg font-medium">+54 11 1234 5678</p>
+                </div>
+              </a>
+              <a class="flex items-center gap-4 group" href="#">
+                <div class="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                  <span class="material-symbols-outlined">photo_camera</span>
+                </div>
+                <div>
+                  <p class="text-xs font-bold uppercase tracking-tighter text-on-surface-variant">Instagram</p>
+                  <p class="text-lg font-medium">@lodejuan.eventos</p>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="pt-6 border-t border-outline-variant/20">
+            <p class="text-sm text-on-surface-variant">Atención al cliente: Lunes a Sábados de 10:00 a 19:00 hs.</p>
+          </div>
+        </div>
+
+        <!-- Map Section -->
+        <div class="rounded-xl overflow-hidden shadow-sm relative h-[300px] group">
+          <img class="w-full h-full object-cover filter grayscale hover:grayscale-0 transition-all duration-700" src="https://placehold.co/800x400?text=Mapa+Ubicación" alt="Mapa de ubicación" />
+          <div class="absolute inset-0 bg-primary/10 group-hover:bg-transparent transition-colors"></div>
+          <div class="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-md p-4 rounded-lg flex items-center justify-between">
+            <div>
+              <p class="font-bold text-sm">Nuestra Ubicación</p>
+              <p class="text-xs text-on-surface-variant">Buenos Aires, Argentina</p>
+            </div>
+            <a class="text-primary flex items-center gap-1 font-bold text-sm" href="#">
+              Cómo llegar
+              <span class="material-symbols-outlined text-sm">open_in_new</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Trust Stats Section -->
+    <section class="mt-24 grid grid-cols-2 md:grid-cols-4 gap-8 py-12 border-y border-outline-variant/10">
+      <div class="text-center">
+        <span class="text-3xl font-black text-primary block mb-1">15+</span>
+        <span class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Años de Exp.</span>
+      </div>
+      <div class="text-center">
+        <span class="text-3xl font-black text-primary block mb-1">500+</span>
+        <span class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Eventos</span>
+      </div>
+      <div class="text-center">
+        <span class="text-3xl font-black text-primary block mb-1">100%</span>
+        <span class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Dedicación</span>
+      </div>
+      <div class="text-center">
+        <span class="text-3xl font-black text-primary block mb-1">4.9</span>
+        <span class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Calificación</span>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Brand Dots (Fixed bottom-right) -->
+  <div class="fixed bottom-10 right-10 flex flex-col gap-2 z-40">
+    <div class="w-3 h-3 rounded-full bg-primary opacity-80 shadow-lg"></div>
+    <div class="w-3 h-3 rounded-full bg-[#fbbc04] opacity-80 shadow-lg"></div>
+    <div class="w-3 h-3 rounded-full bg-[#4285f4] opacity-80 shadow-lg"></div>
+    <div class="w-3 h-3 rounded-full bg-[#34a853] opacity-80 shadow-lg"></div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-surface-container py-12 border-t border-outline-variant/30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div class="md:col-span-2">
+          <span class="text-xl font-extrabold font-headline text-primary">Lo de Juan</span>
+          <p class="text-on-surface-variant text-sm mt-3 max-w-sm leading-relaxed">El lugar donde la diversión cobra vida. Espacios premium para eventos infantiles en Bahía Blanca.</p>
+        </div>
+        <div>
+          <h4 class="font-headline font-bold text-on-surface text-sm mb-4">Navegación</h4>
+          <ul class="space-y-2">
+            <li><a href="index.html" class="text-sm text-on-surface-variant hover:text-primary transition-colors">Inicio</a></li>
+            <li><a href="servicios.html" class="text-sm text-on-surface-variant hover:text-primary transition-colors">Espacios</a></li>
+            <li><a href="atracciones.html" class="text-sm text-on-surface-variant hover:text-primary transition-colors">Atracciones</a></li>
+            <li><a href="galeria.html" class="text-sm text-on-surface-variant hover:text-primary transition-colors">Galería</a></li>
+            <li><a href="contacto.html" class="text-sm text-on-surface-variant hover:text-primary transition-colors">Contacto</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-headline font-bold text-on-surface text-sm mb-4">Contacto</h4>
+          <ul class="space-y-2">
+            <li class="flex items-center gap-2 text-sm text-on-surface-variant">
+              <span class="material-symbols-outlined text-[16px]">location_on</span>
+              Bahía Blanca, Buenos Aires
+            </li>
+            <li class="flex items-center gap-2 text-sm text-on-surface-variant">
+              <span class="material-symbols-outlined text-[16px]">phone</span>
+              +54 291 555-1234
+            </li>
+            <li class="flex items-center gap-2 text-sm text-on-surface-variant">
+              <span class="material-symbols-outlined text-[16px]">mail</span>
+              info@lodejuan.com
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-outline-variant/30 mt-8 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-on-surface-variant">&copy; 2026 Lo de Juan. Todos los derechos reservados.</p>
+        <div class="flex items-center gap-4">
+          <a href="#" class="text-on-surface-variant hover:text-primary transition-colors text-xs">Privacidad</a>
+          <a href="#" class="text-on-surface-variant hover:text-primary transition-colors text-xs">Términos</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/app.js"></script>
+  <script>
+    // Mobile menu toggle
+    const menuBtn = document.getElementById('menuBtn');
+    const menuClose = document.getElementById('menuClose');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const menuOverlay = document.getElementById('menuOverlay');
+    const menuPanel = document.getElementById('menuPanel');
+
+    function openMenu() {
+      mobileMenu.classList.remove('pointer-events-none', 'opacity-0');
+      mobileMenu.classList.add('pointer-events-auto', 'opacity-100');
+      menuPanel.classList.remove('translate-x-full');
+      menuPanel.classList.add('translate-x-0');
+    }
+    function closeMenu() {
+      mobileMenu.classList.add('pointer-events-none', 'opacity-0');
+      mobileMenu.classList.remove('pointer-events-auto', 'opacity-100');
+      menuPanel.classList.add('translate-x-full');
+      menuPanel.classList.remove('translate-x-0');
+    }
+    menuBtn.addEventListener('click', openMenu);
+    menuClose.addEventListener('click', closeMenu);
+    menuOverlay.addEventListener('click', closeMenu);
+
+    // Form submission handler
+    const form = document.querySelector('form');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const btn = form.querySelector('button[type="submit"]');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<span class="material-symbols-outlined text-xl animate-spin">progress_activity</span> Enviando...';
+      btn.disabled = true;
+      setTimeout(() => {
+        btn.innerHTML = '<span class="material-symbols-outlined text-xl">check_circle</span> Mensaje Enviado';
+        btn.classList.remove('from-primary', 'to-primary-container');
+        btn.classList.add('bg-green-600');
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+          btn.classList.add('from-primary', 'to-primary-container');
+          btn.classList.remove('bg-green-600');
+          form.reset();
+        }, 2000);
+      }, 1500);
+    });
+  </script>
+</body>
+</html>
