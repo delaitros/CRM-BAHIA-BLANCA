@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Atracciones - Lo de Juan</title>
+<!-- Google Fonts: Manrope -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary": "#ffffff",
+              "outline-variant": "#c1c6d7",
+              "on-secondary-fixed-variant": "#30476a",
+              "on-background": "#191c1d",
+              "surface-container-high": "#e7e8e9",
+              "outline": "#717786",
+              "on-surface": "#191c1d",
+              "inverse-primary": "#ffb3b1",
+              "error-container": "#ffdad6",
+              "secondary-fixed": "#d5e3ff",
+              "primary": "#b7102a",
+              "surface-tint": "#bb152c",
+              "surface-bright": "#f8f9fa",
+              "on-secondary-container": "#445a7f",
+              "tertiary-fixed-dim": "#ffba27",
+              "primary-container": "#db313f",
+              "on-tertiary-container": "#fffbff",
+              "on-surface-variant": "#414755",
+              "tertiary-fixed": "#ffdea9",
+              "on-tertiary": "#ffffff",
+              "primary-fixed-dim": "#ffb3b1",
+              "secondary-container": "#bbd3fd",
+              "background": "#f8f9fa",
+              "on-tertiary-fixed-variant": "#5e4100",
+              "on-tertiary-fixed": "#271900",
+              "on-primary-container": "#fffbff",
+              "surface-container-highest": "#e1e3e4",
+              "on-error": "#ffffff",
+              "inverse-surface": "#2e3132",
+              "on-secondary-fixed": "#001b3c",
+              "on-primary-fixed": "#410007",
+              "on-error-container": "#93000a",
+              "error": "#ba1a1a",
+              "tertiary": "#7a5500",
+              "surface-variant": "#e1e3e4",
+              "surface": "#f8f9fa",
+              "secondary-fixed-dim": "#b0c7f1",
+              "tertiary-container": "#996c00",
+              "surface-dim": "#d9dadb",
+              "on-primary-fixed-variant": "#92001c",
+              "surface-container-lowest": "#ffffff",
+              "primary-fixed": "#ffdad8",
+              "surface-container-low": "#f3f4f5",
+              "secondary": "#485f84",
+              "inverse-on-surface": "#f0f1f2",
+              "surface-container": "#edeeef",
+              "on-primary": "#ffffff"
+            },
+            fontFamily: {
+              "headline": ["Manrope", "sans-serif"],
+              "body": ["Manrope", "sans-serif"],
+              "label": ["Manrope", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #b7102a 0%, #db313f 100%);
+        }
+        .brand-dot-red { background-color: #b7102a; }
+        .brand-dot-yellow { background-color: #ffba27; }
+        .brand-dot-blue { background-color: #485f84; }
+        .brand-dot-green { background-color: #2e7d32; }
+    </style>
+</head>
+<body class="bg-background font-body text-on-surface antialiased">
+<!-- Top Navigation -->
+<nav class="fixed top-0 w-full z-50 glass-nav shadow-sm">
+<div class="max-w-7xl mx-auto px-8 py-4 flex justify-between items-center">
+<div class="flex items-center gap-2">
+<img alt="Lo de Juan Logo" class="h-10 w-auto" data-alt="minimalist and colorful logo for a family entertainment space called Lo de Juan featuring geometric playful shapes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVxvac2ZyrbdArvgEBwE-rN5huMndPzz_Cl_O3Qk_NkTUEwnSBfuApxrO-ugTkRbuGpV31ilI-vgu5uwo74NotsgQMJhEOcZsxjHv1pKCRGonscpx7Z8fVlO-phxtjZpJiKoENpxvQkW-BWFev453QbJyldWqGd2xrpEYSDnMoliqOb-pxx6VglibV6vOOuZS2NuT3k6bEVWijMLgGRy8YUoHugwWRDv3ZoLYmFcy9skRNai1ksZqKyNtLoOhvEb7--CnMZkG3ToS3"/>
+<span class="text-2xl font-black tracking-tighter text-slate-900">Lo de Juan</span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="font-manrope text-sm font-medium tracking-tight text-slate-600 hover:text-slate-900 transition-colors" href="#">Inicio</a>
+<a class="font-manrope text-sm font-medium tracking-tight text-slate-600 hover:text-slate-900 transition-colors" href="#">Espacios</a>
+<a class="font-manrope text-sm font-bold tracking-tight text-[#b7102a] border-b-2 border-[#b7102a] pb-1" href="#">Atracciones</a>
+<a class="font-manrope text-sm font-medium tracking-tight text-slate-600 hover:text-slate-900 transition-colors" href="#">Galería</a>
+<a class="font-manrope text-sm font-medium tracking-tight text-slate-600 hover:text-slate-900 transition-colors" href="#">Contacto</a>
+</div>
+<button class="bg-primary hover:opacity-80 text-white px-6 py-2.5 rounded-full font-manrope text-sm font-bold transition-all active:scale-95">
+                Reservar Ahora
+            </button>
+</div>
+</nav>
+<main class="pt-24 pb-20">
+<!-- Hero Section -->
+<section class="max-w-7xl mx-auto px-8 mb-24 mt-12">
+<div class="flex flex-col md:flex-row gap-12 items-center">
+<div class="w-full md:w-1/2">
+<span class="inline-block px-4 py-1.5 rounded-full bg-secondary-container text-on-secondary-container text-xs font-bold tracking-widest uppercase mb-6">DIVERSIÓN ASEGURADA</span>
+<h1 class="text-6xl md:text-7xl font-extrabold text-on-surface leading-[1.1] tracking-tighter mb-8">
+                        Un mundo para <span class="text-primary">imaginar</span> y jugar.
+                    </h1>
+<p class="text-xl text-on-surface-variant leading-relaxed mb-10 max-w-lg">
+                        Diseñamos infraestructura premium para que cada salto, cada chapuzón y cada circuito sea una aventura inolvidable.
+                    </p>
+<div class="flex gap-4">
+<div class="brand-dot-red w-3 h-3 rounded-full"></div>
+<div class="brand-dot-yellow w-3 h-3 rounded-full"></div>
+<div class="brand-dot-blue w-3 h-3 rounded-full"></div>
+<div class="brand-dot-green w-3 h-3 rounded-full"></div>
+</div>
+</div>
+<div class="w-full md:w-1/2">
+<div class="relative rounded-xl overflow-hidden shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-500">
+<img alt="Niños jugando" class="w-full h-[500px] object-cover" data-alt="happy children laughing and playing in a vibrant modern colorful indoor playground with soft lighting and premium textures" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqPCBUPmNnTCsxUoB2dltJMooVbHcpnysIyOPYszXMkz01MRrS9waf7JmNGvRgSQVl4BXqL5YVocLDALocp9LyHISSmBYLuk4teHrm8AShacTANJfGcVvfW3A0A8JAQRScvFtm_76FloY-s9fAiwc6_VWUTUJbA1M9s9i8xNu9GyDQLgpAbCHvTKOyxGNFYid32MhQzRpURoVSoKihvJayMWVLygN4JAtsiP3P_8ltmBSOlkG2VddyaB4UvcWvnqj6vPSYe1jxiM0n"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Attraction Bento Grid -->
+<section class="max-w-7xl mx-auto px-8 mb-32">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Peloteros Card -->
+<div class="md:col-span-8 group relative overflow-hidden rounded-xl bg-surface-container-low p-1">
+<div class="h-full bg-surface-container-lowest rounded-[1.4rem] p-10 flex flex-col md:flex-row gap-8 items-center">
+<div class="flex-1 order-2 md:order-1">
+<h3 class="text-4xl font-bold mb-4 tracking-tight">Peloteros Premium</h3>
+<p class="text-on-surface-variant mb-8 leading-relaxed">Piscinas de pelotas con desinfección UV, toboganes de diseño y zonas de escalada suave.</p>
+<ul class="space-y-3">
+<li class="flex items-center gap-3 text-sm font-semibold">
+<span class="material-symbols-outlined text-primary" data-icon="check_circle">check_circle</span>
+                                    Materiales Hipoalergénicos
+                                </li>
+<li class="flex items-center gap-3 text-sm font-semibold">
+<span class="material-symbols-outlined text-primary" data-icon="check_circle">check_circle</span>
+                                    Monitoreo Constante
+                                </li>
+</ul>
+</div>
+<div class="flex-1 order-1 md:order-2 w-full">
+<img alt="Pelotero" class="rounded-xl w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-700" data-alt="a luxury indoor ball pit with aesthetic muted color balls like beige and white inside a bright modern architectural playroom" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhGUcKGKRXChvyJgiLz9KTA7GwmkvfmjLSKsU0hgmKIKJdRGsm_gQcFgkSUr5JjUuNIaKyp02Scl_lXlAlcNHR_ZKgTEsa-pTyo-GOcDgSHa2Wu3lNnTgDEGFRCoAKKZpqSpdL_6vKzDWG6f1nNcXhwmG7MlkIJkQ7OTVzlLZGPuf9s1F1V6m1AdlejfSvbpHsFug-f3ne80bN8VnNRgfb0WCdI0BTD1TLMqH_99wzbyFT03jghqCrgK4XFFmxjlHTo27QU6y1tQPx"/>
+</div>
+</div>
+</div>
+<!-- Water Games Card -->
+<div class="md:col-span-4 group relative overflow-hidden rounded-xl bg-secondary-container/20 p-1">
+<div class="h-full bg-surface-container-lowest rounded-[1.4rem] p-8 flex flex-col">
+<div class="mb-6 rounded-lg overflow-hidden">
+<img alt="Juegos de agua" class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-700" data-alt="crystal clear water fountain jets in a modern outdoor park area for kids with splash pads and colorful safety flooring" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjF3tg0gAAfX8bnTA3cOkprllE2wuY1MTYSi85ZbFEGuTUOeTbfsIkYcrSjPAuMVD7197mZ_qU9cwuiEKV1L7cMHpUd9SZozTg2m1ucFrzTd4oLdm0zf_agz_XmHILTGB7qvxHLpEp6VZDVaTyoQBTEn3UavizdNFJgiujTjzX4PCUiJiuQFXomTweLPWZ6PDipAD9RoJQnP_gAZkLYX6_7wEKZTsnugyMR_0Nm72obAyVRwrXvv7eTRImS2BSzGe_kX8XGV89xe_f"/>
+</div>
+<h3 class="text-2xl font-bold mb-3 tracking-tight">Juegos con Agua</h3>
+<p class="text-sm text-on-surface-variant leading-relaxed">Sistemas de splash pads y fuentes interactivas para refrescar la diversión bajo el sol.</p>
+</div>
+</div>
+<!-- Modern Circuits -->
+<div class="md:col-span-5 group relative overflow-hidden rounded-xl bg-surface-container p-1">
+<div class="h-full bg-surface-container-lowest rounded-[1.4rem] p-8 flex flex-col justify-between">
+<div>
+<h3 class="text-2xl font-bold mb-3 tracking-tight">Circuitos Modernos</h3>
+<p class="text-sm text-on-surface-variant leading-relaxed mb-6">Obstáculos de equilibrio, cuerdas de alta resistencia y diseño ergonómico para motricidad.</p>
+</div>
+<div class="relative h-64 overflow-hidden rounded-lg">
+<img alt="Circuitos" class="absolute inset-0 w-full h-full object-cover" data-alt="innovative modern playground equipment with climbing ropes and sleek metallic frames against a bright blue sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRTu3aYHWgam_6yTE0npWvYJdJIEZ-kEdccjsDsoGjkXfAyrTeMXBKIvjNuuylJTla6pNRf__lS-7fBa2qShRH-vpx0n_JMOs876c05beI5MtdvaUeZ57-4E2sqz63HHyOTwT1QFM1tWZDNrRYWgnYtbdY7zzsu-ixQF_OX1R5fWhHOl_LQzjBj-CrFf6Ajfs2e-Gx0toxEE0pCD4ybXpYbP6vZkhSzjVvErwsLF6hBltmtSWAp101bTaiMbsKU2a6n1uA_BUn-CgX"/>
+</div>
+</div>
+</div>
+<!-- Digital/Interactive -->
+<div class="md:col-span-7 group relative overflow-hidden rounded-xl hero-gradient p-12 flex flex-col justify-center text-white">
+<span class="text-xs font-bold uppercase tracking-widest opacity-80 mb-4">Próximamente</span>
+<h3 class="text-5xl font-black mb-6 tracking-tighter">Zona Interactiva Digital</h3>
+<p class="text-lg opacity-90 max-w-md leading-relaxed mb-8">Paredes que cobran vida y suelos que reaccionan al movimiento. La tecnología al servicio del juego físico.</p>
+<div class="flex items-center gap-4">
+<button class="bg-white text-primary px-8 py-3 rounded-full font-bold text-sm shadow-xl">Saber más</button>
+<span class="text-sm font-medium opacity-80 italic">Apertura Verano 2025</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Feature Highlight -->
+<section class="bg-surface-container-low py-32">
+<div class="max-w-7xl mx-auto px-8">
+<div class="text-center mb-20">
+<h2 class="text-4xl font-bold tracking-tight mb-4">¿Por qué elegir nuestra infraestructura?</h2>
+<div class="w-20 h-1 bg-primary mx-auto rounded-full"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-16">
+<div class="flex flex-col items-center text-center">
+<div class="w-16 h-16 rounded-full bg-surface-container-highest flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="verified_user">verified_user</span>
+</div>
+<h4 class="text-xl font-bold mb-3">Seguridad Certificada</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed">Cumplimos con las normas internacionales de seguridad más exigentes para cada atracción.</p>
+</div>
+<div class="flex flex-col items-center text-center">
+<div class="w-16 h-16 rounded-full bg-surface-container-highest flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="cleaning_services">cleaning_services</span>
+</div>
+<h4 class="text-xl font-bold mb-3">Higiene Extrema</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed">Protocolos de limpieza profunda diarios y sistemas de filtrado de aire de alta eficiencia.</p>
+</div>
+<div class="flex flex-col items-center text-center">
+<div class="w-16 h-16 rounded-full bg-surface-container-highest flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="palette">palette</span>
+</div>
+<h4 class="text-xl font-bold mb-3">Diseño de Autor</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed">Espacios creados por arquitectos especializados en experiencias lúdicas infantiles.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Call to Action -->
+<section class="max-w-5xl mx-auto px-8 my-32">
+<div class="relative bg-on-surface text-white rounded-xl p-16 overflow-hidden text-center">
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary/20 blur-3xl rounded-full -mr-20 -mt-20"></div>
+<div class="absolute bottom-0 left-0 w-64 h-64 bg-secondary/20 blur-3xl rounded-full -ml-20 -mb-20"></div>
+<h2 class="text-5xl font-black mb-8 relative z-10 tracking-tighter">¿Listo para la aventura?</h2>
+<p class="text-xl opacity-80 mb-12 relative z-10 max-w-2xl mx-auto">Vení a conocer nuestras instalaciones. El lugar donde la diversión no tiene límites.</p>
+<div class="flex flex-col sm:flex-row gap-4 justify-center relative z-10">
+<button class="bg-primary text-white px-10 py-4 rounded-full font-bold text-lg hover:scale-105 transition-transform">Agendar Visita</button>
+<button class="bg-white/10 backdrop-blur-md text-white border border-white/20 px-10 py-4 rounded-full font-bold text-lg hover:bg-white/20 transition-all">Ver Tarifas</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-slate-50 dark:bg-slate-950 w-full py-12 border-t border-slate-200/50">
+<div class="max-w-7xl mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex flex-col items-center md:items-start gap-2">
+<span class="text-lg font-bold text-slate-900">Lo de Juan</span>
+<p class="font-manrope text-sm text-slate-500">© 2024 Lo de Juan. Todos los derechos reservados.</p>
+</div>
+<div class="flex gap-8">
+<a class="font-manrope text-sm text-slate-500 hover:text-[#b7102a] transition-colors hover:underline decoration-[#b7102a] underline-offset-4" href="#">Instagram</a>
+<a class="font-manrope text-sm text-slate-500 hover:text-[#b7102a] transition-colors hover:underline decoration-[#b7102a] underline-offset-4" href="#">WhatsApp</a>
+<a class="font-manrope text-sm text-slate-500 hover:text-[#b7102a] transition-colors hover:underline decoration-[#b7102a] underline-offset-4" href="#">Facebook</a>
+<a class="font-manrope text-sm text-slate-500 hover:text-[#b7102a] transition-colors hover:underline decoration-[#b7102a] underline-offset-4" href="#">Ubicación</a>
+</div>
+</div>
+</footer>
+</body></html>

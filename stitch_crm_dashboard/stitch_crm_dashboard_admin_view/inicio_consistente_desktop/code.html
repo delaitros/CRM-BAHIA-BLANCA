@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lo de Juan | Salón de Eventos y Juegos Modernos</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "tertiary-fixed": "#ffdea9",
+                        "on-primary-fixed": "#410007",
+                        "error": "#ba1a1a",
+                        "surface": "#f8f9fa",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed-variant": "#30476a",
+                        "secondary-fixed": "#d5e3ff",
+                        "inverse-surface": "#2e3132",
+                        "on-tertiary-fixed": "#271900",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed-variant": "#92001c",
+                        "surface-variant": "#e1e3e4",
+                        "outline-variant": "#c1c6d7",
+                        "on-error": "#ffffff",
+                        "on-primary-container": "#fffbff",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-secondary": "#ffffff",
+                        "secondary": "#485f84",
+                        "secondary-container": "#bbd3fd",
+                        "on-secondary-container": "#445a7f",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#ffdad8",
+                        "error-container": "#ffdad6",
+                        "surface-bright": "#f8f9fa",
+                        "on-tertiary-container": "#fffbff",
+                        "surface-container-low": "#f3f4f5",
+                        "on-secondary-fixed": "#001b3c",
+                        "on-surface-variant": "#414755",
+                        "on-error-container": "#93000a",
+                        "background": "#f8f9fa",
+                        "on-surface": "#191c1d",
+                        "secondary-fixed-dim": "#b0c7f1",
+                        "tertiary-fixed-dim": "#ffba27",
+                        "inverse-on-surface": "#f0f1f2",
+                        "primary": "#b7102a",
+                        "surface-tint": "#bb152c",
+                        "on-background": "#191c1d",
+                        "inverse-primary": "#ffb3b1",
+                        "surface-container": "#edeeef",
+                        "outline": "#717786",
+                        "tertiary-container": "#996c00",
+                        "tertiary": "#7a5500",
+                        "surface-container-high": "#e7e8e9",
+                        "on-tertiary-fixed-variant": "#5e4100",
+                        "surface-dim": "#d9dadb",
+                        "primary-fixed-dim": "#ffb3b1",
+                        "primary-container": "#db313f"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .primary-gradient {
+            background: linear-gradient(135deg, #b7102a 0%, #db313f 100%);
+        }
+        .editorial-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface">
+<!-- Top Navigation Shell -->
+<nav class="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-xl shadow-sm dark:shadow-none">
+<div class="flex justify-between items-center px-8 h-20 max-w-7xl mx-auto">
+<div class="text-2xl font-black tracking-tighter text-slate-900 dark:text-slate-50">Lo de Juan</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-[#b7102a] dark:text-[#db313f] border-b-2 border-[#b7102a] pb-1 font-manrope text-sm font-semibold tracking-tight" href="#">Inicio</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors font-manrope text-sm font-semibold tracking-tight" href="#">Espacios</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors font-manrope text-sm font-semibold tracking-tight" href="#">Atracciones</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors font-manrope text-sm font-semibold tracking-tight" href="#">Galería</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors font-manrope text-sm font-semibold tracking-tight" href="#">Contacto</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:opacity-80 transition-opacity p-2 rounded-full">account_circle</button>
+<button class="primary-gradient text-white px-6 py-2.5 rounded-full font-bold text-sm shadow-md active:scale-95 duration-200">Reservar</button>
+</div>
+</div>
+</nav>
+<main class="pt-24">
+<!-- Hero Section -->
+<section class="max-w-7xl mx-auto px-6 py-16 md:py-32">
+<div class="editorial-grid gap-8 items-center">
+<div class="col-span-12 md:col-span-7">
+<span class="text-xs font-bold tracking-[0.2em] uppercase text-primary mb-6 block">Espacios de Diversión Premium</span>
+<h1 class="text-5xl md:text-7xl font-extrabold tracking-tighter leading-[1.1] text-on-surface mb-8">
+                    El lugar donde la <span class="text-primary italic">diversión</span> cobra vida.
+                </h1>
+<p class="text-lg md:text-xl text-on-surface-variant max-w-xl mb-12 leading-relaxed">
+                    Un salón multiespacio diseñado para momentos inolvidables. Con áreas de juego modernas, tecnología de vanguardia y servicio de catering integral para que solo te preocupes de disfrutar.
+                </p>
+<div class="flex flex-wrap gap-4">
+<button class="primary-gradient text-on-primary px-8 py-4 rounded-full font-bold text-lg shadow-lg hover:shadow-xl transition-all">Conocer el Salón</button>
+<button class="bg-surface-container-high text-on-surface px-8 py-4 rounded-full font-bold text-lg hover:bg-surface-container-highest transition-all">Ver Galería</button>
+</div>
+</div>
+<div class="col-span-12 md:col-span-5 relative">
+<div class="aspect-[4/5] rounded-[2.5rem] overflow-hidden shadow-2xl bg-surface-container">
+<img alt="Salón de eventos moderno con iluminación vibrante y áreas de juego" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCC8kHtx5DMw4o5bN2nPzYtFdWMPh5IXs-1Zd-FjWqdGOYFhAn3ewCgRuOXK9ii1-ts_U_pkkBpajjw6yxFVVOLQhFB9Inthto8ikzXWgdD4IuUo9tuXM4kgThZfA1g6t0Uqdg_ghWx_32rIzrH-uBrcmTA52L0jE7CI5WsFDqWOmqaQMSaL6VZwI-C7ThWV8ixH_2k1JwhjP5ILMzi2F4LVIA3uQpcpinWs2LyyidNgTB2Rf5B4y-MOwJgGbr-kLqMhKuPwnPY6HFB"/>
+</div>
+<!-- Decorative Element -->
+<div class="absolute -bottom-6 -left-6 w-32 h-32 bg-tertiary-fixed rounded-full -z-10 opacity-50 blur-2xl"></div>
+</div>
+</div>
+</section>
+<!-- Attraction Selection -->
+<section class="bg-surface-container-low py-24 md:py-32 overflow-hidden">
+<div class="max-w-7xl mx-auto px-6">
+<div class="mb-20 text-center md:text-left">
+<h2 class="text-xs font-bold tracking-[0.2em] uppercase text-primary mb-4">Atracciones Principales</h2>
+<h3 class="text-4xl md:text-5xl font-black tracking-tight">Diversión sin límites en cada rincón.</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Peloteros -->
+<div class="group bg-surface-container-lowest rounded-[2rem] p-8 flex flex-col h-full hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2">
+<div class="aspect-video rounded-xl overflow-hidden mb-8">
+<img alt="Pelotero moderno y limpio" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgn6h8DDIsj4Y5bQKx5YbLBw05CsZJ32IhN1ia5lwtHmHdEpfMW7OINnO-m3gNaNOiRo36RUjZWniamT_J_kfEyMXXuJm9MZdTK97_LgJJUhp17puqXITQGUDJ-0TXhdx2Ydd6AvvxkKzZcL0aXHbnEsKB6TMEyxdaw_bmbxdrVgD9eHfTdM2-48gNFqCpfCoBDt3FlSCFhHHP3_ZUyl21Yf23w-9uhDk9nEQPRo8RWRzkoW7-qe1C6OK6ji9DO8BLvHnylKMwllhW"/>
+</div>
+<div class="w-16 h-16 bg-secondary-container text-secondary flex items-center justify-center rounded-2xl mb-6">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">toys</span>
+</div>
+<h4 class="text-2xl font-bold mb-4">Peloteros</h4>
+<p class="text-on-surface-variant mb-8 leading-relaxed">Estructuras de juego seguras y modernas, con limpieza garantizada y diseño minimalista para la mejor experiencia.</p>
+<div class="mt-auto flex items-center gap-2 text-primary font-bold group-hover:gap-4 transition-all">
+<span>Ver más detalles</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</div>
+</div>
+<!-- Juegos con Agua -->
+<div class="group primary-gradient rounded-[2rem] p-8 flex flex-col h-full text-white shadow-2xl transform md:-translate-y-8">
+<div class="aspect-video rounded-xl overflow-hidden mb-8 bg-white/10">
+<img alt="Área de juegos con agua interactivos" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrVTkwNw77u3WLiJUStMFG63h3QcaDl4cxVuNW0sDKoVFp-k23ED-Zt9b_IHviEYa66FQiKNChXgborlcxdwXOSJEJANNf6Ry1qhBSpoLFe5prVb3eG1HKROOGESEDxFm0EHzhIQdF0LNiTvMfFskiREhkG9KngSiKLyzGw1hl-Zp1F5exbGoz7VV7x-xWXPcl78IB7yLjwVq1HJ7ZsWCzwSiZn9eeHtkhnrCuYafYjuURSEMDtDeRR9AO2lRlDsbb7g37W2c51bhg"/>
+</div>
+<div class="w-16 h-16 bg-white/20 backdrop-blur-md text-white flex items-center justify-center rounded-2xl mb-6">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">water_drop</span>
+</div>
+<h4 class="text-2xl font-bold mb-4">Juegos con Agua</h4>
+<p class="text-white/80 mb-8 leading-relaxed">Estaciones interactivas y refrescantes, perfectas para eventos de verano con total seguridad y supervisión constante.</p>
+<div class="mt-auto flex items-center gap-2 font-bold group-hover:gap-4 transition-all">
+<span>Explorar área</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</div>
+</div>
+<!-- Circuito de Juegos -->
+<div class="group bg-surface-container-lowest rounded-[2rem] p-8 flex flex-col h-full hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2">
+<div class="aspect-video rounded-xl overflow-hidden mb-8">
+<img alt="Circuito de juegos de aventura para niños" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdGWzWjaSMyyf7SwNpdU_9F2b2I2AFVXtBtCWvwB4SlBeT4h8zf58Zjj0dmWWIwE_Lvbn43FOrASqanc1V0l6IRsOem74tYyw8RUy-geS6DAo8Ctnm60Q3mkFtIX7IeAjHSFYgHoGdsbMEdJhgnzV9AlHDXY7Gl56FvqOHpBds83PNieIMrKe1d6J2Wb3mWW7eUyAut6Nr3uXtbQ3pAESfk0kUcSEVZ84-JXMIHskBgkPQCLSgWcObYNR1enM3pfwB5EGLP5isNbjF"/>
+</div>
+<div class="w-16 h-16 bg-tertiary-fixed text-tertiary flex items-center justify-center rounded-2xl mb-6">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">directions_run</span>
+</div>
+<h4 class="text-2xl font-bold mb-4">Circuito de Juegos</h4>
+<p class="text-on-surface-variant mb-8 leading-relaxed">Desafíos físicos y de destreza integrados en un circuito dinámico que fomenta la alegría y el movimiento.</p>
+<div class="mt-auto flex items-center gap-2 text-primary font-bold group-hover:gap-4 transition-all">
+<span>Ver circuito</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Services Section -->
+<section class="py-24 md:py-32">
+<div class="max-w-7xl mx-auto px-6">
+<div class="editorial-grid gap-12">
+<div class="col-span-12 md:col-span-5">
+<h2 class="text-4xl md:text-5xl font-black tracking-tighter leading-tight mb-8">Mucho más que un espacio de juego.</h2>
+<p class="text-on-surface-variant text-lg leading-relaxed mb-8">Complementamos nuestras increíbles instalaciones con servicios integrales para que tu evento sea perfecto y libre de preocupaciones.</p>
+<div class="space-y-6">
+<div class="flex items-center gap-4 p-4 rounded-2xl bg-surface-container border-l-4 border-primary">
+<span class="material-symbols-outlined text-primary">restaurant</span>
+<div>
+<p class="text-sm font-bold">Catering General</p>
+<p class="text-xs text-on-surface-variant">Opciones gastronómicas variadas y frescas para invitados.</p>
+</div>
+</div>
+<div class="flex items-center gap-4 p-4 rounded-2xl bg-surface-container">
+<span class="material-symbols-outlined text-secondary">celebration</span>
+<div>
+<p class="text-sm font-bold">Fiestas de 15</p>
+<p class="text-xs text-on-surface-variant">Ambiente moderno y sofisticado para adolescentes.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="col-span-12 md:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-8">
+<div class="rounded-[2rem] overflow-hidden shadow-lg h-64">
+<img alt="Interior moderno del salón" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsYlzhDcBmhOFRYGc16xp7sPA6gMmzCA4F1K1fuKlisOtZ3KTrEuJNktPNqrjDU_L9G1u1ZsHoqgMH0qXtKoF5zAdNTRG8aRG65cK4AhcDoqjAHCpiQDD3_SXvmZ1B1HTwzpr4WFaEeO3fDCXiqmFU7tyKaSTABM464bvvz7BowBACMWvxn0B-VVhxgOrtCLeZRJhec2Vh2vPrz6GhHYMzQXGZUFdfJCwibrEvRlzEyWzQwOx1qfgmibJwFgR_kP77Kz2RTmYA0shO"/>
+</div>
+<div class="rounded-[2rem] overflow-hidden shadow-lg h-64 sm:mt-12">
+<img alt="Celebración de 15 años moderna" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfHKUsA8OZuxEVD-r5wWt1VD78yUXQHZPgrbObO5pSZ388dty-VgGG54ktP7xEcRPJGLQ8oCGOs8Ui9x-uY688GczRVRgveY0EwvHZTnOx4Bl-RYobcjjNIhRALks-FNImKODrbqXr3z48gKwLlSn8KTX6jDYCZCrUUYwdHcMlnGWJNXhQb4PUIDgN-m7IhVSHhKxguVG8JXx6PNKJlp1RAZ1yuEbB-Y99QNCSwaUtnEHuUxXN7D1DdF2O7TAzZ5D61jS8c-7c_QTu"/>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- CTA Section -->
+<section class="max-w-7xl mx-auto px-6 mb-24">
+<div class="bg-inverse-surface text-inverse-on-surface rounded-[3rem] p-12 md:p-24 text-center overflow-hidden relative">
+<div class="relative z-10">
+<h2 class="text-4xl md:text-6xl font-black mb-8 tracking-tighter">¿Listo para una experiencia <br class="hidden md:block"/> inolvidable?</h2>
+<p class="text-xl text-slate-400 mb-12 max-w-2xl mx-auto">Reserva hoy tu fecha y asegura el mejor espacio de juegos y eventos de la ciudad. Sin complicaciones, solo diversión pura.</p>
+<button class="primary-gradient text-white px-10 py-5 rounded-full font-bold text-xl shadow-2xl hover:scale-105 transition-transform">Consultar Disponibilidad</button>
+</div>
+<!-- Abstract Brand Dots Background -->
+<div class="absolute top-10 left-10 w-4 h-4 rounded-full bg-primary blur-sm opacity-60"></div>
+<div class="absolute bottom-20 right-20 w-8 h-8 rounded-full bg-tertiary blur-md opacity-40"></div>
+<div class="absolute top-1/2 left-1/4 w-3 h-3 rounded-full bg-secondary-fixed blur-sm opacity-50"></div>
+</div>
+</section>
+</main>
+<!-- Footer Shell -->
+<footer class="w-full py-12 px-6 mt-auto bg-white border-t border-slate-100">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="font-manrope text-xs tracking-widest uppercase text-slate-400">
+            © 2024 Lo de Juan. Espacios que Inspiran Alegría.
+        </div>
+<div class="flex gap-8">
+<a class="font-manrope text-xs tracking-widest uppercase text-slate-400 hover:text-red-500 transition-colors" href="#">Privacidad</a>
+<a class="font-manrope text-xs tracking-widest uppercase text-slate-400 hover:text-red-500 transition-colors" href="#">Términos</a>
+<a class="font-manrope text-xs tracking-widest uppercase text-slate-400 hover:text-red-500 transition-colors" href="#">Instagram</a>
+<a class="font-manrope text-xs tracking-widest uppercase text-slate-400 hover:text-red-500 transition-colors" href="#">Ubicación</a>
+</div>
+</div>
+</footer>
+<!-- Scroll Progress Dot Indicator -->
+<div class="fixed bottom-8 right-8 flex flex-col gap-2 z-50">
+<div class="w-2 h-2 rounded-full bg-primary shadow-sm"></div>
+<div class="w-2 h-2 rounded-full bg-tertiary opacity-30"></div>
+<div class="w-2 h-2 rounded-full bg-secondary opacity-30"></div>
+<div class="w-2 h-2 rounded-full bg-blue-500 opacity-30"></div>
+</div>
+</body></html>

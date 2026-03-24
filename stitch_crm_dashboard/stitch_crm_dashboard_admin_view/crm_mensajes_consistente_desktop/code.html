@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lo de Juan CRM - Mensajes</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "tertiary-fixed": "#ffdea9",
+                        "on-primary-fixed": "#410007",
+                        "error": "#ba1a1a",
+                        "surface": "#f8f9fa",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed-variant": "#30476a",
+                        "secondary-fixed": "#d5e3ff",
+                        "inverse-surface": "#2e3132",
+                        "on-tertiary-fixed": "#271900",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed-variant": "#92001c",
+                        "surface-variant": "#e1e3e4",
+                        "outline-variant": "#c1c6d7",
+                        "on-error": "#ffffff",
+                        "on-primary-container": "#fffbff",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-secondary": "#ffffff",
+                        "secondary": "#485f84",
+                        "secondary-container": "#bbd3fd",
+                        "on-secondary-container": "#445a7f",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#ffdad8",
+                        "error-container": "#ffdad6",
+                        "surface-bright": "#f8f9fa",
+                        "on-tertiary-container": "#fffbff",
+                        "surface-container-low": "#f3f4f5",
+                        "on-secondary-fixed": "#001b3c",
+                        "on-surface-variant": "#414755",
+                        "on-error-container": "#93000a",
+                        "background": "#f8f9fa",
+                        "on-surface": "#191c1d",
+                        "secondary-fixed-dim": "#b0c7f1",
+                        "tertiary-fixed-dim": "#ffba27",
+                        "inverse-on-surface": "#f0f1f2",
+                        "primary": "#b7102a",
+                        "surface-tint": "#bb152c",
+                        "on-background": "#191c1d",
+                        "inverse-primary": "#ffb3b1",
+                        "surface-container": "#edeeef",
+                        "outline": "#717786",
+                        "tertiary-container": "#996c00",
+                        "tertiary": "#7a5500",
+                        "surface-container-high": "#e7e8e9",
+                        "on-tertiary-fixed-variant": "#5e4100",
+                        "surface-dim": "#d9dadb",
+                        "primary-fixed-dim": "#ffb3b1",
+                        "primary-container": "#db313f"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Manrope', sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface overflow-hidden">
+<!-- Sidebar Navigation Shell -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-slate-50 dark:bg-slate-950 flex flex-col p-4 gap-2 z-20 border-r-0">
+<div class="text-lg font-bold text-slate-900 dark:text-slate-100 px-4 mb-4">Juan's Dashboard</div>
+<div class="flex items-center gap-4 px-4 py-3 mb-6">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden">
+<img alt="Admin Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCp2xYCBwGE4EjlZVuRpeUxhgyH3e-gHjlHHo9uOHoBYqQMEGgu4rxg_7Ay21Dp8_odNeC-Vr0g1IWttMK1zZws_eUtD6_HoUJ8Tq2UoZ3g0F8EhD_ROxBPxTuvYrrIs6QQtS5fBdPakpmkoG7rS1h7UG0RdmSlLukFmr0XD0vyl3-h7KNkoDCyN5Y8IXzr4kzPlCJ91xug0vkRWJetVv85DDyxZnZP-nsNIy7Sy-z0840GbxJOyjh0AN7VYjARCrGq7Pozb1ivSw3l"/>
+</div>
+<div>
+<p class="font-manrope text-sm font-medium text-on-surface">Panel de Juan</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Gerente de Catering</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 bg-white dark:bg-slate-900 text-[#b7102a] shadow-sm rounded-xl px-4 py-3 group hover:translate-x-1 transition-transform duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="forum">forum</span>
+<span class="font-manrope text-sm font-medium">Mensajes</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-900/50 rounded-xl hover:translate-x-1 transition-transform duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="font-manrope text-sm font-medium">Calendario</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-900/50 rounded-xl hover:translate-x-1 transition-transform duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="event">event</span>
+<span class="font-manrope text-sm font-medium">Eventos</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-900/50 rounded-xl hover:translate-x-1 transition-transform duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-manrope text-sm font-medium">Inventario</span>
+</a>
+</nav>
+<button class="bg-gradient-to-br from-primary to-primary-container text-white py-3 rounded-xl font-bold text-sm shadow-md mb-4 active:scale-95 transition-transform">
+            Nuevo Evento
+        </button>
+<div class="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-1">
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-900/50 rounded-xl hover:translate-x-1 transition-transform duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-manrope text-sm font-medium">Configuración</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-900/50 rounded-xl hover:translate-x-1 transition-transform duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-manrope text-sm font-medium">Cerrar Sesión</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 h-screen flex flex-col bg-surface">
+<!-- Top Bar -->
+<header class="h-16 flex items-center justify-between px-8 bg-surface-container-low/50 backdrop-blur-md sticky top-0 z-10">
+<h1 class="text-lg font-extrabold tracking-tight text-on-surface">Bandeja de Entrada Omnicanal</h1>
+<div class="flex items-center gap-4">
+<div class="relative">
+<span class="material-symbols-outlined text-on-surface-variant p-2 hover:bg-surface-container-high rounded-full cursor-pointer transition-colors" data-icon="search">search</span>
+</div>
+<div class="flex items-center gap-2 bg-secondary-container px-3 py-1.5 rounded-full">
+<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+<span class="text-xs font-bold text-on-secondary-container tracking-wider uppercase">En Vivo</span>
+</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- Messages List (Left Sidebar) -->
+<section class="w-[380px] border-r border-outline-variant/10 bg-surface flex flex-col">
+<!-- Filters -->
+<div class="p-4 flex gap-2 overflow-x-auto no-scrollbar">
+<button class="px-4 py-2 rounded-full bg-primary text-on-primary text-xs font-bold whitespace-nowrap">Todos los Chats</button>
+<button class="px-4 py-2 rounded-full bg-surface-container-high text-on-surface-variant text-xs font-bold whitespace-nowrap hover:bg-surface-container-highest transition-colors">WhatsApp</button>
+<button class="px-4 py-2 rounded-full bg-surface-container-high text-on-surface-variant text-xs font-bold whitespace-nowrap hover:bg-surface-container-highest transition-colors">Instagram</button>
+<button class="px-4 py-2 rounded-full bg-surface-container-high text-on-surface-variant text-xs font-bold whitespace-nowrap hover:bg-surface-container-highest transition-colors">Facebook</button>
+</div>
+<div class="flex-1 overflow-y-auto no-scrollbar space-y-1 p-2">
+<!-- Active Chat Card -->
+<div class="p-4 rounded-2xl bg-white shadow-sm ring-1 ring-outline-variant/5 flex gap-4 cursor-pointer relative overflow-hidden group">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<div class="relative">
+<img class="w-12 h-12 rounded-full object-cover" data-alt="Client Profile Sofia" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCIxQdQs0rJdvDvRltshpdw0MifvOblfeyLHslM3nIC9T4QXJO5jMpHDj8jv7OYXFzCKx1bTmBeMLd7SKssVFtPvTwZmblwKFGEHxsGxmYwNnFr24UQmfylRRGrVjV6qEq2B1uJCJ84zlff1yPrVmtFiBq85YwAzkI6ytMB4z8X51yQPZypxAvHwiha8MEFj4-I2LQOQtHJ_1pMVK0w6lbpYba1zI9R-oGIPj76DnIxJekwvOVfr-ssUWY6U6FhKNQY2ikAXr9lC7E"/>
+<div class="absolute -bottom-1 -right-1 bg-green-500 w-4 h-4 rounded-full border-2 border-white flex items-center justify-center">
+<span class="text-[8px] text-white material-symbols-outlined leading-none" data-icon="chat" style="font-variation-settings: 'FILL' 1;">chat</span>
+</div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-on-surface truncate">Sofia Rodriguez</h3>
+<span class="text-[10px] font-bold text-primary">hace 2m</span>
+</div>
+<p class="text-sm text-on-surface-variant truncate font-medium">Me encantaría reservar el menú degustación para 20 personas...</p>
+<div class="mt-2">
+<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-error-container text-on-error-container uppercase tracking-wider">Pendiente</span>
+</div>
+</div>
+</div>
+<!-- Inactive Chat Card -->
+<div class="p-4 rounded-2xl hover:bg-surface-container-low transition-colors flex gap-4 cursor-pointer">
+<div class="relative">
+<img class="w-12 h-12 rounded-full object-cover grayscale opacity-70" data-alt="Client Profile Marco" src="https://lh3.googleusercontent.com/aida-public/AB6AXuADiJbeVbSKhMqwkMF4kyypWhLsa5XELHiM2Qnh6J9UrKxRNiNMM2dmKAi8iGut_F4rOBl359tDZ7FgK44z2ekuuZIwn-NxFXc3hkT2wzyFthZoFHOe-52JMk7SPgm4ojaChYxNi-y48uiI4IdC2UmvSPhPnk1dTTAUCSqT4Q1B_NsfqW8y4LFQRgnoSH5r0TinJ3kuxuju0WYKYXPD-ExZs_ZoNGgENFttvGg3r4Zx8u5HopNPgJlnkLGvKgZdbPal9IKAzinsyKl-"/>
+<div class="absolute -bottom-1 -right-1 bg-blue-500 w-4 h-4 rounded-full border-2 border-white flex items-center justify-center">
+<span class="text-[8px] text-white material-symbols-outlined leading-none" data-icon="alternate_email">alternate_email</span>
+</div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-on-surface-variant truncate">Marco Valenzuela</h3>
+<span class="text-[10px] text-outline">hace 1h</span>
+</div>
+<p class="text-sm text-outline truncate">¡Genial, nos vemos entonces!</p>
+<div class="mt-2">
+<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-secondary-container text-on-secondary-container uppercase tracking-wider">Respondido</span>
+</div>
+</div>
+</div>
+<!-- Another Chat Card -->
+<div class="p-4 rounded-2xl hover:bg-surface-container-low transition-colors flex gap-4 cursor-pointer">
+<div class="relative">
+<img class="w-12 h-12 rounded-full object-cover grayscale opacity-70" data-alt="Client Profile Elena" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB445IO1oVQLwYxEUq6MabBDZKjBHUfU8l-gbd8ij5L6Xq_-WGAkVQpAi_UdxDzEnUSBXqUh527B1wJLCqd5hboOlHyB2eiaS0AabMGtRbdVo7S9B-ETBvwJIA28gUFR5WbqpMBocym7baWYJGDSvyH6idA2Vrz_VLdWb6IX-fqN3j3RNARQCeWu-MmABwRdAlt9zHKr-HirQY3qh1ttofIo-iz0-mWZMvhei5ZorGOFbkU6Jmn75I2brj1ZNPv0G5I1ebB4aeh2Jsh"/>
+<div class="absolute -bottom-1 -right-1 bg-red-400 w-4 h-4 rounded-full border-2 border-white flex items-center justify-center">
+<span class="text-[8px] text-white material-symbols-outlined leading-none" data-icon="share">share</span>
+</div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-on-surface-variant truncate">Elena Gilbert</h3>
+<span class="text-[10px] text-outline">hace 4h</span>
+</div>
+<p class="text-sm text-outline truncate">¿El menú incluye opciones veganas?</p>
+<div class="mt-2">
+<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-secondary-container text-on-secondary-container uppercase tracking-wider">Respondido</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Chat Window (Right Content) -->
+<section class="flex-1 flex flex-col bg-surface-container-lowest">
+<!-- Chat Header -->
+<div class="p-4 border-b border-outline-variant/10 flex justify-between items-center bg-white">
+<div class="flex items-center gap-4">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="Active Chat Sofia" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJ0IHMHfOIKbr_PgUEmcQHOeW8qk3xMOBsb6D9FMYJpWVcF-1x3ghIRnx1tHeD0LraPCk-HKddKftdcmP5n5DT1YE5c8uvjVnuokcDlXz7wGV8PFM1RYdgu0OJh_ME7TqtsleD9COA6aulfXN6bwRhJ2EcqWm-M9p-OFFqmbx32-v51qmPx3dIw2dNqWanPFx3l7XoXQcsbZxBKPEWBabfm4-0ChDZm-yTVVN5YltDrQAilxzK93cTnkTSTR1XmpkGsc9R4i4istiI"/>
+<div>
+<h2 class="font-extrabold text-on-surface">Sofia Rodriguez</h2>
+<p class="text-xs text-green-600 font-bold">En línea desde Instagram</p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="p-2 hover:bg-surface-container-low rounded-full transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="call">call</span>
+</button>
+<button class="p-2 hover:bg-surface-container-low rounded-full transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="videocam">videocam</span>
+</button>
+<button class="p-2 hover:bg-surface-container-low rounded-full transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Chat Body -->
+<div class="flex-1 overflow-y-auto p-6 space-y-6 no-scrollbar">
+<!-- Date separator -->
+<div class="flex justify-center">
+<span class="text-[10px] font-black uppercase tracking-[0.2em] text-outline bg-surface px-4 py-1 rounded-full">Hoy</span>
+</div>
+<!-- Client Message -->
+<div class="flex items-end gap-3 max-w-[80%]">
+<div class="bg-surface-container-low p-4 rounded-2xl rounded-bl-none">
+<p class="text-sm text-on-surface leading-relaxed">¡Hola Juan! Vi tu menú de catering en Instagram. Me encantaría reservar el menú degustación para 20 personas el 15 de agosto. ¿Es posible?</p>
+<span class="text-[9px] text-outline mt-2 block font-bold">14:02 PM</span>
+</div>
+</div>
+<!-- Admin Message -->
+<div class="flex items-end gap-3 max-w-[80%] ml-auto flex-row-reverse">
+<div class="bg-gradient-to-br from-primary to-primary-container p-4 rounded-2xl rounded-br-none shadow-lg shadow-primary/10">
+<p class="text-sm text-on-primary leading-relaxed">¡Hola Sofia! Absolutamente, esa fecha está disponible actualmente. Para 20 invitados, recomendamos nuestra "Selección Signature" que incluye 4 platos.</p>
+<span class="text-[9px] text-on-primary/70 mt-2 block font-bold text-right">14:05 PM</span>
+</div>
+</div>
+<!-- Client Message with Image -->
+<div class="flex items-end gap-3 max-w-[80%]">
+<div class="bg-surface-container-low p-2 rounded-2xl rounded-bl-none overflow-hidden">
+<div class="rounded-xl overflow-hidden mb-2">
+<img class="w-full h-48 object-cover" data-alt="Table Setup Reference" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqMtbcdKCZSryxUs-hz6yHi5-9loQSVCSbDnA5e8_atKuVzVhw3Abvk62ze93EuqYdldJH4ufMR2lIL5Be5DXUrcE6N7aW_6_6V5DW-44-LIu8qyN44R7n1C8SMd_p7O8P6gOpqRrN65LyWV2WvfRjRKvYTPAcpUqY-YC2z5j9aPBBDIjESVEvLy-VVNNiugOXTBZo63T7UkeQQBIQvsLwkbySWu8TaMSKgvGXODApeJCZrLY-5dLV2_4ysJyguNqpeOb3FDnDvYcl"/>
+</div>
+<div class="px-2 pb-2">
+<p class="text-sm text-on-surface leading-relaxed">¿Podríamos hacer un montaje de mesa similar a este? Nos encanta el estilo minimalista.</p>
+<span class="text-[9px] text-outline mt-2 block font-bold">14:08 PM</span>
+</div>
+</div>
+</div>
+<!-- Brand Dot Scroll Progress Visualization (Design System) -->
+<div class="fixed bottom-24 right-8 flex flex-col gap-2">
+<div class="w-2 h-2 rounded-full bg-primary ring-4 ring-primary/10"></div>
+<div class="w-2 h-2 rounded-full bg-yellow-400 opacity-50"></div>
+<div class="w-2 h-2 rounded-full bg-blue-500 opacity-50"></div>
+<div class="w-2 h-2 rounded-full bg-green-500 opacity-50"></div>
+</div>
+</div>
+<!-- Chat Input Area -->
+<div class="p-6 bg-white border-t border-outline-variant/10">
+<div class="flex items-center gap-3 bg-surface-container-low rounded-2xl p-2 pl-4">
+<button class="p-2 hover:bg-surface-container-high rounded-xl transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+<input class="flex-1 bg-transparent border-none focus:ring-0 text-sm font-medium placeholder:text-outline" placeholder="Escribe tu mensaje..." type="text"/>
+<button class="p-2 hover:bg-surface-container-high rounded-xl transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="mood">mood</span>
+</button>
+<button class="bg-primary text-on-primary p-3 rounded-xl hover:shadow-lg transition-all active:scale-95 flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="send" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+</div>
+<div class="mt-4 flex gap-4 justify-center">
+<button class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="auto_awesome">auto_awesome</span>
+                            Generar respuesta con IA
+                        </button>
+<button class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="history">history</span>
+                            Historial de Catering
+                        </button>
+</div>
+</div>
+</section>
+</div>
+</main>
+</body></html>
