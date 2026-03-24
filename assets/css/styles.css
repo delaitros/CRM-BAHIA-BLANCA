@@ -1,0 +1,122 @@
+/* ============================================
+   Lo de Juan — Shared Styles
+   ============================================ */
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Manrope', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Glass Navigation */
+.glass-nav {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Primary Gradient */
+.primary-gradient {
+  background: linear-gradient(135deg, #b7102a 0%, #db313f 100%);
+}
+
+/* Editorial Grid */
+.editorial-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+}
+
+/* Calendar Grid */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+/* Editorial Shadow */
+.editorial-shadow {
+  box-shadow: 0px 12px 30px rgba(0, 0, 0, 0.06);
+}
+
+/* Brand Dots */
+.brand-dot-red { background-color: #b7102a; }
+.brand-dot-yellow { background-color: #ffba27; }
+.brand-dot-blue { background-color: #485f84; }
+.brand-dot-green { background-color: #2e7d32; }
+
+/* No scrollbar */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.2); }
+
+/* Mobile menu */
+.mobile-menu {
+  position: fixed; top: 0; right: 0; bottom: 0;
+  width: 80%; max-width: 360px;
+  background: #fff; z-index: 2000;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  box-shadow: -4px 0 30px rgba(0,0,0,0.1);
+  overflow-y: auto;
+}
+.mobile-menu.active { transform: translateX(0); }
+.mobile-menu-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 1999; opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.mobile-menu-overlay.active { opacity: 1; pointer-events: all; }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 2rem; left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #2e3132; color: white;
+  padding: 1rem 2rem; border-radius: 1rem;
+  font-size: 0.875rem; font-weight: 600;
+  z-index: 9999; transition: transform 0.3s ease;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.success { background: #2e7d32; }
+.toast.error { background: #b7102a; }
+
+/* Modal */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 5000; display: flex;
+  align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.modal-overlay.active { opacity: 1; pointer-events: all; }
+.modal-content {
+  background: #fff; border-radius: 1.5rem;
+  padding: 2rem; max-width: 520px; width: 90%;
+  max-height: 90vh; overflow-y: auto;
+  transform: scale(0.95); transition: transform 0.3s ease;
+}
+.modal-overlay.active .modal-content { transform: scale(1); }
+
+/* Fade animation */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeInUp 0.6s ease forwards; }
+.fade-delay-1 { animation-delay: 0.1s; opacity: 0; }
+.fade-delay-2 { animation-delay: 0.2s; opacity: 0; }
+.fade-delay-3 { animation-delay: 0.3s; opacity: 0; }
