@@ -1,0 +1,21 @@
+# Environment
+.env
+
+# Docker volumes
+postgres_data/
+redis_data/
+n8n_data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Node
+node_modules/
