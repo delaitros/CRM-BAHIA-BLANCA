@@ -1,0 +1,463 @@
+{
+  "name": "Lo de Juan - Agente IA Chatwoot",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "chatwoot-webhook",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Chatwoot",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [220, 300],
+      "webhookId": "chatwoot-webhook"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "condition-message-type",
+              "leftValue": "={{ $json.event }}",
+              "rightValue": "message_created",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "condition-not-bot",
+              "leftValue": "={{ $json.message_type }}",
+              "rightValue": "incoming",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "filter-messages",
+      "name": "Filtrar Mensajes Entrantes",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2,
+      "position": [440, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Webhook Chatwoot').item.json.account.id ? '' : '' }}{{ $env.CHATWOOT_URL || 'http://chatwoot-web:3000' }}/api/v1/accounts/{{ $env.CHATWOOT_ACCOUNT_ID || '1' }}/conversations/{{ $('Webhook Chatwoot').item.json.conversation.id }}/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": []
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": false
+            }
+          }
+        }
+      },
+      "id": "get-history",
+      "name": "Obtener Historial",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [660, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "chatwoot-api-key",
+          "name": "Chatwoot API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "assign-message",
+              "name": "customer_message",
+              "value": "={{ $('Webhook Chatwoot').item.json.content }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-contact",
+              "name": "contact_name",
+              "value": "={{ $('Webhook Chatwoot').item.json.sender?.name || 'Cliente' }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-channel",
+              "name": "channel",
+              "value": "={{ $('Webhook Chatwoot').item.json.conversation?.channel || 'web' }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-conv-id",
+              "name": "conversation_id",
+              "value": "={{ $('Webhook Chatwoot').item.json.conversation.id }}",
+              "type": "number"
+            },
+            {
+              "id": "assign-history",
+              "name": "chat_history",
+              "value": "={{ JSON.stringify(($('Obtener Historial').item.json.payload || []).slice(-10).map(m => ({ role: m.message_type === 0 ? 'user' : 'assistant', content: m.content || '' }))) }}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "prepare-context",
+      "name": "Preparar Contexto",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [880, 300]
+    },
+    {
+      "parameters": {
+        "model": "claude-sonnet-4-20250514",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "Sos el asistente virtual de \"Lo de Juan\", un servicio de catering y eventos en Bahía Blanca, Argentina.\n\n## INFORMACIÓN DEL NEGOCIO\n- Nombre: Lo de Juan\n- Rubro: Catering y organización de eventos\n- Ubicación: Bahía Blanca, Buenos Aires, Argentina\n- Horario de atención: Lunes a Viernes 9:00-18:00, Sábados 9:00-13:00\n- Contacto: Se proporciona por los canales de mensajería\n\n## SERVICIOS Y PRECIOS BASE\n1. **Catering Básico** (hasta 50 personas): desde $45.000 por persona\n   - Incluye: entrada, plato principal, postre, bebidas sin alcohol\n2. **Catering Premium** (hasta 100 personas): desde $65.000 por persona\n   - Incluye: 2 entradas, plato principal, postre, bebidas con y sin alcohol, mesa dulce\n3. **Catering Deluxe** (hasta 200 personas): desde $85.000 por persona\n   - Incluye: coctelería de bienvenida, 3 entradas, 2 platos principales, postre, barra libre, mesa dulce, candy bar\n4. **Evento Corporativo**: desde $55.000 por persona\n   - Incluye: coffee break, almuerzo/cena, equipamiento audiovisual\n5. **Espacios/Salón**: consultar disponibilidad\n\n## INSTRUCCIONES\n- Respondé siempre en español rioplatense (vos, ustedes)\n- Sé amable, profesional y conciso\n- Si preguntan por disponibilidad de fechas, indicá que vas a verificar y preguntá la fecha exacta y cantidad de personas\n- Para presupuestos: preguntá tipo de evento, cantidad de personas, fecha deseada y servicios requeridos. Luego armá un presupuesto detallado\n- Si la consulta es compleja o requiere atención personalizada, ofrecé derivar a un agente humano\n- No inventes información que no tengas\n- Usá emojis con moderación (máximo 1-2 por mensaje)\n- Respuestas cortas para WhatsApp/Instagram, más detalladas para web\n\n## FORMATO DE PRESUPUESTO\nCuando armes un presupuesto, usá este formato:\n---\n📋 *Presupuesto Lo de Juan*\n\nEvento: [tipo]\nFecha: [fecha]\nCantidad: [N] personas\n\n[Detalle de items con precios]\n\nSubtotal: $[monto]\nIVA (21%): $[monto]\n*Total: $[monto]*\n\nVigencia: 15 días\n---\n\n## FUNCIONES ESPECIALES\n- Si detectás que el cliente quiere reservar una fecha, respondé con: [VERIFICAR_CALENDARIO: YYYY-MM-DD]\n- Si el cliente pide hablar con una persona, respondé con: [DERIVAR_HUMANO]\n- Si necesitás información que no tenés, respondé con: [CONSULTAR_ADMIN: pregunta]"
+            },
+            {
+              "role": "user",
+              "content": "=Canal: {{ $json.channel }}\nCliente: {{ $json.contact_name }}\nHistorial reciente: {{ $json.chat_history }}\n\nMensaje actual: {{ $json.customer_message }}"
+            }
+          ]
+        },
+        "options": {
+          "maxTokens": 1024,
+          "temperature": 0.7
+        }
+      },
+      "id": "ai-agent",
+      "name": "Agente IA (Claude)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1100, 200],
+      "credentials": {},
+      "notes": "Llamada directa a API de Anthropic. Configurar como HTTP Request con header Authorization."
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "={{ $('Preparar Contexto').item.json.system_prompt }}"
+            },
+            {
+              "role": "user",
+              "content": "=Canal: {{ $('Preparar Contexto').item.json.channel }}\nCliente: {{ $('Preparar Contexto').item.json.contact_name }}\nHistorial reciente: {{ $('Preparar Contexto').item.json.chat_history }}\n\nMensaje actual: {{ $('Preparar Contexto').item.json.customer_message }}"
+            }
+          ]
+        },
+        "options": {
+          "maxTokens": 1024,
+          "temperature": 0.7
+        }
+      },
+      "id": "ai-agent-openai",
+      "name": "Agente IA (OpenAI)",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.4,
+      "position": [1100, 420],
+      "credentials": {
+        "openAiApi": {
+          "id": "openai-key",
+          "name": "OpenAI API Key"
+        }
+      },
+      "notes": "Alternativa con OpenAI GPT-4o-mini"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false
+          },
+          "conditions": [
+            {
+              "id": "check-calendar",
+              "leftValue": "={{ $json.ai_response }}",
+              "rightValue": "VERIFICAR_CALENDARIO",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ]
+        }
+      },
+      "id": "check-actions",
+      "name": "Verificar Acciones Especiales",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1320, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://www.googleapis.com/calendar/v3/calendars/{{ $env.GOOGLE_CALENDAR_ID }}/events",
+        "authentication": "oAuth2",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "timeMin",
+              "value": "={{ $json.requested_date }}T00:00:00-03:00"
+            },
+            {
+              "name": "timeMax",
+              "value": "={{ $json.requested_date }}T23:59:59-03:00"
+            },
+            {
+              "name": "singleEvents",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "google-calendar",
+      "name": "Consultar Google Calendar",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1540, 180],
+      "notes": "Verificar disponibilidad en Google Calendar para la fecha solicitada"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false
+          },
+          "conditions": [
+            {
+              "id": "check-handoff",
+              "leftValue": "={{ $json.ai_response }}",
+              "rightValue": "DERIVAR_HUMANO",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ]
+        }
+      },
+      "id": "check-handoff",
+      "name": "Derivar a Humano?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1320, 500]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.CHATWOOT_URL || 'http://chatwoot-web:3000' }}/api/v1/accounts/{{ $env.CHATWOOT_ACCOUNT_ID || '1' }}/conversations/{{ $('Preparar Contexto').item.json.conversation_id }}/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "content",
+              "value": "={{ $json.final_response }}"
+            },
+            {
+              "name": "message_type",
+              "value": "outgoing"
+            },
+            {
+              "name": "private",
+              "value": "false"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "send-response",
+      "name": "Enviar Respuesta a Chatwoot",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1760, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "chatwoot-api-key",
+          "name": "Chatwoot API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.CHATWOOT_URL || 'http://chatwoot-web:3000' }}/api/v1/accounts/{{ $env.CHATWOOT_ACCOUNT_ID || '1' }}/conversations/{{ $('Preparar Contexto').item.json.conversation_id }}/toggle_status",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "status",
+              "value": "open"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "handoff-human",
+      "name": "Derivar a Agente Humano",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1540, 520],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "chatwoot-api-key",
+          "name": "Chatwoot API Key"
+        }
+      },
+      "notes": "Cambiar status de la conversación a 'open' para que un agente humano la tome"
+    }
+  ],
+  "connections": {
+    "Webhook Chatwoot": {
+      "main": [
+        [
+          {
+            "node": "Filtrar Mensajes Entrantes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtrar Mensajes Entrantes": {
+      "main": [
+        [
+          {
+            "node": "Obtener Historial",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener Historial": {
+      "main": [
+        [
+          {
+            "node": "Preparar Contexto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Contexto": {
+      "main": [
+        [
+          {
+            "node": "Agente IA (Claude)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agente IA (Claude)": {
+      "main": [
+        [
+          {
+            "node": "Verificar Acciones Especiales",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Derivar a Humano?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificar Acciones Especiales": {
+      "main": [
+        [
+          {
+            "node": "Consultar Google Calendar",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Enviar Respuesta a Chatwoot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar Google Calendar": {
+      "main": [
+        [
+          {
+            "node": "Enviar Respuesta a Chatwoot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Derivar a Humano?": {
+      "main": [
+        [
+          {
+            "node": "Derivar a Agente Humano",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Derivar a Agente Humano": {
+      "main": [
+        [
+          {
+            "node": "Enviar Respuesta a Chatwoot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Argentina/Buenos_Aires"
+  },
+  "tags": [
+    {
+      "name": "chatwoot"
+    },
+    {
+      "name": "ai-agent"
+    },
+    {
+      "name": "lo-de-juan"
+    }
+  ]
+}

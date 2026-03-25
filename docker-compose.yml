@@ -1,0 +1,192 @@
+version: '3.8'
+
+# ============================================================
+# Lo de Juan - CRM Bahía Blanca
+# Stack: Chatwoot + n8n + PostgreSQL + Redis
+# ============================================================
+
+x-chatwoot-env: &chatwoot-env
+  RAILS_ENV: production
+  RAILS_LOG_TO_STDOUT: 'true'
+  SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+  FRONTEND_URL: ${CHATWOOT_URL:-http://localhost:3000}
+  # Database
+  POSTGRES_HOST: postgres
+  POSTGRES_PORT: 5432
+  POSTGRES_USERNAME: ${POSTGRES_USER:-chatwoot}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  POSTGRES_DATABASE: chatwoot_production
+  # Redis
+  REDIS_URL: redis://redis:6379/0
+  # Mail (optional)
+  MAILER_SENDER_EMAIL: ${MAILER_SENDER_EMAIL:-noreply@lodejuan.com}
+  SMTP_ADDRESS: ${SMTP_ADDRESS:-}
+  SMTP_PORT: ${SMTP_PORT:-587}
+  SMTP_USERNAME: ${SMTP_USERNAME:-}
+  SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+  SMTP_AUTHENTICATION: ${SMTP_AUTHENTICATION:-plain}
+  SMTP_ENABLE_STARTTLS_AUTO: ${SMTP_ENABLE_STARTTLS_AUTO:-true}
+  # Storage
+  ACTIVE_STORAGE_SERVICE: ${ACTIVE_STORAGE_SERVICE:-local}
+  # Channels
+  WHATSAPP_CLOUD_API_URL: https://graph.facebook.com
+  FB_VERIFY_TOKEN: ${FB_VERIFY_TOKEN:-}
+  FB_APP_SECRET: ${FB_APP_SECRET:-}
+  FB_APP_ID: ${FB_APP_ID:-}
+  IG_VERIFY_TOKEN: ${IG_VERIFY_TOKEN:-}
+
+services:
+  # ── PostgreSQL ────────────────────────────────────────────
+  postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-chatwoot}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: chatwoot_production
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-chatwoot}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - crm-network
+
+  # ── Redis ─────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - crm-network
+
+  # ── Chatwoot Rails (Web) ──────────────────────────────────
+  chatwoot-web:
+    image: chatwoot/chatwoot:latest
+    restart: unless-stopped
+    command: bundle exec rails s -p 3000 -b 0.0.0.0
+    ports:
+      - "${CHATWOOT_PORT:-3000}:3000"
+    environment:
+      <<: *chatwoot-env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - chatwoot_storage:/app/storage
+      - chatwoot_public:/app/public
+    networks:
+      - crm-network
+
+  # ── Chatwoot Sidekiq (Workers) ────────────────────────────
+  chatwoot-worker:
+    image: chatwoot/chatwoot:latest
+    restart: unless-stopped
+    command: bundle exec sidekiq -C config/sidekiq.yml
+    environment:
+      <<: *chatwoot-env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - chatwoot_storage:/app/storage
+    networks:
+      - crm-network
+
+  # ── Chatwoot DB Prepare (init only) ───────────────────────
+  chatwoot-migrate:
+    image: chatwoot/chatwoot:latest
+    command: bundle exec rails db:chatwoot_prepare
+    environment:
+      <<: *chatwoot-env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - crm-network
+
+  # ── n8n (Workflow Automation + AI Agent) ──────────────────
+  n8n:
+    image: n8nio/n8n:latest
+    restart: unless-stopped
+    ports:
+      - "${N8N_PORT:-5678}:5678"
+    environment:
+      # General
+      N8N_HOST: ${N8N_HOST:-localhost}
+      N8N_PORT: 5678
+      N8N_PROTOCOL: ${N8N_PROTOCOL:-http}
+      WEBHOOK_URL: ${N8N_WEBHOOK_URL:-http://localhost:5678}
+      GENERIC_TIMEZONE: America/Argentina/Buenos_Aires
+      TZ: America/Argentina/Buenos_Aires
+      # Database
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_HOST: postgres
+      DB_POSTGRESDB_PORT: 5432
+      DB_POSTGRESDB_USER: ${POSTGRES_USER:-chatwoot}
+      DB_POSTGRESDB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_POSTGRESDB_DATABASE: n8n
+      # Security
+      N8N_BASIC_AUTH_ACTIVE: 'true'
+      N8N_BASIC_AUTH_USER: ${N8N_USER:-admin}
+      N8N_BASIC_AUTH_PASSWORD: ${N8N_PASSWORD}
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
+      # AI API Keys (for workflow nodes)
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./n8n/workflows:/home/node/workflows
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - crm-network
+
+  # ── Nginx (Frontend + Reverse Proxy) ─────────────────────
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-80}:80"
+    volumes:
+      - ./index.html:/usr/share/nginx/html/index.html:ro
+      - ./servicios.html:/usr/share/nginx/html/servicios.html:ro
+      - ./atracciones.html:/usr/share/nginx/html/atracciones.html:ro
+      - ./galeria.html:/usr/share/nginx/html/galeria.html:ro
+      - ./contacto.html:/usr/share/nginx/html/contacto.html:ro
+      - ./admin:/usr/share/nginx/html/admin:ro
+      - ./assets:/usr/share/nginx/html/assets:ro
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - chatwoot-web
+      - n8n
+    networks:
+      - crm-network
+
+volumes:
+  postgres_data:
+  redis_data:
+  chatwoot_storage:
+  chatwoot_public:
+  n8n_data:
+
+networks:
+  crm-network:
+    driver: bridge
