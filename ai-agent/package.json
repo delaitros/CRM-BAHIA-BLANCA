@@ -1,0 +1,14 @@
+{
+  "name": "lo-de-juan-ai-agent",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Agente IA (Claude) para Chatwoot - Lo de Juan, Bahia Blanca",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.69.0",
+    "express": "^4.21.2"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "_comentario": "EDITA ESTE ARCHIVO para cambiar precios, servicios y horarios. No hace falta saber programar. Cambia los numeros y textos entre comillas. Despues reinicia el servicio (ver QUICK-START.md).",
+
+  "nombre": "Lo de Juan",
+  "rubro": "Catering y organizacion de eventos",
+  "ubicacion": "Bahia Blanca, Buenos Aires, Argentina",
+  "horario_atencion": "Lunes a Viernes 9:00-18:00, Sabados 9:00-13:00",
+  "iva_porcentaje": 21,
+  "vigencia_presupuesto_dias": 15,
+  "moneda": "ARS",
+  "sena_porcentaje": 40,
+
+  "servicios": [
+    {
+      "id": "basico",
+      "nombre": "Catering Basico",
+      "precio_por_persona": 45000,
+      "max_personas": 50,
+      "incluye": "entrada, plato principal, postre, bebidas sin alcohol"
+    },
+    {
+      "id": "premium",
+      "nombre": "Catering Premium",
+      "precio_por_persona": 65000,
+      "max_personas": 100,
+      "incluye": "2 entradas, plato principal, postre, bebidas con y sin alcohol, mesa dulce"
+    },
+    {
+      "id": "deluxe",
+      "nombre": "Catering Deluxe",
+      "precio_por_persona": 85000,
+      "max_personas": 200,
+      "incluye": "cocteleria de bienvenida, 3 entradas, 2 platos principales, postre, barra libre, mesa dulce, candy bar"
+    },
+    {
+      "id": "corporativo",
+      "nombre": "Evento Corporativo",
+      "precio_por_persona": 55000,
+      "max_personas": 300,
+      "incluye": "coffee break, almuerzo/cena, equipamiento audiovisual"
+    }
+  ],
+
+  "extras": [
+    { "id": "mesa_dulce", "nombre": "Mesa dulce adicional", "precio_total": 180000 },
+    { "id": "barra_tragos", "nombre": "Barra de tragos premium", "precio_por_persona": 8000 },
+    { "id": "dj", "nombre": "DJ y sonido", "precio_total": 350000 },
+    { "id": "decoracion", "nombre": "Decoracion tematica", "precio_total": 250000 }
+  ]
+}
