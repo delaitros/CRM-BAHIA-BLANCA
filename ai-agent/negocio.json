@@ -7,6 +7,8 @@
   "horario_atencion": "Lunes a Viernes 9:00-18:00, Sabados 9:00-13:00",
   "iva_porcentaje": 21,
   "vigencia_presupuesto_dias": 15,
+  "moneda": "ARS",
+  "sena_porcentaje": 40,
 
   "servicios": [
     {

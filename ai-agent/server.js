@@ -2,10 +2,14 @@
 
 /*
  * Lo de Juan - Agente IA para Chatwoot
- * Recibe webhooks de Chatwoot, responde con Claude (presupuestos,
- * disponibilidad, info del negocio) y deriva a un humano cuando hace falta.
  *
- * No necesitas tocar este archivo para cambiar precios: edita negocio.json
+ * - Responde con Claude: info, presupuestos, disponibilidad.
+ * - Cierra la venta cobrando una sena con MercadoPago (link de pago).
+ * - Cuando el pago se confirma, deriva a un humano y el bot se calla.
+ * - Junta los mensajes seguidos del cliente (cola con debounce) para no
+ *   pisar ni ignorar ninguno y que la conversacion sea realista.
+ *
+ * Para cambiar precios/sena: edita negocio.json (no hace falta programar).
  */
 
 const fs = require("fs");
@@ -13,31 +17,33 @@ const path = require("path");
 const express = require("express");
 const Anthropic = require("@anthropic-ai/sdk");
 
-// ── Config desde el entorno ───────────────────────────────────────────────
+// ── Config ────────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 4000;
 const MODEL = process.env.ANTHROPIC_MODEL || "claude-opus-4-7";
 const CHATWOOT_URL = process.env.CHATWOOT_URL || "http://chatwoot-web:3000";
 const CHATWOOT_ACCOUNT_ID = process.env.CHATWOOT_ACCOUNT_ID || "1";
 const CHATWOOT_API_TOKEN = process.env.CHATWOOT_API_TOKEN || "";
+const MP_ACCESS_TOKEN = process.env.MERCADOPAGO_ACCESS_TOKEN || "";
+const PUBLIC_URL = (process.env.PUBLIC_URL || "").replace(/\/$/, "");
 const DATA_DIR = process.env.DATA_DIR || "/data";
+const DEBOUNCE_MS = Number(process.env.DEBOUNCE_MS || 7000);
 const RESERVAS_FILE = path.join(DATA_DIR, "reservas.json");
+const ESTADO_FILE = path.join(DATA_DIR, "estado.json");
 
-if (!process.env.ANTHROPIC_API_KEY) {
-  console.error("FALTA ANTHROPIC_API_KEY en el .env - el agente no puede responder.");
-}
-if (!CHATWOOT_API_TOKEN) {
-  console.error("FALTA CHATWOOT_API_TOKEN en el .env - el agente no puede contestar en Chatwoot.");
-}
+if (!process.env.ANTHROPIC_API_KEY)
+  console.error("FALTA ANTHROPIC_API_KEY - el agente no puede responder.");
+if (!CHATWOOT_API_TOKEN)
+  console.error("FALTA CHATWOOT_API_TOKEN - el agente no puede contestar.");
+if (!MP_ACCESS_TOKEN)
+  console.warn("AVISO: sin MERCADOPAGO_ACCESS_TOKEN no se generan links de pago.");
 
 const anthropic = new Anthropic(); // usa ANTHROPIC_API_KEY del entorno
 
-// ── Datos del negocio (editables sin programar) ───────────────────────────
+// ── Datos del negocio (editables) ─────────────────────────────────────────
 function cargarNegocio() {
-  const raw = fs.readFileSync(path.join(__dirname, "negocio.json"), "utf8");
-  return JSON.parse(raw);
+  return JSON.parse(fs.readFileSync(path.join(__dirname, "negocio.json"), "utf8"));
 }
 
-// ── Fechas reservadas (disponibilidad) ────────────────────────────────────
 function cargarReservas() {
   try {
     return JSON.parse(fs.readFileSync(RESERVAS_FILE, "utf8"));
@@ -46,103 +52,40 @@ function cargarReservas() {
   }
 }
 
-// ── Construccion del system prompt (estable -> se cachea) ─────────────────
-function construirSystemPrompt(negocio) {
-  const servicios = negocio.servicios
-    .map(
-      (s) =>
-        `- ${s.nombre} (hasta ${s.max_personas} personas): $${s.precio_por_persona.toLocaleString("es-AR")} por persona. Incluye: ${s.incluye}`
-    )
-    .join("\n");
-  const extras = negocio.extras
-    .map((e) => {
-      const precio = e.precio_total
-        ? `$${e.precio_total.toLocaleString("es-AR")} (total)`
-        : `$${e.precio_por_persona.toLocaleString("es-AR")} por persona`;
-      return `- ${e.nombre}: ${precio}`;
-    })
-    .join("\n");
-
-  return `Sos el asistente virtual de "${negocio.nombre}", un servicio de ${negocio.rubro} en ${negocio.ubicacion}.
-
-## INFORMACION DEL NEGOCIO
-- Nombre: ${negocio.nombre}
-- Rubro: ${negocio.rubro}
-- Ubicacion: ${negocio.ubicacion}
-- Horario de atencion: ${negocio.horario_atencion}
-
-## SERVICIOS Y PRECIOS BASE
-${servicios}
-
-## EXTRAS OPCIONALES
-${extras}
-
-## INSTRUCCIONES
-- Respondé siempre en español rioplatense (vos, ustedes).
-- Sé amable, profesional y conciso. Respuestas cortas para WhatsApp/Instagram.
-- Usá emojis con moderación (máximo 1-2 por mensaje).
-- No inventes informacion ni precios: usá solo lo de arriba o las herramientas.
-- Para armar un presupuesto usá la herramienta generar_presupuesto (ella calcula los montos con IVA correctamente). Antes pedí: tipo de evento, cantidad de personas y fecha.
-- Si preguntan por una fecha puntual, usá verificar_disponibilidad.
-- Si el cliente pide hablar con una persona, o es un reclamo, o algo que no podés resolver, usá derivar_humano.
-- Cuando derivás a un humano, avisale al cliente que en breve lo atiende alguien del equipo.`;
+// ── Estado persistente (modo bot/humano y pagos procesados) ───────────────
+// Forma: { conversaciones: { "<id>": { modo: "humano" } }, pagos: { "<id>": true } }
+function leerEstado() {
+  try {
+    return JSON.parse(fs.readFileSync(ESTADO_FILE, "utf8"));
+  } catch (e) {
+    return { conversaciones: {}, pagos: {} };
+  }
 }
 
-// ── Definicion de herramientas ────────────────────────────────────────────
-const TOOLS = [
-  {
-    name: "generar_presupuesto",
-    description:
-      "Calcula un presupuesto detallado con subtotal, IVA y total. Usala cuando el cliente quiere un presupuesto y ya sabés tipo de evento, cantidad de personas y fecha.",
-    input_schema: {
-      type: "object",
-      properties: {
-        servicio_id: {
-          type: "string",
-          enum: ["basico", "premium", "deluxe", "corporativo"],
-          description: "El id del servicio de catering elegido"
-        },
-        cantidad_personas: { type: "integer", description: "Cantidad de invitados" },
-        fecha: { type: "string", description: "Fecha del evento en formato YYYY-MM-DD" },
-        extras_ids: {
-          type: "array",
-          items: { type: "string" },
-          description: "Lista de ids de extras opcionales (puede ir vacia)"
-        }
-      },
-      required: ["servicio_id", "cantidad_personas", "fecha"]
-    }
-  },
-  {
-    name: "verificar_disponibilidad",
-    description:
-      "Verifica si una fecha esta libre para tomar un evento. Devolvé el resultado al cliente.",
-    input_schema: {
-      type: "object",
-      properties: {
-        fecha: { type: "string", description: "Fecha a consultar en formato YYYY-MM-DD" }
-      },
-      required: ["fecha"]
-    }
-  },
-  {
-    name: "derivar_humano",
-    description:
-      "Deriva la conversacion a un agente humano (abre la conversacion en Chatwoot y deja una nota interna). Usala para reclamos, casos complejos o cuando el cliente lo pide.",
-    input_schema: {
-      type: "object",
-      properties: {
-        motivo: { type: "string", description: "Por que se deriva (breve)" }
-      },
-      required: ["motivo"]
-    }
+function guardarEstado(estado) {
+  try {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+    fs.writeFileSync(ESTADO_FILE, JSON.stringify(estado, null, 2));
+  } catch (e) {
+    console.error("No se pudo guardar estado:", e);
   }
-];
+}
 
-// ── Implementacion de las herramientas ────────────────────────────────────
-function ejecutarGenerarPresupuesto(input, negocio) {
+function modoConversacion(convId) {
+  const est = leerEstado();
+  return (est.conversaciones[String(convId)] || {}).modo || "bot";
+}
+
+function marcarHumano(convId) {
+  const est = leerEstado();
+  est.conversaciones[String(convId)] = { modo: "humano" };
+  guardarEstado(est);
+}
+
+// ── Calculo de presupuesto ────────────────────────────────────────────────
+function calcularPresupuesto(input, negocio) {
   const servicio = negocio.servicios.find((s) => s.id === input.servicio_id);
-  if (!servicio) return "Error: servicio no encontrado.";
+  if (!servicio) return null;
 
   const personas = Number(input.cantidad_personas) || 0;
   let subtotal = servicio.precio_por_persona * personas;
@@ -162,21 +105,129 @@ function ejecutarGenerarPresupuesto(input, negocio) {
 
   const iva = Math.round((subtotal * negocio.iva_porcentaje) / 100);
   const total = subtotal + iva;
+  const sena = Math.round((total * (negocio.sena_porcentaje || 40)) / 100);
+  return { servicio, personas, lineas, subtotal, iva, total, sena };
+}
 
-  let aviso = "";
-  if (personas > servicio.max_personas) {
-    aviso = `\n(Nota: ${servicio.nombre} es hasta ${servicio.max_personas} personas. Para ${personas} conviene confirmar con el equipo.)`;
+// ── MercadoPago ───────────────────────────────────────────────────────────
+async function mpCrearPreferencia(convId, titulo, monto, negocio) {
+  const body = {
+    items: [
+      {
+        title: titulo,
+        quantity: 1,
+        unit_price: monto,
+        currency_id: negocio.moneda || "ARS"
+      }
+    ],
+    external_reference: String(convId),
+    metadata: { conversation_id: String(convId) }
+  };
+  if (PUBLIC_URL) {
+    body.notification_url = `${PUBLIC_URL}/webhook/mercadopago`;
+    body.back_urls = { success: PUBLIC_URL, pending: PUBLIC_URL, failure: PUBLIC_URL };
+    body.auto_return = "approved";
   }
 
+  const res = await fetch("https://api.mercadopago.com/checkout/preferences", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${MP_ACCESS_TOKEN}`
+    },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) {
+    console.error("Error MP preferencia:", res.status, await res.text());
+    return null;
+  }
+  const data = await res.json();
+  return data.init_point || data.sandbox_init_point || null;
+}
+
+async function mpConsultarPago(pagoId) {
+  const res = await fetch(`https://api.mercadopago.com/v1/payments/${pagoId}`, {
+    headers: { Authorization: `Bearer ${MP_ACCESS_TOKEN}` }
+  });
+  if (!res.ok) return null;
+  return res.json();
+}
+
+// ── Herramientas de Claude ────────────────────────────────────────────────
+const TOOLS = [
+  {
+    name: "generar_presupuesto",
+    description:
+      "Calcula un presupuesto detallado con subtotal, IVA, total y monto de sena. Usala cuando ya sabes tipo de evento, cantidad de personas y fecha.",
+    input_schema: {
+      type: "object",
+      properties: {
+        servicio_id: {
+          type: "string",
+          enum: ["basico", "premium", "deluxe", "corporativo"]
+        },
+        cantidad_personas: { type: "integer" },
+        fecha: { type: "string", description: "YYYY-MM-DD" },
+        extras_ids: { type: "array", items: { type: "string" } }
+      },
+      required: ["servicio_id", "cantidad_personas", "fecha"]
+    }
+  },
+  {
+    name: "verificar_disponibilidad",
+    description: "Verifica si una fecha esta libre para tomar un evento.",
+    input_schema: {
+      type: "object",
+      properties: { fecha: { type: "string", description: "YYYY-MM-DD" } },
+      required: ["fecha"]
+    }
+  },
+  {
+    name: "generar_link_pago",
+    description:
+      "Genera un link de pago de MercadoPago para cobrar la SENA y reservar la fecha. Usala SOLO cuando el cliente confirmo que quiere reservar. Devolve el link al cliente y explicale que al pagar la sena queda reservada la fecha y lo contacta una persona del equipo.",
+    input_schema: {
+      type: "object",
+      properties: {
+        servicio_id: {
+          type: "string",
+          enum: ["basico", "premium", "deluxe", "corporativo"]
+        },
+        cantidad_personas: { type: "integer" },
+        fecha: { type: "string", description: "YYYY-MM-DD" },
+        extras_ids: { type: "array", items: { type: "string" } }
+      },
+      required: ["servicio_id", "cantidad_personas", "fecha"]
+    }
+  },
+  {
+    name: "derivar_humano",
+    description:
+      "Deriva la conversacion a un agente humano y el bot deja de responder. Usala para reclamos, casos complejos o cuando el cliente lo pide explicitamente.",
+    input_schema: {
+      type: "object",
+      properties: { motivo: { type: "string" } },
+      required: ["motivo"]
+    }
+  }
+];
+
+function ejecutarGenerarPresupuesto(input, negocio) {
+  const p = calcularPresupuesto(input, negocio);
+  if (!p) return "Error: servicio no encontrado.";
+  let aviso = "";
+  if (p.personas > p.servicio.max_personas) {
+    aviso = `\n(Nota: ${p.servicio.nombre} es hasta ${p.servicio.max_personas} personas. Para ${p.personas} conviene confirmar con el equipo.)`;
+  }
   return (
     `Presupuesto ${negocio.nombre}\n` +
-    `Evento: ${servicio.nombre}\n` +
-    `Fecha: ${input.fecha}\n` +
-    `Cantidad: ${personas} personas\n\n` +
-    lineas.join("\n") +
-    `\n\nSubtotal: $${subtotal.toLocaleString("es-AR")}\n` +
-    `IVA (${negocio.iva_porcentaje}%): $${iva.toLocaleString("es-AR")}\n` +
-    `TOTAL: $${total.toLocaleString("es-AR")}\n\n` +
+    `Evento: ${p.servicio.nombre}\nFecha: ${input.fecha}\n` +
+    `Cantidad: ${p.personas} personas\n\n` +
+    p.lineas.join("\n") +
+    `\n\nSubtotal: $${p.subtotal.toLocaleString("es-AR")}\n` +
+    `IVA (${negocio.iva_porcentaje}%): $${p.iva.toLocaleString("es-AR")}\n` +
+    `TOTAL: $${p.total.toLocaleString("es-AR")}\n` +
+    `Sena para reservar (${negocio.sena_porcentaje}%): $${p.sena.toLocaleString("es-AR")}\n\n` +
     `Vigencia: ${negocio.vigencia_presupuesto_dias} dias.` +
     aviso
   );
@@ -185,19 +236,44 @@ function ejecutarGenerarPresupuesto(input, negocio) {
 function ejecutarVerificarDisponibilidad(input) {
   const reservas = cargarReservas();
   const ocupada = (reservas.fechas_ocupadas || []).includes(input.fecha);
-  if (ocupada) {
-    return `La fecha ${input.fecha} ya esta reservada. Ofrecele al cliente buscar otra fecha cercana.`;
-  }
-  return `La fecha ${input.fecha} figura disponible. Confirmá igualmente con el equipo antes de cerrar.`;
+  return ocupada
+    ? `La fecha ${input.fecha} ya esta reservada. Ofrecele al cliente otra fecha.`
+    : `La fecha ${input.fecha} figura disponible.`;
 }
 
-async function ejecutarDerivarHumano(input, conversationId) {
-  await chatwootCambiarEstado(conversationId, "open");
+async function ejecutarGenerarLinkPago(input, negocio) {
+  if (!MP_ACCESS_TOKEN)
+    return "MercadoPago no esta configurado. Deriva al cliente con un humano para coordinar el pago.";
+  const p = calcularPresupuesto(input, negocio);
+  if (!p) return "Error: servicio no encontrado.";
+  const titulo = `Sena ${p.servicio.nombre} - ${input.fecha} (${p.personas} personas)`;
+  const link = await mpCrearPreferencia(
+    input._conversation_id,
+    titulo,
+    p.sena,
+    negocio
+  );
+  if (!link)
+    return "No se pudo generar el link de pago. Deriva al cliente con un humano.";
+  return (
+    `LINK DE PAGO GENERADO. Envialo al cliente con este texto:\n\n` +
+    `Para reservar la fecha ${input.fecha} aboná la seña de ` +
+    `$${p.sena.toLocaleString("es-AR")} (${negocio.sena_porcentaje}% del total ` +
+    `$${p.total.toLocaleString("es-AR")}) desde este link seguro de MercadoPago:\n` +
+    `${link}\n\n` +
+    `Apenas se acredite el pago te contacta una persona del equipo para coordinar todos los detalles. ` +
+    `El link es valido y podes pagar con tarjeta, debito o dinero en cuenta.`
+  );
+}
+
+async function ejecutarDerivarHumano(input, convId) {
+  marcarHumano(convId);
+  await chatwootCambiarEstado(convId, "open");
   await chatwootNotaPrivada(
-    conversationId,
+    convId,
     `[Agente IA] Derivado a humano. Motivo: ${input.motivo}`
   );
-  return "Conversacion derivada a un agente humano. Avisale al cliente que en breve lo atienden.";
+  return "Conversacion derivada. Avisale al cliente que en breve lo atiende una persona del equipo. No sigas respondiendo despues de esto.";
 }
 
 // ── Chatwoot API ──────────────────────────────────────────────────────────
@@ -212,10 +288,9 @@ async function chatwootGetHistorial(conversationId) {
   );
   if (!res.ok) return [];
   const data = await res.json();
-  const payload = data.payload || [];
-  return payload
-    .slice(-12)
-    .filter((m) => m.content)
+  return (data.payload || [])
+    .filter((m) => m.content && !m.private)
+    .slice(-20)
     .map((m) => ({
       role: m.message_type === 0 ? "user" : "assistant",
       content: String(m.content)
@@ -262,16 +337,75 @@ async function chatwootCambiarEstado(conversationId, estado) {
   );
 }
 
-// ── Loop de Claude con herramientas ───────────────────────────────────────
-async function responderConClaude(historial, conversationId) {
+async function chatwootTyping(conversationId, status) {
+  try {
+    await fetch(
+      `${chatwootBase()}/conversations/${conversationId}/toggle_typing_status`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          api_access_token: CHATWOOT_API_TOKEN
+        },
+        body: JSON.stringify({ typing_status: status })
+      }
+    );
+  } catch (e) {
+    /* indicador de "escribiendo", no critico */
+  }
+}
+
+// ── System prompt ─────────────────────────────────────────────────────────
+function construirSystemPrompt(negocio) {
+  const servicios = negocio.servicios
+    .map(
+      (s) =>
+        `- ${s.nombre} (hasta ${s.max_personas} personas): $${s.precio_por_persona.toLocaleString("es-AR")} por persona. Incluye: ${s.incluye}`
+    )
+    .join("\n");
+  const extras = negocio.extras
+    .map((e) => {
+      const precio = e.precio_total
+        ? `$${e.precio_total.toLocaleString("es-AR")} (total)`
+        : `$${e.precio_por_persona.toLocaleString("es-AR")} por persona`;
+      return `- ${e.nombre}: ${precio}`;
+    })
+    .join("\n");
+
+  return `Sos el asistente virtual de "${negocio.nombre}", ${negocio.rubro} en ${negocio.ubicacion}.
+
+## NEGOCIO
+- Horario: ${negocio.horario_atencion}
+
+## SERVICIOS Y PRECIOS
+${servicios}
+
+## EXTRAS
+${extras}
+
+## COMO ATENDER (importante)
+- Español rioplatense (vos, ustedes). Amable, profesional, conciso. Máximo 1-2 emojis.
+- Te pueden llegar varios mensajes seguidos del cliente: leelos TODOS y respondé de forma integrada. Nunca ignores el último mensaje.
+- No inventes precios: usá las herramientas.
+
+## FLUJO DE VENTA (seguilo)
+1. Entendé qué evento quiere: tipo, cantidad de personas, fecha.
+2. Si pregunta por una fecha puntual: verificar_disponibilidad.
+3. Mostrá el presupuesto con generar_presupuesto (incluye la seña).
+4. Si el cliente CONFIRMA que quiere reservar: usá generar_link_pago y mandale el link de la seña. Explicale que al pagar queda reservada la fecha y que después lo contacta una persona del equipo.
+5. NO digas que el pago está confirmado vos: la confirmación es automática. Después de mandar el link, segui respondiendo dudas pero no presiones.
+6. Reclamos, casos raros o si pide una persona: derivar_humano.`;
+}
+
+// ── Loop de Claude ────────────────────────────────────────────────────────
+async function responderConClaude(historial, convId) {
   const negocio = cargarNegocio();
   const systemPrompt = construirSystemPrompt(negocio);
-
   const messages = historial.length
     ? historial
     : [{ role: "user", content: "Hola" }];
 
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 6; i++) {
     const response = await anthropic.messages.create({
       model: MODEL,
       max_tokens: 2048,
@@ -288,11 +422,10 @@ async function responderConClaude(historial, conversationId) {
         .map((b) => b.text)
         .join("\n")
         .trim();
-      return texto || "Disculpá, no pude generar una respuesta. Te paso con una persona.";
+      return texto || "Disculpá, no pude generar una respuesta.";
     }
 
     messages.push({ role: "assistant", content: response.content });
-
     const toolResults = [];
     for (const block of response.content) {
       if (block.type !== "tool_use") continue;
@@ -302,13 +435,18 @@ async function responderConClaude(historial, conversationId) {
           result = ejecutarGenerarPresupuesto(block.input, negocio);
         } else if (block.name === "verificar_disponibilidad") {
           result = ejecutarVerificarDisponibilidad(block.input);
+        } else if (block.name === "generar_link_pago") {
+          result = await ejecutarGenerarLinkPago(
+            { ...block.input, _conversation_id: convId },
+            negocio
+          );
         } else if (block.name === "derivar_humano") {
-          result = await ejecutarDerivarHumano(block.input, conversationId);
+          result = await ejecutarDerivarHumano(block.input, convId);
         } else {
           result = "Herramienta desconocida.";
         }
       } catch (err) {
-        console.error("Error en herramienta", block.name, err);
+        console.error("Error herramienta", block.name, err);
         result = "Error al ejecutar la herramienta.";
       }
       toolResults.push({
@@ -319,38 +457,113 @@ async function responderConClaude(historial, conversationId) {
     }
     messages.push({ role: "user", content: toolResults });
   }
-
-  return "Disculpá, esto se complico un poco. Te derivo con una persona del equipo.";
+  return "Disculpá, esto se complicó. Te derivo con una persona del equipo.";
 }
 
-// ── Webhook de Chatwoot ───────────────────────────────────────────────────
+// ── Cola con debounce (junta mensajes seguidos, no pisa ni ignora) ────────
+const pendientes = new Map(); // convId -> timeout
+const procesando = new Set(); // convId en proceso
+
+function encolar(convId) {
+  if (pendientes.has(convId)) clearTimeout(pendientes.get(convId));
+  pendientes.set(
+    convId,
+    setTimeout(() => {
+      pendientes.delete(convId);
+      procesarConversacion(convId);
+    }, DEBOUNCE_MS)
+  );
+}
+
+async function procesarConversacion(convId) {
+  if (procesando.has(convId)) {
+    // sigue llegando o todavia procesa: reintentar despues
+    encolar(convId);
+    return;
+  }
+  if (modoConversacion(convId) === "humano") return; // lo maneja una persona
+  procesando.add(convId);
+  await chatwootTyping(convId, "on");
+  try {
+    const historial = await chatwootGetHistorial(convId);
+    if (modoConversacion(convId) === "humano") return; // cambio mientras tanto
+    const respuesta = await responderConClaude(historial, convId);
+    await chatwootEnviarMensaje(convId, respuesta);
+  } catch (err) {
+    console.error("Error procesando conversacion", convId, err);
+  } finally {
+    procesando.delete(convId);
+    await chatwootTyping(convId, "off");
+  }
+}
+
+// ── Servidor ──────────────────────────────────────────────────────────────
 const app = express();
 app.use(express.json({ limit: "1mb" }));
 
 app.get("/health", (_req, res) => res.json({ ok: true, model: MODEL }));
 
-app.post("/webhook/chatwoot", async (req, res) => {
-  // Responder rapido para que Chatwoot no reintente
+app.post("/webhook/chatwoot", (req, res) => {
   res.json({ received: true });
-
   try {
     const body = req.body || {};
     if (body.event !== "message_created") return;
-    if (body.message_type !== "incoming") return; // solo mensajes del cliente
+    if (body.message_type !== "incoming") return; // solo el cliente
     if (body.private) return;
-
-    const conversationId =
+    const convId =
       body.conversation && body.conversation.id ? body.conversation.id : null;
-    if (!conversationId) return;
-
-    const historial = await chatwootGetHistorial(conversationId);
-    const respuesta = await responderConClaude(historial, conversationId);
-    await chatwootEnviarMensaje(conversationId, respuesta);
+    if (!convId) return;
+    if (modoConversacion(convId) === "humano") return; // bot callado
+    encolar(convId); // junta mensajes seguidos antes de responder
   } catch (err) {
-    console.error("Error procesando webhook:", err);
+    console.error("Error webhook chatwoot:", err);
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Agente IA escuchando en puerto ${PORT} (modelo: ${MODEL})`);
+app.post("/webhook/mercadopago", async (req, res) => {
+  res.sendStatus(200); // responder rapido siempre
+  try {
+    const tipo =
+      (req.body && req.body.type) || req.query.type || req.query.topic;
+    const pagoId =
+      (req.body && req.body.data && req.body.data.id) ||
+      req.query["data.id"] ||
+      req.query.id;
+    if (tipo !== "payment" || !pagoId) return;
+
+    const est = leerEstado();
+    if (est.pagos[String(pagoId)]) return; // ya procesado (idempotencia)
+
+    const pago = await mpConsultarPago(pagoId);
+    if (!pago || pago.status !== "approved") return;
+
+    const convId = pago.external_reference;
+    if (!convId) return;
+
+    est.pagos[String(pagoId)] = true;
+    est.conversaciones[String(convId)] = { modo: "humano" };
+    guardarEstado(est);
+
+    const monto = Number(pago.transaction_amount || 0).toLocaleString("es-AR");
+    if (pendientes.has(Number(convId))) {
+      clearTimeout(pendientes.get(Number(convId)));
+      pendientes.delete(Number(convId));
+    }
+    await chatwootEnviarMensaje(
+      convId,
+      `¡Listo! Recibimos tu seña de $${monto} y tu fecha quedó reservada 🎉 ` +
+        `En breve te contacta una persona del equipo para coordinar todos los detalles. ¡Gracias!`
+    );
+    await chatwootNotaPrivada(
+      convId,
+      `[Agente IA] PAGO CONFIRMADO seña $${monto} (MP ${pagoId}). Derivado a humano.`
+    );
+    await chatwootCambiarEstado(convId, "open");
+  } catch (err) {
+    console.error("Error webhook mercadopago:", err);
+  }
 });
+
+app.listen(PORT, () =>
+  console.log(`Agente IA en puerto ${PORT} (modelo: ${MODEL})`)
+);

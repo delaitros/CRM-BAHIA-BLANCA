@@ -132,6 +132,9 @@ services:
       CHATWOOT_URL: http://chatwoot-web:3000
       CHATWOOT_ACCOUNT_ID: ${CHATWOOT_ACCOUNT_ID:-1}
       CHATWOOT_API_TOKEN: ${CHATWOOT_API_TOKEN}
+      MERCADOPAGO_ACCESS_TOKEN: ${MERCADOPAGO_ACCESS_TOKEN:-}
+      PUBLIC_URL: ${PUBLIC_URL:-}
+      DEBOUNCE_MS: ${DEBOUNCE_MS:-7000}
       DATA_DIR: /data
       TZ: America/Argentina/Buenos_Aires
     volumes:

@@ -20,15 +20,32 @@ Cliente escribe por WhatsApp/IG/FB
         ▼  webhook (message_created)
    Agente IA (servicio Node, carpeta ai-agent/)
         │
-        ├── Lee el historial de la conversación (API de Chatwoot)
+        ├── Junta los mensajes seguidos del cliente (cola con debounce)
+        ├── Lee el historial completo (API de Chatwoot)
         ├── Llama a Claude con prompt cacheado + herramientas:
-        │     • generar_presupuesto      -> calcula montos + IVA
+        │     • generar_presupuesto      -> calcula montos + IVA + seña
         │     • verificar_disponibilidad -> revisa fechas ocupadas
+        │     • generar_link_pago        -> link de seña (MercadoPago)
         │     • derivar_humano           -> abre la conv. para un agente
         │
         ▼
    Responde por el mismo canal (API de Chatwoot)
+
+   Cliente paga la seña en MercadoPago
+        │
+        ▼  webhook /webhook/mercadopago (pago verificado vía API de MP)
+   El bot deja de responder + avisa al cliente + deriva a una persona
 ```
+
+**Cierre de venta:** el agente solo manda el link de pago cuando el cliente
+confirma. El pago se verifica del lado del servidor consultando la API de
+MercadoPago (no se confía en el webhook a ciegas). Recién con el pago
+`approved` la conversación pasa a modo "humano" y el bot se calla.
+
+**No pisa ni ignora mensajes:** si el cliente manda varios mensajes seguidos,
+una cola con *debounce* (7s configurable, `DEBOUNCE_MS`) espera a que termine,
+toma el historial completo y responde una sola vez de forma coherente. Nunca
+hay dos respuestas en paralelo para la misma conversación.
 
 Reemplaza al antiguo flujo de n8n por un servicio propio: más simple de
 mantener, más barato (usa *prompt caching* de Anthropic) y con lógica de
@@ -44,9 +61,12 @@ negocio real (presupuestos calculados, no inventados).
 | `negocio.json` | **Precios, servicios, horarios.** Editable sin programar  |
 | `Dockerfile`   | Imagen del servicio                                      |
 
-Fechas ocupadas: archivo `reservas.json` en el volumen `ai_agent_data`
-(`{"fechas_ocupadas":["2026-06-20"]}`). Más adelante se puede conectar
-Google Calendar o el panel admin para escribirlo.
+Datos en el volumen `ai_agent_data`:
+- `reservas.json` — fechas ocupadas (`{"fechas_ocupadas":["2026-06-20"]}`).
+  Más adelante se puede conectar Google Calendar o el panel admin.
+- `estado.json` — modo de cada conversación (`bot`/`humano`) y pagos ya
+  procesados. Se persiste para que, tras un pago o una derivación, el bot
+  no vuelva a responder aunque se reinicie el servicio.
 
 ---
 

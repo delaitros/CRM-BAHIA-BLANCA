@@ -46,6 +46,24 @@ Para solo probar: tu compu con Docker Desktop alcanza.
 4. (Opcional) Elegí modelo en `ANTHROPIC_MODEL` (ver comentarios del `.env`).
    Más barato: `claude-haiku-4-5`. Equilibrado: `claude-sonnet-4-6`.
 
+### Paso 2b — MercadoPago, para cobrar la seña (5 minutos)
+
+El agente cierra la venta cobrando una **seña** con MercadoPago. Cuando el
+pago se acredita, la conversación pasa automáticamente a una persona.
+
+1. Entrá a https://www.mercadopago.com.ar/developers → **Tus integraciones**
+2. Creá una aplicación → **Credenciales de producción** → copiá el **Access Token**
+3. Pegalo en `.env`:
+   ```
+   MERCADOPAGO_ACCESS_TOKEN=APP_USR-...
+   ```
+4. En `.env`, completá `PUBLIC_URL` con tu dominio (con `https://`). En local,
+   usá la URL que te da `ngrok`. MercadoPago la usa para avisar los pagos.
+5. El porcentaje de seña se edita en `ai-agent/negocio.json` (`sena_porcentaje`).
+
+> Si no configurás MercadoPago, el agente igual funciona: cuando el cliente
+> quiere reservar, deriva a una persona para coordinar el pago a mano.
+
 ### Paso 3 — Configurar Chatwoot (10 minutos)
 
 1. Abrí `http://localhost:3000` (o tu dominio) y creá el usuario administrador.
