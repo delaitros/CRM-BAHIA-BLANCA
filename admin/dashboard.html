@@ -346,6 +346,14 @@
     <span class="material-symbols-outlined text-2xl">add</span>
   </button>
 
+  <script src="auth.js"></script>
+  <script>
+    requireAuth();
+    document.getElementById('logout-btn').addEventListener('click', function(e) {
+      e.preventDefault();
+      logout();
+    });
+  </script>
   <script src="../assets/js/admin.js"></script>
 </body>
 </html>

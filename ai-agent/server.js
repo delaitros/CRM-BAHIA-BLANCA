@@ -44,12 +44,34 @@ function cargarNegocio() {
   return JSON.parse(fs.readFileSync(path.join(__dirname, "negocio.json"), "utf8"));
 }
 
-function cargarReservas() {
+function leerEventos() {
   try {
-    return JSON.parse(fs.readFileSync(RESERVAS_FILE, "utf8"));
+    const data = JSON.parse(fs.readFileSync(RESERVAS_FILE, "utf8"));
+    if (Array.isArray(data.eventos)) return data.eventos;
+    // compatibilidad con formato antiguo
+    return (data.fechas_ocupadas || []).map((f) => ({
+      id: f,
+      fecha: f,
+      nombre: "Reservado",
+      tipo: "otro"
+    }));
   } catch (e) {
-    return { fechas_ocupadas: [] };
+    return [];
   }
+}
+
+function guardarEventos(eventos) {
+  try {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+    fs.writeFileSync(RESERVAS_FILE, JSON.stringify({ eventos }, null, 2));
+  } catch (e) {
+    console.error("No se pudo guardar eventos:", e);
+  }
+}
+
+function cargarReservas() {
+  const eventos = leerEventos();
+  return { fechas_ocupadas: eventos.map((e) => e.fecha) };
 }
 
 // ── Estado persistente (modo bot/humano y pagos procesados) ───────────────
@@ -562,6 +584,46 @@ app.post("/webhook/mercadopago", async (req, res) => {
   } catch (err) {
     console.error("Error webhook mercadopago:", err);
   }
+});
+
+// ── API de Reservas (para el panel admin) ─────────────────────────────────
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,DELETE,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  if (req.method === "OPTIONS") return res.sendStatus(204);
+  next();
+});
+
+app.get("/api/reservas", (_req, res) => {
+  res.json({ eventos: leerEventos() });
+});
+
+app.post("/api/reservas", (req, res) => {
+  const { fecha, nombre, tipo, personas, notas } = req.body || {};
+  if (!fecha || !nombre) return res.status(400).json({ error: "fecha y nombre son obligatorios" });
+  const eventos = leerEventos();
+  const evento = {
+    id: `${fecha}-${Date.now()}`,
+    fecha: String(fecha),
+    nombre: String(nombre),
+    tipo: String(tipo || "otro"),
+    personas: Number(personas) || 0,
+    notas: String(notas || "")
+  };
+  eventos.push(evento);
+  guardarEventos(eventos);
+  res.json({ ok: true, evento });
+});
+
+app.delete("/api/reservas/:id", (req, res) => {
+  const { id } = req.params;
+  const eventos = leerEventos();
+  const nuevos = eventos.filter((e) => e.id !== id);
+  if (nuevos.length === eventos.length)
+    return res.status(404).json({ error: "evento no encontrado" });
+  guardarEventos(nuevos);
+  res.json({ ok: true });
 });
 
 app.listen(PORT, () =>
