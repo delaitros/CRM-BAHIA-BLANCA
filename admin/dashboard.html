@@ -315,23 +315,6 @@
     })();
 
     /* ── Cargar eventos y métricas ───────────────────── */
-    function cargarEventos() {
-      fetch(API_BASE + '/reservas')
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-          var eventos = data.eventos || [];
-          renderStats(eventos);
-          renderEventsList(eventos);
-        })
-        .catch(function() {
-          renderStats([]);
-          document.getElementById('events-content').innerHTML =
-            '<div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-center">' +
-            '<p class="text-sm text-amber-800 font-semibold">No se pudo conectar al servidor</p>' +
-            '<p class="text-xs text-amber-700 mt-1">Verificá que el agente IA esté corriendo.</p></div>';
-        });
-    }
-
     function renderStats(eventos) {
       var hoy = todayStr();
       var ahora = new Date();
