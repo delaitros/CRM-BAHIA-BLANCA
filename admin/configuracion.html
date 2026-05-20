@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configuración — Lo de Juan</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#b7102a",
+            "primary-container": "#db313f",
+            "secondary": "#485f84",
+            "secondary-container": "#bbd3fd",
+            "surface": "#f8f9fa",
+            "surface-container-lowest": "#ffffff",
+            "surface-container": "#edeeef",
+            "surface-container-low": "#f3f4f5",
+            "on-surface": "#191c1d",
+            "on-surface-variant": "#414755",
+            "outline": "#717786",
+            "outline-variant": "#c1c6d7",
+            "background": "#f8f9fa",
+            "tertiary": "#7a5500",
+            "error": "#ba1a1a",
+          },
+          fontFamily: { "headline": ["Manrope", "sans-serif"], "body": ["Manrope", "sans-serif"] },
+          borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+        },
+      },
+    }
+  </script>
+  <style>
+    .input {
+      width: 100%; padding: 0.625rem 0.875rem;
+      border: 1px solid #e1e3e4; border-radius: 0.75rem;
+      font-size: 0.875rem; outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .input:focus { border-color: #b7102a; box-shadow: 0 0 0 3px rgba(183,16,42,0.1); }
+    .btn-primary { background: #b7102a; color: white; padding: 0.625rem 1.25rem; border-radius: 0.75rem; font-size: 0.875rem; font-weight: 700; border: none; cursor: pointer; transition: background 0.15s; }
+    .btn-primary:hover { background: #9a0d22; }
+    .btn-secondary { background: white; color: #414755; padding: 0.625rem 1.25rem; border-radius: 0.75rem; font-size: 0.875rem; font-weight: 600; border: 1px solid #e1e3e4; cursor: pointer; transition: background 0.15s; }
+    .btn-secondary:hover { background: #f3f4f5; }
+    .status-dot { width: 10px; height: 10px; border-radius: 9999px; flex-shrink: 0; }
+    .status-on { background: #10b981; }
+    .status-off { background: #94a3b8; }
+    .status-warn { background: #f59e0b; }
+    code { background: #f3f4f5; padding: 2px 6px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.8em; }
+  </style>
+</head>
+<body class="bg-background font-body text-on-surface">
+
+  <!-- Sidebar -->
+  <aside class="h-screen w-64 fixed left-0 top-0 bg-slate-50 flex flex-col p-4 gap-2 z-50">
+    <div class="text-xl font-black text-primary mb-8 px-4">Lo de Juan</div>
+    <div class="flex items-center gap-3 px-4 py-3 mb-6">
+      <div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-secondary font-bold text-sm">JP</div>
+      <div class="flex flex-col">
+        <span class="text-sm font-semibold text-on-surface">Panel de Juan</span>
+        <span class="text-xs text-slate-500">Administrador</span>
+      </div>
+    </div>
+    <nav class="flex-1 space-y-1">
+      <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-slate-500 hover:bg-slate-200/50">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span class="text-sm font-semibold">Dashboard</span>
+      </a>
+      <a href="mensajes.html" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-slate-500 hover:bg-slate-200/50">
+        <span class="material-symbols-outlined">forum</span>
+        <span class="text-sm font-semibold">Mensajes</span>
+      </a>
+      <a href="calendario.html" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-slate-500 hover:bg-slate-200/50">
+        <span class="material-symbols-outlined">calendar_today</span>
+        <span class="text-sm font-semibold">Calendario</span>
+      </a>
+      <a href="inventario.html" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-slate-500 hover:bg-slate-200/50">
+        <span class="material-symbols-outlined">inventory_2</span>
+        <span class="text-sm font-semibold">Inventario</span>
+      </a>
+    </nav>
+    <a href="calendario.html?new=1" class="block text-center bg-gradient-to-br from-primary to-primary-container text-white py-3 rounded-full font-bold text-sm shadow-lg mb-4 active:scale-95 transition-transform">+ Nuevo Evento</a>
+    <div class="pt-4 border-t border-slate-200 space-y-1">
+      <a href="configuracion.html" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-white text-primary shadow-sm">
+        <span class="material-symbols-outlined">settings</span>
+        <span class="text-sm font-semibold">Configuración</span>
+      </a>
+      <a href="#" onclick="logout(); return false;" class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:bg-slate-200/50 rounded-xl transition-all">
+        <span class="material-symbols-outlined">logout</span>
+        <span class="text-sm font-semibold">Cerrar Sesión</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="ml-64 min-h-screen">
+
+    <div class="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-slate-200 px-8 py-4">
+      <h1 class="text-2xl font-bold font-headline text-on-surface">Configuración</h1>
+      <p class="text-sm text-outline">Ajustá tu cuenta y conexiones</p>
+    </div>
+
+    <div class="p-8 max-w-4xl space-y-6">
+
+      <!-- ── Estado de integraciones ──────────────── -->
+      <section class="bg-surface-container-lowest rounded-xl shadow-sm border border-slate-100 p-6">
+        <div class="flex items-center justify-between mb-5">
+          <div>
+            <h2 class="text-lg font-bold font-headline text-on-surface">Estado de Integraciones</h2>
+            <p class="text-sm text-outline">Qué está conectado y qué falta configurar</p>
+          </div>
+          <a href="../CONFIGURACION.md" target="_blank" class="text-sm text-primary font-semibold hover:underline flex items-center gap-1">
+            <span class="material-symbols-outlined text-base">help</span>
+            Guía completa
+          </a>
+        </div>
+        <div id="status-list" class="space-y-2"></div>
+      </section>
+
+      <!-- ── Cambiar contraseña ─────────────────────── -->
+      <section class="bg-surface-container-lowest rounded-xl shadow-sm border border-slate-100 p-6">
+        <h2 class="text-lg font-bold font-headline text-on-surface mb-1">Cambiar contraseña</h2>
+        <p class="text-sm text-outline mb-5">La contraseña actual queda guardada en este navegador.</p>
+        <form id="pwd-form" class="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
+          <div>
+            <label class="block text-xs font-semibold text-on-surface mb-1.5">Contraseña actual</label>
+            <input type="password" id="pwd-current" class="input" placeholder="••••••••" required />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-on-surface mb-1.5">Nueva contraseña</label>
+            <input type="password" id="pwd-new" class="input" placeholder="Mínimo 6 caracteres" minlength="6" required />
+          </div>
+          <button type="submit" class="btn-primary">Guardar</button>
+        </form>
+        <p id="pwd-msg" class="mt-3 text-xs"></p>
+      </section>
+
+      <!-- ── Google Calendar ────────────────────────── -->
+      <section class="bg-surface-container-lowest rounded-xl shadow-sm border border-slate-100 p-6">
+        <div class="flex items-start gap-3 mb-1">
+          <svg width="22" height="22" viewBox="0 0 48 48"><path fill="#4285F4" d="M24 9.5c3.1 0 5.7 1.1 7.7 2.9l5.7-5.7C33.9 3.6 29.3 1.5 24 1.5 14.8 1.5 7 7.3 4.1 15.3l6.6 5.1C12.3 13.9 17.6 9.5 24 9.5z"/><path fill="#34A853" d="M46.5 24c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.5 2.8-2.2 5.2-4.7 6.8l7.3 5.7c4.3-4 6.8-9.9 6.8-16.5z"/><path fill="#FBBC05" d="M10.7 28.6c-.7-2-1-4.1-1-6.1 0-2 .4-3.9 1-5.7l-6.6-5.1C2.5 14.6 1.5 19.2 1.5 24c0 4.8 1 9.4 2.6 13.3l6.6-8.7z"/><path fill="#EA4335" d="M24 46.5c5.4 0 9.9-1.8 13.2-4.8l-6.4-5c-1.8 1.2-4.1 1.9-6.8 1.9-6.4 0-11.7-4.3-13.7-10.1l-6.5 8.1C7 41.7 14.9 46.5 24 46.5z"/></svg>
+          <div>
+            <h2 class="text-lg font-bold font-headline text-on-surface">Google Calendar (opcional)</h2>
+            <p class="text-sm text-outline mb-5">Mostrá tu Google Calendar dentro del panel. Es solo lectura — para reservas usá "Mi Calendario".</p>
+          </div>
+        </div>
+        <form id="gcal-form" class="space-y-3">
+          <label class="block text-xs font-semibold text-on-surface">URL de embed de Google Calendar</label>
+          <input type="url" id="gcal-url" class="input font-mono text-xs" placeholder="https://calendar.google.com/calendar/embed?src=..." />
+          <div class="flex gap-2">
+            <button type="submit" class="btn-primary">Guardar URL</button>
+            <button type="button" id="gcal-clear" class="btn-secondary">Quitar</button>
+          </div>
+        </form>
+        <p id="gcal-msg" class="mt-3 text-xs"></p>
+        <details class="mt-5 bg-surface-container-low rounded-xl p-4">
+          <summary class="text-sm font-semibold text-on-surface cursor-pointer">¿Cómo obtengo la URL?</summary>
+          <ol class="mt-3 text-sm text-on-surface-variant space-y-2 ml-4 list-decimal">
+            <li>Abrí <a href="https://calendar.google.com" target="_blank" class="text-primary hover:underline">Google Calendar</a></li>
+            <li>En la lista de calendarios, hacé click en los 3 puntitos del que querés mostrar</li>
+            <li>Seleccioná <strong>"Configuración y uso compartido"</strong></li>
+            <li>Scroll hasta <strong>"Integrar el calendario"</strong></li>
+            <li>Copiá el <strong>src</strong> del iframe (solo la URL, sin el HTML)</li>
+            <li>Pegala arriba y dale Guardar</li>
+          </ol>
+        </details>
+      </section>
+
+      <!-- ── Datos del negocio ──────────────────────── -->
+      <section class="bg-surface-container-lowest rounded-xl shadow-sm border border-slate-100 p-6">
+        <h2 class="text-lg font-bold font-headline text-on-surface mb-1">Datos del Negocio</h2>
+        <p class="text-sm text-outline mb-5">Precios y servicios. Para editarlos, modificá <code>ai-agent/negocio.json</code> en el servidor.</p>
+        <div id="negocio-content" class="text-sm">
+          <p class="text-outline text-center py-6">Cargando datos...</p>
+        </div>
+      </section>
+
+      <!-- ── Info técnica ───────────────────────────── -->
+      <section class="bg-surface-container-lowest rounded-xl shadow-sm border border-slate-100 p-6">
+        <h2 class="text-lg font-bold font-headline text-on-surface mb-1">Información Técnica</h2>
+        <p class="text-sm text-outline mb-5">Para diagnóstico y soporte</p>
+        <dl id="tech-info" class="grid grid-cols-2 gap-3 text-sm"></dl>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="auth.js"></script>
+  <script>
+    requireAuth();
+
+    function toast(msg, type) {
+      var t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast show' + (type ? ' ' + type : '');
+      setTimeout(function() { t.className = 'toast'; }, 3000);
+    }
+
+    /* ── Estado de integraciones ────────────────────── */
+    fetch('/api/status').then(function(r){ return r.json(); }).then(function(s) {
+      var items = [
+        { label: 'Agente IA (Claude / Anthropic)', on: s.bot, info: s.bot ? ('Conectado · Modelo: ' + s.model) : 'Falta ANTHROPIC_API_KEY en .env', accion: 'Ver guía' },
+        { label: 'Chatwoot (bandeja de mensajes)', on: s.chatwoot, info: s.chatwoot ? 'Token configurado en .env' : 'Falta CHATWOOT_API_TOKEN en .env', accion: 'Ver guía' },
+        { label: 'MercadoPago (cobro de seña)', on: s.mercadopago, warn: !s.mercadopago, info: s.mercadopago ? 'Cobro automático activo' : 'Opcional — sin esto el bot deriva a un humano', accion: 'Ver guía' },
+        { label: 'URL pública (HTTPS)', on: s.public_url, warn: !s.public_url, info: s.public_url ? 'Configurada' : 'Necesaria para WhatsApp y MercadoPago en producción', accion: 'Ver guía' }
+      ];
+      document.getElementById('status-list').innerHTML = items.map(function(it) {
+        var dotClass = it.on ? 'status-on' : (it.warn ? 'status-warn' : 'status-off');
+        var estado = it.on ? '<span class="text-xs font-semibold text-emerald-700">Conectado</span>' : (it.warn ? '<span class="text-xs font-semibold text-amber-700">Opcional</span>' : '<span class="text-xs font-semibold text-error">Falta configurar</span>');
+        return '<div class="flex items-center gap-3 p-3.5 rounded-xl border border-slate-100 hover:bg-surface-container-low/50">' +
+          '<span class="status-dot ' + dotClass + '"></span>' +
+          '<div class="flex-1 min-w-0">' +
+          '<div class="flex items-center gap-2 mb-0.5"><p class="text-sm font-bold text-on-surface">' + it.label + '</p>' + estado + '</div>' +
+          '<p class="text-xs text-outline">' + it.info + '</p>' +
+          '</div></div>';
+      }).join('');
+
+      // Info técnica
+      document.getElementById('tech-info').innerHTML =
+        '<dt class="text-outline">Modelo IA</dt><dd class="font-mono text-on-surface">' + (s.model || '—') + '</dd>' +
+        '<dt class="text-outline">Debounce</dt><dd class="font-mono text-on-surface">' + (s.debounce_ms || '—') + ' ms</dd>' +
+        '<dt class="text-outline">Bot IA</dt><dd>' + (s.bot ? '<span class="text-emerald-700 font-semibold">✓ Activo</span>' : '<span class="text-error font-semibold">✗ Inactivo</span>') + '</dd>' +
+        '<dt class="text-outline">Versión</dt><dd class="font-mono text-on-surface">1.0</dd>';
+    }).catch(function() {
+      document.getElementById('status-list').innerHTML = '<p class="text-sm text-error">No se pudo conectar con el agente IA.</p>';
+    });
+
+    /* ── Cambiar contraseña ─────────────────────────── */
+    document.getElementById('pwd-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var msg = document.getElementById('pwd-msg');
+      var actual = document.getElementById('pwd-current').value;
+      var nueva = document.getElementById('pwd-new').value;
+      if (actual !== getPassword()) {
+        msg.textContent = 'La contraseña actual es incorrecta.';
+        msg.className = 'mt-3 text-xs text-error font-semibold';
+        return;
+      }
+      if (nueva.length < 6) {
+        msg.textContent = 'La nueva contraseña debe tener al menos 6 caracteres.';
+        msg.className = 'mt-3 text-xs text-error font-semibold';
+        return;
+      }
+      setPassword(nueva);
+      msg.textContent = '✓ Contraseña actualizada. La próxima vez que cierres sesión vas a tener que usar la nueva.';
+      msg.className = 'mt-3 text-xs text-emerald-700 font-semibold';
+      document.getElementById('pwd-form').reset();
+      toast('Contraseña actualizada ✓', 'success');
+    });
+
+    /* ── Google Calendar ────────────────────────────── */
+    document.getElementById('gcal-url').value = getGoogleCalendarUrl();
+    document.getElementById('gcal-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var url = document.getElementById('gcal-url').value.trim();
+      var msg = document.getElementById('gcal-msg');
+      if (url && !url.startsWith('http')) {
+        msg.textContent = 'La URL tiene que empezar con https://';
+        msg.className = 'mt-3 text-xs text-error font-semibold';
+        return;
+      }
+      setGoogleCalendarUrl(url);
+      msg.textContent = url ? '✓ Guardado. Andá al Calendario y entrá a la pestaña Google Calendar.' : '✓ URL eliminada.';
+      msg.className = 'mt-3 text-xs text-emerald-700 font-semibold';
+      toast(url ? 'URL guardada ✓' : 'URL eliminada', 'success');
+    });
+    document.getElementById('gcal-clear').addEventListener('click', function() {
+      setGoogleCalendarUrl('');
+      document.getElementById('gcal-url').value = '';
+      var msg = document.getElementById('gcal-msg');
+      msg.textContent = '✓ URL eliminada.';
+      msg.className = 'mt-3 text-xs text-emerald-700 font-semibold';
+      toast('URL eliminada', 'success');
+    });
+
+    /* ── Datos del negocio ──────────────────────────── */
+    fetch('/api/negocio').then(function(r){ return r.json(); }).then(function(n) {
+      if (!n || n.error) {
+        document.getElementById('negocio-content').innerHTML = '<p class="text-sm text-error">No se pudo cargar negocio.json</p>';
+        return;
+      }
+      var servicios = (n.servicios || []).map(function(s) {
+        return '<tr class="border-b border-slate-100"><td class="py-2 pr-4 font-semibold">' + s.nombre + '</td>' +
+          '<td class="py-2 pr-4 text-outline">Hasta ' + s.max_personas + ' pers.</td>' +
+          '<td class="py-2 font-mono text-on-surface">$' + s.precio_por_persona.toLocaleString('es-AR') + ' /persona</td></tr>';
+      }).join('');
+      var extras = (n.extras || []).map(function(e) {
+        var precio = e.precio_total ? '$' + e.precio_total.toLocaleString('es-AR') + ' total' : '$' + e.precio_por_persona.toLocaleString('es-AR') + ' /persona';
+        return '<tr class="border-b border-slate-100"><td class="py-2 pr-4 font-semibold">' + e.nombre + '</td><td class="py-2 font-mono text-on-surface">' + precio + '</td></tr>';
+      }).join('');
+      document.getElementById('negocio-content').innerHTML =
+        '<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">' +
+        '<div class="p-3 bg-surface-container-low rounded-xl"><p class="text-xs text-outline font-semibold uppercase mb-1">Negocio</p><p class="font-bold text-on-surface">' + n.nombre + '</p><p class="text-xs text-outline">' + (n.rubro || '') + ' · ' + (n.ubicacion || '') + '</p></div>' +
+        '<div class="p-3 bg-surface-container-low rounded-xl"><p class="text-xs text-outline font-semibold uppercase mb-1">Horario</p><p class="font-bold text-on-surface">' + (n.horario_atencion || '—') + '</p></div>' +
+        '<div class="p-3 bg-surface-container-low rounded-xl"><p class="text-xs text-outline font-semibold uppercase mb-1">Seña</p><p class="font-bold text-on-surface">' + n.sena_porcentaje + '%</p></div>' +
+        '<div class="p-3 bg-surface-container-low rounded-xl"><p class="text-xs text-outline font-semibold uppercase mb-1">IVA</p><p class="font-bold text-on-surface">' + n.iva_porcentaje + '%</p></div>' +
+        '</div>' +
+        '<h4 class="font-bold text-on-surface mt-5 mb-2">Servicios</h4>' +
+        '<table class="w-full text-sm"><tbody>' + servicios + '</tbody></table>' +
+        (extras ? '<h4 class="font-bold text-on-surface mt-5 mb-2">Extras</h4><table class="w-full text-sm"><tbody>' + extras + '</tbody></table>' : '');
+    }).catch(function() {
+      document.getElementById('negocio-content').innerHTML = '<p class="text-sm text-error">No se pudo cargar negocio.json</p>';
+    });
+  </script>
+</body>
+</html>

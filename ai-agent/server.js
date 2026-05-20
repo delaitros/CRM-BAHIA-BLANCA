@@ -626,6 +626,58 @@ app.delete("/api/reservas/:id", (req, res) => {
   res.json({ ok: true });
 });
 
+// Estado del sistema: qué integraciones están configuradas
+app.get("/api/status", (_req, res) => {
+  res.json({
+    bot: !!process.env.ANTHROPIC_API_KEY,
+    chatwoot: !!CHATWOOT_API_TOKEN,
+    mercadopago: !!MP_ACCESS_TOKEN,
+    public_url: !!PUBLIC_URL,
+    model: MODEL,
+    debounce_ms: DEBOUNCE_MS
+  });
+});
+
+// Negocio (lectura para el panel)
+app.get("/api/negocio", (_req, res) => {
+  try {
+    res.json(cargarNegocio());
+  } catch (e) {
+    res.status(500).json({ error: "no se pudo leer negocio.json" });
+  }
+});
+
+// Conversaciones recientes desde Chatwoot (para la bandeja del dashboard)
+app.get("/api/messages/recent", async (_req, res) => {
+  if (!CHATWOOT_API_TOKEN) return res.json({ ok: false, configured: false, conversaciones: [] });
+  try {
+    const r = await fetch(`${chatwootBase()}/conversations?status=open&page=1`, {
+      headers: { api_access_token: CHATWOOT_API_TOKEN }
+    });
+    if (!r.ok) return res.json({ ok: false, configured: true, conversaciones: [] });
+    const data = await r.json();
+    const convs = ((data.data && data.data.payload) || []).slice(0, 8).map((c) => {
+      const meta = c.meta || {};
+      const sender = meta.sender || {};
+      const last = (c.messages && c.messages[c.messages.length - 1]) || {};
+      return {
+        id: c.id,
+        nombre: sender.name || "Cliente",
+        iniciales: (sender.name || "?").split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase(),
+        canal: (meta.channel || "web").replace("Channel::", "").toLowerCase(),
+        ultimo: (last.content || "").slice(0, 80),
+        hora: last.created_at ? new Date(last.created_at * 1000).toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" }) : "",
+        no_leidos: c.unread_count || 0,
+        modo: modoConversacion(c.id)
+      };
+    });
+    res.json({ ok: true, configured: true, conversaciones: convs });
+  } catch (e) {
+    console.error("Error leyendo conversaciones:", e);
+    res.json({ ok: false, configured: true, conversaciones: [] });
+  }
+});
+
 app.listen(PORT, () =>
   console.log(`Agente IA en puerto ${PORT} (modelo: ${MODEL})`)
 );

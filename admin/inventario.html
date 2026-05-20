@@ -105,13 +105,13 @@
         <span class="text-sm font-semibold">Inventario</span>
       </a>
     </nav>
-    <button id="new-event-btn" class="bg-gradient-to-br from-primary to-primary-container text-white py-3 rounded-full font-bold text-sm shadow-lg mb-4 active:scale-95 transition-transform">Nuevo Evento</button>
+    <a href="calendario.html?new=1" class="block text-center bg-gradient-to-br from-primary to-primary-container text-white py-3 rounded-full font-bold text-sm shadow-lg mb-4 active:scale-95 transition-transform">+ Nuevo Evento</a>
     <div class="pt-4 border-t border-slate-200 space-y-1">
-      <a href="#" class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:bg-slate-200/50 rounded-xl transition-all">
+      <a href="configuracion.html" class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:bg-slate-200/50 rounded-xl transition-all">
         <span class="material-symbols-outlined">settings</span>
         <span class="text-sm font-semibold">Configuración</span>
       </a>
-      <a href="#" id="logout-btn" class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:bg-slate-200/50 rounded-xl transition-all">
+      <a href="#" onclick="logout(); return false;" class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:bg-slate-200/50 rounded-xl transition-all">
         <span class="material-symbols-outlined">logout</span>
         <span class="text-sm font-semibold">Cerrar Sesión</span>
       </a>
