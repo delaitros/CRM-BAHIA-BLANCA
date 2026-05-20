@@ -92,7 +92,7 @@
       <div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-secondary font-bold text-sm">JP</div>
       <div class="flex flex-col">
         <span class="text-sm font-semibold text-on-surface">Panel de Juan</span>
-        <span class="text-xs text-slate-500">Gerente de Catering</span>
+        <span class="text-xs text-slate-500">Administrador</span>
       </div>
     </div>
     <nav class="flex-1 space-y-1">
@@ -133,9 +133,9 @@
     <div class="bg-background/80 backdrop-blur-lg border-b border-outline-variant/30 px-8 py-4 flex items-center justify-between flex-shrink-0">
       <div class="flex items-center gap-3">
         <h1 class="text-2xl font-bold font-headline text-on-surface">Mensajes</h1>
-        <span class="flex items-center gap-1.5 bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full">
-          <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-          Chatwoot Conectado
+        <span id="cw-status-badge" class="flex items-center gap-1.5 bg-slate-100 text-slate-500 text-xs font-bold px-3 py-1 rounded-full">
+          <span class="w-2 h-2 bg-slate-400 rounded-full"></span>
+          Verificando...
         </span>
       </div>
       <a href="#setup-guide" class="flex items-center gap-2 text-sm font-semibold text-secondary hover:text-secondary/80 transition-colors" id="toggle-guide-btn">
@@ -209,7 +209,7 @@
                   <p class="text-sm text-on-surface-variant mt-1">
                     Ejecuta <strong>docker compose up -d</strong> en el proyecto.
                     Chatwoot estara disponible en <strong>localhost:3000</strong>.
-                    Tambien se levanta n8n (agente IA) en <strong>localhost:5678</strong>.
+                    El agente IA corre en <strong>localhost:4000</strong>.
                   </p>
                 </div>
               </div>
@@ -270,7 +270,8 @@
     </div>
   </main>
 
-  <script src="../assets/js/admin.js"></script>
+  <script src="auth.js"></script>
+  <script>requireAuth();</script>
   <script>
     (function() {
       var STORAGE_KEY = 'chatwoot_config';
@@ -370,11 +371,23 @@
         showChatwoot(saved.url, saved.token);
       }
 
+      /* Check Chatwoot status */
+      fetch('/api/status').then(function(r) { return r.json(); }).then(function(s) {
+        var badge = document.getElementById('cw-status-badge');
+        if (s.chatwoot) {
+          badge.className = 'flex items-center gap-1.5 bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full';
+          badge.innerHTML = '<span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> Chatwoot Conectado';
+        } else {
+          badge.className = 'flex items-center gap-1.5 bg-amber-100 text-amber-700 text-xs font-bold px-3 py-1 rounded-full';
+          badge.innerHTML = '<span class="w-2 h-2 bg-amber-500 rounded-full"></span> Sin configurar';
+        }
+      }).catch(function() {
+        var badge = document.getElementById('cw-status-badge');
+        badge.className = 'flex items-center gap-1.5 bg-red-100 text-red-700 text-xs font-bold px-3 py-1 rounded-full';
+        badge.innerHTML = '<span class="w-2 h-2 bg-red-500 rounded-full"></span> Sin conexion';
+      });
+
     })();
-  </script>
-  <script src="auth.js"></script>
-  <script>
-    requireAuth();
   </script>
 </body>
 </html>
