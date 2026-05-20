@@ -146,7 +146,7 @@
     </nav>
     <button onclick="openAddModal(null)" class="bg-gradient-to-br from-primary to-primary-container text-white py-3 rounded-full font-bold text-sm shadow-lg mb-4 active:scale-95 transition-transform">+ Nuevo Evento</button>
     <div class="pt-4 border-t border-slate-200 space-y-1">
-      <a href="#" class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:bg-slate-200/50 rounded-xl transition-all">
+      <a href="configuracion.html" class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:bg-slate-200/50 rounded-xl transition-all">
         <span class="material-symbols-outlined">settings</span>
         <span class="text-sm font-semibold">Configuración</span>
       </a>
@@ -423,17 +423,17 @@
 
     function renderGoogleCalendar() {
       var container = document.getElementById('gcal-content');
-      if (GOOGLE_CALENDAR_EMBED_URL) {
-        container.innerHTML = '<iframe class="gcal-iframe" src="' + GOOGLE_CALENDAR_EMBED_URL + '"></iframe>';
+      var url = getGoogleCalendarUrl();
+      if (url) {
+        container.innerHTML = '<iframe class="gcal-iframe" src="' + url + '"></iframe>';
       } else {
         container.innerHTML =
           '<div class="gcal-placeholder">' +
           '<span class="material-symbols-outlined text-5xl text-outline mb-4 block">calendar_month</span>' +
           '<h3 class="text-lg font-bold text-on-surface mb-2">Configurá tu Google Calendar</h3>' +
-          '<p class="text-sm text-outline max-w-sm mx-auto mb-4">Para ver tu Google Calendar acá, editá el archivo <code class="bg-slate-100 px-2 py-0.5 rounded">admin/auth.js</code> y pegá tu URL de embed en la variable <code class="bg-slate-100 px-2 py-0.5 rounded">GOOGLE_CALENDAR_EMBED_URL</code>.</p>' +
-          '<div class="bg-slate-100 rounded-xl p-4 text-left text-xs font-mono text-slate-700 max-w-md mx-auto">' +
-          'Pasos:<br>1. Abrí Google Calendar<br>2. ⚙ Configuración → tu calendario<br>3. "Integrar el calendario"<br>4. Copiá la URL del iframe (el src="...")<br>5. Pegála en auth.js en GOOGLE_CALENDAR_EMBED_URL' +
-          '</div>' +
+          '<p class="text-sm text-outline max-w-sm mx-auto mb-4">Para ver tu Google Calendar acá, andá a <a href="configuracion.html" class="text-primary font-semibold hover:underline">Configuración → Google Calendar</a> y pegá la URL de embed.</p>' +
+          '<a href="configuracion.html" class="inline-flex items-center gap-2 bg-primary text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-primary/90 transition-colors">' +
+          '<span class="material-symbols-outlined text-base">settings</span> Ir a Configuración</a>' +
           '</div>';
       }
     }
@@ -704,6 +704,11 @@
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') { closeAddModal(); closeViewModal(); }
     });
+
+    // Si vienen con ?new=1 desde el dashboard, abrir modal automáticamente
+    if (new URLSearchParams(window.location.search).get('new') === '1') {
+      openAddModal(null);
+    }
 
     // Inicializar
     fetchEventos();
