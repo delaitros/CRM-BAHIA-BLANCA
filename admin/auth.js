@@ -14,6 +14,7 @@ var SESSION_VALUE = 'ok_v1';
 var PASSWORD_KEY = 'lodejuan_admin_password';
 var GCAL_KEY = 'lodejuan_gcal_url';
 var CW_URL_KEY = 'lodejuan_chatwoot_url';
+var GCAL_ICS_KEY = 'lodejuan_gcal_ics_url';
 
 function getPassword() {
   return localStorage.getItem(PASSWORD_KEY) || DEFAULT_PASSWORD;
@@ -39,6 +40,15 @@ function getChatwootUrl() {
 function setChatwootUrl(url) {
   if (url) localStorage.setItem(CW_URL_KEY, url);
   else localStorage.removeItem(CW_URL_KEY);
+}
+
+function getGoogleCalendarIcsUrl() {
+  return localStorage.getItem(GCAL_ICS_KEY) || '';
+}
+
+function setGoogleCalendarIcsUrl(url) {
+  if (url) localStorage.setItem(GCAL_ICS_KEY, url);
+  else localStorage.removeItem(GCAL_ICS_KEY);
 }
 
 function isAuthenticated() {
