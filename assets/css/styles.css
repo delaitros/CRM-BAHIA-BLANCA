@@ -44,10 +44,10 @@ body {
 }
 
 /* Brand Dots */
-.brand-dot-red { background-color: #b7102a; }
-.brand-dot-yellow { background-color: #ffba27; }
-.brand-dot-blue { background-color: #485f84; }
-.brand-dot-green { background-color: #2e7d32; }
+.brand-dot-red { background-color: #b8524d; }
+.brand-dot-yellow { background-color: #c4a13a; }
+.brand-dot-blue { background-color: #5680a5; }
+.brand-dot-green { background-color: #5b9669; }
 
 /* No scrollbar */
 .no-scrollbar::-webkit-scrollbar { display: none; }
