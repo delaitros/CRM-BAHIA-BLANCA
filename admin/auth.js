@@ -7,12 +7,10 @@
  */
 
 var DEFAULT_PASSWORD = 'lodejuan2026';
-var DEFAULT_GCAL_URL = ''; // URL de iframe de Google Calendar (opcional)
 
 var SESSION_KEY = 'lodejuan_admin';
 var SESSION_VALUE = 'ok_v1';
 var PASSWORD_KEY = 'lodejuan_admin_password';
-var GCAL_KEY = 'lodejuan_gcal_url';
 var CW_URL_KEY = 'lodejuan_chatwoot_url';
 var GCAL_ICS_KEY = 'lodejuan_gcal_ics_url';
 
@@ -22,15 +20,6 @@ function getPassword() {
 
 function setPassword(nuevoPwd) {
   localStorage.setItem(PASSWORD_KEY, nuevoPwd);
-}
-
-function getGoogleCalendarUrl() {
-  return localStorage.getItem(GCAL_KEY) || DEFAULT_GCAL_URL;
-}
-
-function setGoogleCalendarUrl(url) {
-  if (url) localStorage.setItem(GCAL_KEY, url);
-  else localStorage.removeItem(GCAL_KEY);
 }
 
 function getChatwootUrl() {

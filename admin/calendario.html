@@ -107,11 +107,6 @@
     .chip-corporativo { background: #ede9fe; color: #6d28d9; }
     .chip-otro     { background: #f5f1e9; color: #374151; }
     .chip-quince   { background: #fef3c7; color: #92400e; }
-    .gcal-iframe { border: none; width: 100%; border-radius: 0.75rem; min-height: 580px; }
-    .gcal-placeholder {
-      background: #fbf8f2; border: 2px dashed #c1c6d7;
-      border-radius: 1rem; padding: 3rem; text-align: center;
-    }
   </style>
 </head>
 <body class="bg-background font-body text-on-surface">
@@ -164,19 +159,6 @@
     <div class="sticky top-0 z-40 bg-background/90 backdrop-blur-lg border-b border-outline-variant/30 px-8 py-4 flex items-center justify-between">
       <h1 class="text-2xl font-bold font-headline text-on-surface">Calendario</h1>
       <div class="flex items-center gap-3">
-        <!-- Tab switcher -->
-        <div class="flex items-center gap-1 bg-surface-container rounded-xl p-1">
-          <button id="tab-custom" class="tab-btn active text-sm font-semibold px-4 py-2 rounded-lg" onclick="switchTab('custom')">
-            Mi Calendario
-          </button>
-          <button id="tab-google" class="tab-btn text-sm font-semibold px-4 py-2 rounded-lg text-slate-500" onclick="switchTab('google')">
-            <span class="flex items-center gap-1.5">
-              <svg width="14" height="14" viewBox="0 0 48 48"><path fill="#4285F4" d="M24 9.5c3.1 0 5.7 1.1 7.7 2.9l5.7-5.7C33.9 3.6 29.3 1.5 24 1.5 14.8 1.5 7 7.3 4.1 15.3l6.6 5.1C12.3 13.9 17.6 9.5 24 9.5z"/><path fill="#34A853" d="M46.5 24c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.5 2.8-2.2 5.2-4.7 6.8l7.3 5.7c4.3-4 6.8-9.9 6.8-16.5z"/><path fill="#FBBC05" d="M10.7 28.6c-.7-2-1-4.1-1-6.1 0-2 .4-3.9 1-5.7l-6.6-5.1C2.5 14.6 1.5 19.2 1.5 24c0 4.8 1 9.4 2.6 13.3l6.6-8.7z"/><path fill="#EA4335" d="M24 46.5c5.4 0 9.9-1.8 13.2-4.8l-6.4-5c-1.8 1.2-4.1 1.9-6.8 1.9-6.4 0-11.7-4.3-13.7-10.1l-6.5 8.1C7 41.7 14.9 46.5 24 46.5z"/></svg>
-              Google Calendar
-            </span>
-          </button>
-        </div>
-        <!-- Nav mes (solo para custom) -->
         <div id="month-nav" class="flex items-center gap-2 bg-surface-container rounded-xl px-3 py-2">
           <button onclick="changeMonth(-1)" class="p-1 rounded-lg hover:bg-surface-container-high transition-colors">
             <span class="material-symbols-outlined text-on-surface-variant text-xl">chevron_left</span>
@@ -271,12 +253,6 @@
       </div>
 
       <!-- ── GOOGLE CALENDAR ───────────────────────────── -->
-      <div id="view-google" style="display:none">
-        <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/20 p-6">
-          <div id="gcal-content"></div>
-        </div>
-      </div>
-
     </div>
   </main>
 
@@ -368,7 +344,7 @@
     var eventos = [];
     var currentYear = new Date().getFullYear();
     var currentMonth = new Date().getMonth(); // 0-indexed
-    var activeTab = 'custom';
+
     var MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
     var API_BASE = '/api';
 
@@ -408,34 +384,6 @@
     function deleteEvento(id) {
       return fetch(API_BASE + '/reservas/' + encodeURIComponent(id), { method: 'DELETE' })
         .then(function(r) { return r.json(); });
-    }
-
-    /* ── Tabs ────────────────────────────────────────── */
-    function switchTab(tab) {
-      activeTab = tab;
-      document.getElementById('view-custom').style.display = tab === 'custom' ? '' : 'none';
-      document.getElementById('view-google').style.display = tab === 'google' ? '' : 'none';
-      document.getElementById('month-nav').style.display = tab === 'custom' ? '' : 'none';
-      document.getElementById('tab-custom').className = 'tab-btn ' + (tab === 'custom' ? 'active' : 'text-slate-500') + ' text-sm font-semibold px-4 py-2 rounded-lg';
-      document.getElementById('tab-google').className = 'tab-btn ' + (tab === 'google' ? 'active' : 'text-slate-500') + ' text-sm font-semibold px-4 py-2 rounded-lg';
-      if (tab === 'google') renderGoogleCalendar();
-    }
-
-    function renderGoogleCalendar() {
-      var container = document.getElementById('gcal-content');
-      var url = getGoogleCalendarUrl();
-      if (url) {
-        container.innerHTML = '<iframe class="gcal-iframe" src="' + url + '"></iframe>';
-      } else {
-        container.innerHTML =
-          '<div class="gcal-placeholder">' +
-          '<span class="material-symbols-outlined text-5xl text-outline mb-4 block">calendar_month</span>' +
-          '<h3 class="text-lg font-bold text-on-surface mb-2">Configurá tu Google Calendar</h3>' +
-          '<p class="text-sm text-outline max-w-sm mx-auto mb-4">Para ver tu Google Calendar acá, andá a <a href="configuracion.html" class="text-primary font-semibold hover:underline">Configuración → Google Calendar</a> y pegá la URL de embed.</p>' +
-          '<a href="configuracion.html" class="inline-flex items-center gap-2 bg-primary text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-primary/90 transition-colors">' +
-          '<span class="material-symbols-outlined text-base">settings</span> Ir a Configuración</a>' +
-          '</div>';
-      }
     }
 
     /* ── Calendario ──────────────────────────────────── */

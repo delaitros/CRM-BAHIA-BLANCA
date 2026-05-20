@@ -142,46 +142,13 @@
         <p id="pwd-msg" class="mt-3 text-xs"></p>
       </section>
 
-      <!-- ── Google Calendar ────────────────────────── -->
+      <!-- ── Google Calendar ICS (disponibilidad) ── -->
       <section class="bg-surface-container-lowest rounded-xl shadow-sm border border-slate-100 p-6">
         <div class="flex items-start gap-3 mb-1">
           <svg width="22" height="22" viewBox="0 0 48 48"><path fill="#4285F4" d="M24 9.5c3.1 0 5.7 1.1 7.7 2.9l5.7-5.7C33.9 3.6 29.3 1.5 24 1.5 14.8 1.5 7 7.3 4.1 15.3l6.6 5.1C12.3 13.9 17.6 9.5 24 9.5z"/><path fill="#34A853" d="M46.5 24c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.5 2.8-2.2 5.2-4.7 6.8l7.3 5.7c4.3-4 6.8-9.9 6.8-16.5z"/><path fill="#FBBC05" d="M10.7 28.6c-.7-2-1-4.1-1-6.1 0-2 .4-3.9 1-5.7l-6.6-5.1C2.5 14.6 1.5 19.2 1.5 24c0 4.8 1 9.4 2.6 13.3l6.6-8.7z"/><path fill="#EA4335" d="M24 46.5c5.4 0 9.9-1.8 13.2-4.8l-6.4-5c-1.8 1.2-4.1 1.9-6.8 1.9-6.4 0-11.7-4.3-13.7-10.1l-6.5 8.1C7 41.7 14.9 46.5 24 46.5z"/></svg>
           <div>
-            <h2 class="text-lg font-bold font-headline text-on-surface">Google Calendar (opcional)</h2>
-            <p class="text-sm text-outline mb-5">Mostrá tu Google Calendar dentro del panel. Es solo lectura — para reservas usá "Mi Calendario".</p>
-          </div>
-        </div>
-        <form id="gcal-form" class="space-y-3">
-          <label class="block text-xs font-semibold text-on-surface">URL de embed de Google Calendar</label>
-          <input type="url" id="gcal-url" class="input font-mono text-xs" placeholder="https://calendar.google.com/calendar/embed?src=..." />
-          <div class="flex gap-2">
-            <button type="submit" class="btn-primary">Guardar URL</button>
-            <button type="button" id="gcal-clear" class="btn-secondary">Quitar</button>
-          </div>
-        </form>
-        <p id="gcal-msg" class="mt-3 text-xs"></p>
-        <details class="mt-5 bg-surface-container-low rounded-xl p-4">
-          <summary class="text-sm font-semibold text-on-surface cursor-pointer">¿Cómo obtengo la URL?</summary>
-          <ol class="mt-3 text-sm text-on-surface-variant space-y-2 ml-4 list-decimal">
-            <li>Abrí <a href="https://calendar.google.com" target="_blank" class="text-primary hover:underline">Google Calendar</a></li>
-            <li>En la lista de calendarios, hacé click en los 3 puntitos del que querés mostrar</li>
-            <li>Seleccioná <strong>"Configuración y uso compartido"</strong></li>
-            <li>Scroll hasta <strong>"Integrar el calendario"</strong></li>
-            <li>Copiá el <strong>src</strong> del iframe (solo la URL, sin el HTML)</li>
-            <li>Pegala arriba y dale Guardar</li>
-          </ol>
-        </details>
-      </section>
-
-      <!-- ── Google Calendar ICS (disponibilidad del bot + landing) ── -->
-      <section class="bg-surface-container-lowest rounded-xl shadow-sm border border-slate-100 p-6">
-        <div class="flex items-start gap-3 mb-1">
-          <div class="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-            <span class="material-symbols-outlined text-emerald-700 text-sm">event_available</span>
-          </div>
-          <div>
-            <h2 class="text-lg font-bold font-headline text-on-surface">Disponibilidad (ICS)</h2>
-            <p class="text-sm text-outline mb-5">Esta URL la usa el bot y la landing para saber que fechas estan ocupadas. Necesitas la URL secreta en formato iCal (.ics) de tu Google Calendar.</p>
+            <h2 class="text-lg font-bold font-headline text-on-surface">Google Calendar</h2>
+            <p class="text-sm text-outline mb-5">Conectá tu Google Calendar para que el bot y la landing sepan qué fechas están ocupadas. Solo necesitás la URL secreta en formato iCal (.ics).</p>
           </div>
         </div>
         <form id="ics-form" class="space-y-3">
@@ -291,31 +258,6 @@
       msg.className = 'mt-3 text-xs text-emerald-700 font-semibold';
       document.getElementById('pwd-form').reset();
       toast('Contraseña actualizada ✓', 'success');
-    });
-
-    /* ── Google Calendar ────────────────────────────── */
-    document.getElementById('gcal-url').value = getGoogleCalendarUrl();
-    document.getElementById('gcal-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      var url = document.getElementById('gcal-url').value.trim();
-      var msg = document.getElementById('gcal-msg');
-      if (url && !url.startsWith('http')) {
-        msg.textContent = 'La URL tiene que empezar con https://';
-        msg.className = 'mt-3 text-xs text-error font-semibold';
-        return;
-      }
-      setGoogleCalendarUrl(url);
-      msg.textContent = url ? '✓ Guardado. Andá al Calendario y entrá a la pestaña Google Calendar.' : '✓ URL eliminada.';
-      msg.className = 'mt-3 text-xs text-emerald-700 font-semibold';
-      toast(url ? 'URL guardada ✓' : 'URL eliminada', 'success');
-    });
-    document.getElementById('gcal-clear').addEventListener('click', function() {
-      setGoogleCalendarUrl('');
-      document.getElementById('gcal-url').value = '';
-      var msg = document.getElementById('gcal-msg');
-      msg.textContent = '✓ URL eliminada.';
-      msg.className = 'mt-3 text-xs text-emerald-700 font-semibold';
-      toast('URL eliminada', 'success');
     });
 
     /* ── Google Calendar ICS ──────────────────────────── */
