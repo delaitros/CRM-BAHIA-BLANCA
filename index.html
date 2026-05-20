@@ -17,56 +17,66 @@
       theme: {
         extend: {
           colors: {
-            "tertiary-fixed": "#ffdea9",
-            "on-primary-fixed": "#410007",
-            "error": "#ba1a1a",
-            "surface": "#f8f9fa",
-            "surface-container-lowest": "#ffffff",
-            "on-secondary-fixed-variant": "#30476a",
-            "secondary-fixed": "#d5e3ff",
-            "inverse-surface": "#2e3132",
-            "on-tertiary-fixed": "#271900",
+            // Paleta: pastel tirando a oscuro (amarillo, verde, rojo, azul)
+            "primary": "#b8524d",
+            "primary-container": "#c96c66",
             "on-primary": "#ffffff",
-            "on-primary-fixed-variant": "#92001c",
-            "surface-variant": "#e1e3e4",
-            "outline-variant": "#c1c6d7",
-            "on-error": "#ffffff",
-            "on-primary-container": "#fffbff",
-            "surface-container-highest": "#e1e3e4",
+            "on-primary-container": "#ffffff",
+            "primary-fixed": "#f2d3d1",
+            "primary-fixed-dim": "#e5a8a4",
+            "on-primary-fixed": "#3a1210",
+            "on-primary-fixed-variant": "#8a3a36",
+            "secondary": "#5680a5",
+            "secondary-container": "#7298ba",
             "on-secondary": "#ffffff",
-            "secondary": "#485f84",
-            "secondary-container": "#bbd3fd",
-            "on-secondary-container": "#445a7f",
+            "on-secondary-container": "#ffffff",
+            "secondary-fixed": "#d5e2ee",
+            "secondary-fixed-dim": "#aac3da",
+            "on-secondary-fixed": "#0e2740",
+            "on-secondary-fixed-variant": "#3c5a78",
+            "tertiary": "#c4a13a",
+            "tertiary-container": "#d4b65a",
             "on-tertiary": "#ffffff",
-            "primary-fixed": "#ffdad8",
-            "error-container": "#ffdad6",
-            "surface-bright": "#f8f9fa",
-            "on-tertiary-container": "#fffbff",
-            "surface-container-low": "#f3f4f5",
-            "on-secondary-fixed": "#001b3c",
-            "on-surface-variant": "#414755",
-            "on-error-container": "#93000a",
-            "background": "#f8f9fa",
-            "on-surface": "#191c1d",
-            "secondary-fixed-dim": "#b0c7f1",
-            "tertiary-fixed-dim": "#ffba27",
-            "inverse-on-surface": "#f0f1f2",
-            "primary": "#b7102a",
-            "surface-tint": "#bb152c",
-            "on-background": "#191c1d",
-            "inverse-primary": "#ffb3b1",
-            "surface-container": "#edeeef",
-            "outline": "#717786",
-            "tertiary-container": "#996c00",
-            "tertiary": "#7a5500",
-            "surface-container-high": "#e7e8e9",
-            "on-tertiary-fixed-variant": "#5e4100",
-            "surface-dim": "#d9dadb",
-            "primary-fixed-dim": "#ffb3b1",
-            "primary-container": "#db313f",
-            "avail-green": "#16a34a",
-            "avail-green-light": "#dcfce7",
-            "reserved-red-light": "#fee2e2",
+            "on-tertiary-container": "#2a2208",
+            "tertiary-fixed": "#f5e7b8",
+            "tertiary-fixed-dim": "#e8d180",
+            "on-tertiary-fixed": "#3a2e0a",
+            "on-tertiary-fixed-variant": "#8a7028",
+            "success": "#5b9669",
+            "success-container": "#7aac86",
+            "on-success": "#ffffff",
+            "success-fixed": "#d9e9dd",
+            "success-fixed-dim": "#a8c7b1",
+            "on-success-fixed": "#143018",
+            "on-success-fixed-variant": "#3d6b48",
+            "error": "#b8524d",
+            "on-error": "#ffffff",
+            "error-container": "#f2d3d1",
+            "on-error-container": "#5a1c19",
+            "background": "#fbf8f2",
+            "on-background": "#1f1d18",
+            "surface": "#fbf8f2",
+            "on-surface": "#1f1d18",
+            "surface-bright": "#fefdf8",
+            "surface-dim": "#dcd9d3",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#f5f1e9",
+            "surface-container": "#efeae0",
+            "surface-container-high": "#e8e3d8",
+            "surface-container-highest": "#e1dccf",
+            "surface-variant": "#e8e3d8",
+            "on-surface-variant": "#4a4639",
+            "surface-tint": "#b8524d",
+            "outline": "#7a7464",
+            "outline-variant": "#cbc4b2",
+            "inverse-surface": "#34322c",
+            "inverse-on-surface": "#f3efe6",
+            "inverse-primary": "#e5a8a4",
+            // Estados del calendario
+            "avail-green": "#5b9669",
+            "avail-green-light": "#d9e9dd",
+            "reserved-red": "#b8524d",
+            "reserved-red-light": "#f2d3d1",
           },
           fontFamily: {
             "headline": ["Manrope", "sans-serif"],
@@ -192,7 +202,7 @@
         <div class="md:col-span-5">
           <div class="relative">
             <div class="absolute -inset-4 bg-gradient-to-br from-primary/10 to-tertiary-fixed/30 rounded-2xl blur-2xl"></div>
-            <img src="https://placehold.co/800x1000/b7102a/ffffff?text=Salon+de+Fiestas" alt="Salón Lo de Juan" class="relative w-full h-auto rounded-2xl object-cover shadow-2xl" />
+            <img src="https://placehold.co/800x1000/b8524d/ffffff?text=Salon+de+Fiestas" alt="Salón Lo de Juan" class="relative w-full h-auto rounded-2xl object-cover shadow-2xl" />
           </div>
         </div>
       </div>
@@ -353,7 +363,7 @@
         <!-- Peloteros -->
         <div class="group bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
           <div class="overflow-hidden">
-            <img src="https://placehold.co/600x400/db313f/ffffff?text=Peloteros" alt="Peloteros" class="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-500" />
+            <img src="https://placehold.co/600x400/c4a13a/ffffff?text=Peloteros" alt="Peloteros" class="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-500" />
           </div>
           <div class="p-5">
             <div class="flex items-center gap-2 mb-2">
@@ -367,7 +377,7 @@
         <!-- Juegos Acuáticos -->
         <div class="group bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
           <div class="overflow-hidden">
-            <img src="https://placehold.co/600x400/485f84/ffffff?text=Juegos+Acuaticos" alt="Juegos Acuáticos" class="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-500" />
+            <img src="https://placehold.co/600x400/5680a5/ffffff?text=Juegos+Acuaticos" alt="Juegos Acuáticos" class="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-500" />
           </div>
           <div class="p-5">
             <div class="flex items-center gap-2 mb-2">
@@ -381,7 +391,7 @@
         <!-- Circuitos de Aventura -->
         <div class="group bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
           <div class="overflow-hidden">
-            <img src="https://placehold.co/600x400/7a5500/ffffff?text=Circuitos+Aventura" alt="Circuitos de Aventura" class="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-500" />
+            <img src="https://placehold.co/600x400/5b9669/ffffff?text=Circuitos+Aventura" alt="Circuitos de Aventura" class="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-500" />
           </div>
           <div class="p-5">
             <div class="flex items-center gap-2 mb-2">
@@ -395,7 +405,7 @@
         <!-- Zona Interactiva -->
         <div class="group bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
           <div class="overflow-hidden">
-            <img src="https://placehold.co/600x400/b7102a/ffffff?text=Zona+Interactiva" alt="Zona Interactiva" class="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-500" />
+            <img src="https://placehold.co/600x400/b8524d/ffffff?text=Zona+Interactiva" alt="Zona Interactiva" class="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-500" />
           </div>
           <div class="p-5">
             <div class="flex items-center gap-2 mb-2">
@@ -425,30 +435,30 @@
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[180px] md:auto-rows-[220px]">
         <!-- Large tall -->
         <div class="col-span-2 row-span-2 rounded-2xl overflow-hidden shadow-lg">
-          <img src="https://placehold.co/800x800/b7102a/ffffff?text=Fiesta+Infantil" alt="Fiesta Infantil" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+          <img src="https://placehold.co/800x800/b8524d/ffffff?text=Fiesta+Infantil" alt="Fiesta Infantil" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
         </div>
         <!-- Small -->
         <div class="rounded-2xl overflow-hidden shadow-lg">
-          <img src="https://placehold.co/400x300/485f84/ffffff?text=Salon" alt="Salón" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+          <img src="https://placehold.co/400x300/5680a5/ffffff?text=Salon" alt="Salón" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
         </div>
         <!-- Small -->
         <div class="rounded-2xl overflow-hidden shadow-lg">
-          <img src="https://placehold.co/400x300/db313f/ffffff?text=Catering" alt="Catering" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+          <img src="https://placehold.co/400x300/c4a13a/ffffff?text=Catering" alt="Catering" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
         </div>
         <!-- Wide -->
         <div class="col-span-2 rounded-2xl overflow-hidden shadow-lg">
-          <img src="https://placehold.co/800x300/7a5500/ffffff?text=Juegos+y+Actividades" alt="Juegos y Actividades" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+          <img src="https://placehold.co/800x300/5b9669/ffffff?text=Juegos+y+Actividades" alt="Juegos y Actividades" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
         </div>
         <!-- Small bottom row -->
         <div class="rounded-2xl overflow-hidden shadow-lg">
-          <img src="https://placehold.co/400x300/2e3132/ffffff?text=Decoracion" alt="Decoración" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+          <img src="https://placehold.co/400x300/c4a13a/ffffff?text=Decoracion" alt="Decoración" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
         </div>
         <div class="rounded-2xl overflow-hidden shadow-lg">
-          <img src="https://placehold.co/400x300/996c00/ffffff?text=Eventos" alt="Eventos" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+          <img src="https://placehold.co/400x300/5b9669/ffffff?text=Eventos" alt="Eventos" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
         </div>
         <!-- Wide bottom -->
         <div class="col-span-2 rounded-2xl overflow-hidden shadow-lg">
-          <img src="https://placehold.co/800x300/485f84/ffffff?text=Cumpleanos+Tematicos" alt="Cumpleaños Temáticos" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+          <img src="https://placehold.co/800x300/5680a5/ffffff?text=Cumpleanos+Tematicos" alt="Cumpleaños Temáticos" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
         </div>
       </div>
     </div>
@@ -465,7 +475,7 @@
           Calendario
         </span>
         <h2 class="font-headline text-3xl sm:text-4xl font-extrabold text-on-surface mb-4">Disponibilidad</h2>
-        <p class="text-on-surface-variant text-base max-w-xl mx-auto">Consultá las fechas disponibles para tu evento. Los días con clima se muestran solo para la próxima semana.</p>
+        <p class="text-on-surface-variant text-base max-w-xl mx-auto">Tocá una fecha disponible para reservarla por WhatsApp. El clima se muestra para los próximos 7 días.</p>
       </div>
 
       <!-- Calendar Card -->
@@ -754,7 +764,9 @@
     var availabilityData = {}; // key: "YYYY-MM-DD" => true (reserved) or false (available)
     var weatherData = {};      // key: "YYYY-MM-DD" => { maxTemp, weatherCode }
     var availabilityLoaded = false;
+    var availabilityAvailable = false; // si la API respondió OK
     var weatherLoaded = false;
+    var WHATSAPP_NUMBER = '5491155551234';
 
     var MONTH_NAMES = [
       'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
@@ -791,7 +803,10 @@
       calGrid.style.display = 'none';
 
       fetch('/api/disponibilidad')
-        .then(function(res) { return res.json(); })
+        .then(function(res) {
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return res.json();
+        })
         .then(function(data) {
           availabilityData = {};
           if (data && data.dias) {
@@ -800,11 +815,13 @@
             });
           }
           availabilityLoaded = true;
+          availabilityAvailable = true;
           renderCalendar();
         })
         .catch(function(err) {
           console.warn('No se pudo cargar la disponibilidad:', err);
           availabilityLoaded = true;
+          availabilityAvailable = false;
           renderCalendar();
         });
     }
@@ -856,22 +873,30 @@
         calGrid.appendChild(empty);
       }
 
+      var todayDateOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
       // Day cells
       for (var d = 1; d <= daysInMonth; d++) {
         var dateStr = formatDate(currentYear, currentMonth, d);
-        var cell = document.createElement('div');
-        cell.className = 'relative flex flex-col items-center justify-center h-12 sm:h-16 rounded-xl text-sm font-semibold transition-all duration-200';
-
+        var cellDate = new Date(currentYear, currentMonth, d);
+        var isPast = cellDate < todayDateOnly;
         var isReserved = availabilityData[dateStr] === true;
-        var isAvailable = availabilityData[dateStr] === false;
+        // Si la API respondió, "no reservado" = disponible
+        // Si la API no respondió, asumimos disponible (las fechas futuras se gestionan por WhatsApp)
+        var isAvailable = !isPast && !isReserved && (availabilityAvailable ? availabilityData[dateStr] === false : true);
         var isToday = dateStr === todayStr;
-        var hasWeather = weatherData[dateStr] && isAvailable && isWithinNext7Days(dateStr);
+        var hasWeather = weatherData[dateStr] && isWithinNext7Days(dateStr) && !isPast;
+
+        var cell = document.createElement(isAvailable ? 'button' : 'div');
+        cell.className = 'relative flex flex-col items-center justify-center h-12 sm:h-16 rounded-xl text-sm font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50';
 
         // Styling
-        if (isReserved) {
-          cell.className += ' bg-reserved-red-light text-primary border border-primary/30 cursor-not-allowed';
+        if (isPast) {
+          cell.className += ' text-on-surface-variant/40 cursor-not-allowed';
+        } else if (isReserved) {
+          cell.className += ' bg-reserved-red-light text-reserved-red border border-reserved-red/30 cursor-not-allowed';
         } else if (isAvailable) {
-          cell.className += ' bg-avail-green-light text-avail-green border border-avail-green/30 cursor-pointer hover:shadow-md';
+          cell.className += ' bg-avail-green-light text-avail-green border border-avail-green/40 cursor-pointer hover:bg-avail-green hover:text-on-success hover:shadow-md hover:scale-[1.03] active:scale-95';
         } else {
           cell.className += ' text-on-surface-variant hover:bg-surface-container-high cursor-default';
         }
@@ -889,20 +914,39 @@
         }
         cell.appendChild(dayNum);
 
-        // Weather info (for available dates within next 7 days)
+        // Weather info (próximos 7 días, siempre que no sea pasado)
         if (hasWeather) {
           var w = weatherData[dateStr];
           var weatherEl = document.createElement('span');
           weatherEl.className = 'text-[10px] leading-none mt-0.5 flex items-center gap-0.5';
-          weatherEl.innerHTML = weatherCodeToEmoji(w.weatherCode) + '<span class="text-on-surface-variant">' + w.maxTemp + '°</span>';
+          var weatherTextColor = isAvailable ? 'currentColor' : 'inherit';
+          weatherEl.innerHTML = weatherCodeToEmoji(w.weatherCode) + '<span style="opacity:0.85">' + w.maxTemp + '°</span>';
           cell.appendChild(weatherEl);
         }
 
-        // Tooltip for reserved
-        if (isReserved) {
+        // Click handler para fechas disponibles
+        if (isAvailable) {
+          (function(dStr, dNum) {
+            cell.addEventListener('click', function() {
+              var parts = dStr.split('-');
+              var fechaLegible = dNum + '/' + parts[1] + '/' + parts[0];
+              var msg = 'Hola! Quiero consultar disponibilidad para el ' + fechaLegible;
+              if (weatherData[dStr]) {
+                msg += ' (pronóstico: ' + weatherData[dStr].maxTemp + '°C)';
+              }
+              var url = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(msg);
+              window.open(url, '_blank', 'noopener');
+            });
+          })(dateStr, d);
+        }
+
+        // Tooltip
+        if (isPast) {
+          cell.title = 'Fecha pasada';
+        } else if (isReserved) {
           cell.title = 'Fecha reservada';
         } else if (isAvailable) {
-          var tip = 'Disponible';
+          var tip = 'Click para reservar por WhatsApp';
           if (hasWeather) {
             tip += ' — ' + weatherData[dateStr].maxTemp + '°C';
           }
