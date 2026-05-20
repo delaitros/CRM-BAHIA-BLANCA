@@ -15,14 +15,14 @@
       theme: {
         extend: {
           colors: {
-            "primary": "#b7102a",
-            "primary-container": "#db313f",
+            "primary": "#b8524d",
+            "primary-container": "#c96c66",
             "on-primary": "#ffffff",
-            "surface": "#f8f9fa",
+            "surface": "#fbf8f2",
             "surface-container-lowest": "#ffffff",
-            "surface-container-low": "#f3f4f5",
-            "on-surface": "#191c1d",
-            "outline": "#717786",
+            "surface-container-low": "#f5f1e9",
+            "on-surface": "#1f1d18",
+            "outline": "#7a7464",
           },
           fontFamily: {
             "headline": ["Manrope", "sans-serif"],
@@ -34,7 +34,7 @@
   </script>
   <style>
     .login-bg {
-      background: linear-gradient(135deg, #b7102a 0%, #7a0016 50%, #191c1d 100%);
+      background: linear-gradient(135deg, #b8524d 0%, #6b3530 50%, #1f1d18 100%);
       min-height: 100vh;
     }
     .login-card {
@@ -46,7 +46,7 @@
     .login-input {
       width: 100%;
       padding: 0.875rem 1rem 0.875rem 3rem;
-      border: 2px solid #e1e3e4;
+      border: 2px solid #cbc4b2;
       border-radius: 0.875rem;
       font-size: 0.9375rem;
       font-family: 'Manrope', sans-serif;
@@ -54,13 +54,13 @@
       outline: none;
     }
     .login-input:focus {
-      border-color: #b7102a;
-      box-shadow: 0 0 0 4px rgba(183,16,42,0.1);
+      border-color: #b8524d;
+      box-shadow: 0 0 0 4px rgba(184,82,77,0.1);
     }
     .login-btn {
       width: 100%;
       padding: 0.9375rem;
-      background: linear-gradient(135deg, #b7102a, #db313f);
+      background: linear-gradient(135deg, #b8524d, #c96c66);
       color: white;
       border: none;
       border-radius: 0.875rem;
@@ -69,12 +69,12 @@
       font-family: 'Manrope', sans-serif;
       cursor: pointer;
       transition: transform 0.15s, box-shadow 0.15s;
-      box-shadow: 0 4px 16px rgba(183,16,42,0.35);
+      box-shadow: 0 4px 16px rgba(184,82,77,0.35);
     }
-    .login-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(183,16,42,0.4); }
+    .login-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(184,82,77,0.4); }
     .login-btn:active { transform: translateY(0); }
     .error-msg {
-      background: #fff1f2; color: #b7102a;
+      background: #fff1f2; color: #b8524d;
       border: 1px solid #fda4af;
       border-radius: 0.75rem;
       padding: 0.75rem 1rem;
