@@ -19,27 +19,27 @@
             "tertiary-fixed": "#ffdea9",
             "on-primary-fixed": "#410007",
             "error": "#ba1a1a",
-            "surface": "#f8f9fa",
+            "surface": "#fbf8f2",
             "surface-container-lowest": "#ffffff",
             "secondary-fixed": "#d5e3ff",
             "on-primary": "#ffffff",
             "outline-variant": "#c1c6d7",
-            "surface-container-low": "#f3f4f5",
-            "secondary": "#485f84",
+            "surface-container-low": "#f5f1e9",
+            "secondary": "#5680a5",
             "secondary-container": "#bbd3fd",
             "on-secondary-container": "#445a7f",
             "on-secondary": "#ffffff",
             "primary-fixed": "#ffdad8",
-            "background": "#f8f9fa",
-            "on-surface": "#191c1d",
+            "background": "#fbf8f2",
+            "on-surface": "#1f1d18",
             "on-surface-variant": "#414755",
-            "primary": "#b7102a",
-            "outline": "#717786",
+            "primary": "#b8524d",
+            "outline": "#7a7464",
             "tertiary-container": "#996c00",
-            "tertiary": "#7a5500",
-            "surface-container-high": "#e7e8e9",
-            "surface-container": "#edeeef",
-            "primary-container": "#db313f"
+            "tertiary": "#c4a13a",
+            "surface-container-high": "#e8e3d8",
+            "surface-container": "#efeae0",
+            "primary-container": "#c96c66"
           },
           fontFamily: { "headline": ["Manrope", "sans-serif"], "body": ["Manrope", "sans-serif"] },
           borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
@@ -57,20 +57,20 @@
     .chip-instagram { background: #fae8ff; color: #86198f; }
     .chip-facebook { background: #dbeafe; color: #1e40af; }
     .chip-web { background: #f1f5f9; color: #475569; }
-    .chip-otro { background: #f3f4f5; color: #374151; }
+    .chip-otro { background: #f5f1e9; color: #374151; }
     .ev-tipo-boda { background:#dbeafe; color:#1d4ed8; }
     .ev-tipo-cumple { background:#fce7f3; color:#be185d; }
     .ev-tipo-infantil { background:#d1fae5; color:#065f46; }
     .ev-tipo-corporativo { background:#ede9fe; color:#6d28d9; }
     .ev-tipo-quince { background:#fef3c7; color:#92400e; }
-    .ev-tipo-otro { background:#f3f4f5; color:#374151; }
+    .ev-tipo-otro { background:#f5f1e9; color:#374151; }
     .notif-dropdown {
       position: absolute; right: 0; top: calc(100% + 8px);
       width: 320px; background: white; border-radius: 1rem;
       box-shadow: 0 12px 40px rgba(0,0,0,0.15);
       padding: 0.5rem; z-index: 100;
       opacity: 0; pointer-events: none; transform: translateY(-8px);
-      transition: all 0.2s; border: 1px solid #e1e3e4;
+      transition: all 0.2s; border: 1px solid #cbc4b2;
     }
     .notif-dropdown.open { opacity: 1; pointer-events: all; transform: translateY(0); }
   </style>
@@ -440,7 +440,7 @@
           '<p class="text-xs text-slate-500 truncate mb-1.5">' + (c.ultimo || 'Sin mensajes aún') + '</p>' +
           '<div class="flex items-center gap-1.5">' +
           '<span class="chip ' + canalChip + '">' + canalLabel + '</span>' + modoChip +
-          (c.no_leidos > 0 ? '<span class="chip" style="background:#b7102a;color:white">' + c.no_leidos + ' nuevo' + (c.no_leidos > 1 ? 's' : '') + '</span>' : '') +
+          (c.no_leidos > 0 ? '<span class="chip" style="background:#b8524d;color:white">' + c.no_leidos + ' nuevo' + (c.no_leidos > 1 ? 's' : '') + '</span>' : '') +
           '</div></div></a>';
       }).join('');
     }
