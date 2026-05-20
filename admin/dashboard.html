@@ -483,7 +483,8 @@
         { label: 'Agente IA (Claude)', on: s.bot, info: s.bot ? ('Modelo: ' + s.model) : 'Falta ANTHROPIC_API_KEY' },
         { label: 'Chatwoot (mensajes)', on: s.chatwoot, info: s.chatwoot ? 'Token configurado' : 'Falta CHATWOOT_API_TOKEN' },
         { label: 'MercadoPago (seña)', on: s.mercadopago, warn: !s.mercadopago, info: s.mercadopago ? 'Cobro automático activo' : 'Opcional - no configurado' },
-        { label: 'URL pública (webhooks)', on: s.public_url, warn: !s.public_url, info: s.public_url ? 'Configurada' : 'Necesaria para producción' }
+        { label: 'URL pública (webhooks)', on: s.public_url, warn: !s.public_url, info: s.public_url ? 'Configurada' : 'Necesaria para producción' },
+        { label: 'Google Calendar', on: s.google_calendar, warn: !s.google_calendar, info: s.google_calendar ? 'ICS conectado' : 'Opcional - no configurado' }
       ];
 
       document.getElementById('status-list').innerHTML = items.map(function(it) {

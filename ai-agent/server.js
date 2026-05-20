@@ -25,6 +25,7 @@ const CHATWOOT_ACCOUNT_ID = process.env.CHATWOOT_ACCOUNT_ID || "1";
 const CHATWOOT_API_TOKEN = process.env.CHATWOOT_API_TOKEN || "";
 const MP_ACCESS_TOKEN = process.env.MERCADOPAGO_ACCESS_TOKEN || "";
 const PUBLIC_URL = (process.env.PUBLIC_URL || "").replace(/\/$/, "");
+const GOOGLE_CALENDAR_ICS = process.env.GOOGLE_CALENDAR_ICS_URL || "";
 const DATA_DIR = process.env.DATA_DIR || "/data";
 const DEBOUNCE_MS = Number(process.env.DEBOUNCE_MS || 7000);
 const RESERVAS_FILE = path.join(DATA_DIR, "reservas.json");
@@ -255,9 +256,11 @@ function ejecutarGenerarPresupuesto(input, negocio) {
   );
 }
 
-function ejecutarVerificarDisponibilidad(input) {
-  const reservas = cargarReservas();
-  const ocupada = (reservas.fechas_ocupadas || []).includes(input.fecha);
+async function ejecutarVerificarDisponibilidad(input) {
+  const localDates = leerEventos().map((e) => e.fecha);
+  const icsDates = await fetchIcsDates();
+  const allReserved = new Set([...localDates, ...icsDates]);
+  const ocupada = allReserved.has(input.fecha);
   return ocupada
     ? `La fecha ${input.fecha} ya esta reservada. Ofrecele al cliente otra fecha.`
     : `La fecha ${input.fecha} figura disponible.`;
@@ -456,7 +459,7 @@ async function responderConClaude(historial, convId) {
         if (block.name === "generar_presupuesto") {
           result = ejecutarGenerarPresupuesto(block.input, negocio);
         } else if (block.name === "verificar_disponibilidad") {
-          result = ejecutarVerificarDisponibilidad(block.input);
+          result = await ejecutarVerificarDisponibilidad(block.input);
         } else if (block.name === "generar_link_pago") {
           result = await ejecutarGenerarLinkPago(
             { ...block.input, _conversation_id: convId },
@@ -633,6 +636,7 @@ app.get("/api/status", (_req, res) => {
     chatwoot: !!CHATWOOT_API_TOKEN,
     mercadopago: !!MP_ACCESS_TOKEN,
     public_url: !!PUBLIC_URL,
+    google_calendar: !!GOOGLE_CALENDAR_ICS,
     model: MODEL,
     debounce_ms: DEBOUNCE_MS
   });
@@ -676,6 +680,60 @@ app.get("/api/messages/recent", async (_req, res) => {
     console.error("Error leyendo conversaciones:", e);
     res.json({ ok: false, configured: true, conversaciones: [] });
   }
+});
+
+// ── Disponibilidad pública (Google Calendar ICS + reservas locales) ──────
+function parseICS(text) {
+  const dates = [];
+  const lines = text.replace(/\r\n /g, "").split(/\r?\n/);
+  let inEvent = false, dtstart = "";
+  for (const line of lines) {
+    if (line === "BEGIN:VEVENT") { inEvent = true; dtstart = ""; }
+    if (inEvent && line.startsWith("DTSTART")) {
+      const val = line.split(":").pop().trim();
+      dtstart = val.replace(/^(\d{4})(\d{2})(\d{2}).*$/, "$1-$2-$3");
+    }
+    if (line === "END:VEVENT" && dtstart) {
+      dates.push(dtstart);
+      inEvent = false;
+    }
+  }
+  return dates;
+}
+
+let icsCache = { dates: [], ts: 0 };
+const ICS_TTL = 5 * 60 * 1000;
+
+async function fetchIcsDates() {
+  if (!GOOGLE_CALENDAR_ICS) return [];
+  if (Date.now() - icsCache.ts < ICS_TTL) return icsCache.dates;
+  try {
+    const r = await fetch(GOOGLE_CALENDAR_ICS);
+    if (!r.ok) return icsCache.dates;
+    const text = await r.text();
+    icsCache.dates = parseICS(text);
+    icsCache.ts = Date.now();
+    return icsCache.dates;
+  } catch (e) {
+    console.error("Error fetching ICS:", e.message);
+    return icsCache.dates;
+  }
+}
+
+app.get("/api/disponibilidad", async (_req, res) => {
+  const localDates = leerEventos().map((e) => e.fecha);
+  const icsDates = await fetchIcsDates();
+  const allReserved = new Set([...localDates, ...icsDates]);
+
+  const hoy = new Date();
+  const dias = [];
+  for (let i = 0; i < 60; i++) {
+    const d = new Date(hoy);
+    d.setDate(d.getDate() + i);
+    const str = d.toISOString().slice(0, 10);
+    dias.push({ fecha: str, reservado: allReserved.has(str) });
+  }
+  res.json({ dias, fuente: GOOGLE_CALENDAR_ICS ? "google+local" : "local" });
 });
 
 app.listen(PORT, () =>
