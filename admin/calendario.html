@@ -74,6 +74,45 @@
       },
     }
   </script>
+  <style>
+    .tab-btn { transition: all 0.2s; }
+    .tab-btn.active {
+      background: white;
+      color: #b7102a;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    .cal-day {
+      min-height: 80px;
+      border-radius: 0.625rem;
+      padding: 0.4rem;
+      cursor: pointer;
+      transition: background 0.15s;
+      position: relative;
+    }
+    .cal-day:hover { background: #f3f4f5; }
+    .cal-day.today { background: #fff1f2; }
+    .cal-day.today .cal-num { color: #b7102a; font-weight: 800; }
+    .cal-day.other-month { background: transparent; opacity: 0.4; cursor: default; }
+    .cal-day.has-event { background: #fff8f8; }
+    .cal-num { font-size: 0.8125rem; font-weight: 600; color: #191c1d; }
+    .event-chip {
+      font-size: 10px; font-weight: 700;
+      padding: 2px 6px; border-radius: 4px;
+      margin-top: 3px; display: block;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .chip-boda     { background: #dbeafe; color: #1d4ed8; }
+    .chip-cumple   { background: #fce7f3; color: #be185d; }
+    .chip-infantil { background: #d1fae5; color: #065f46; }
+    .chip-corporativo { background: #ede9fe; color: #6d28d9; }
+    .chip-otro     { background: #f3f4f5; color: #374151; }
+    .chip-quince   { background: #fef3c7; color: #92400e; }
+    .gcal-iframe { border: none; width: 100%; border-radius: 0.75rem; min-height: 580px; }
+    .gcal-placeholder {
+      background: #f8f9fa; border: 2px dashed #c1c6d7;
+      border-radius: 1rem; padding: 3rem; text-align: center;
+    }
+  </style>
 </head>
 <body class="bg-background font-body text-on-surface">
 
@@ -84,57 +123,66 @@
       <div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-secondary font-bold text-sm">JP</div>
       <div class="flex flex-col">
         <span class="text-sm font-semibold text-on-surface">Panel de Juan</span>
-        <span class="text-xs text-slate-500">Gerente de Catering</span>
+        <span class="text-xs text-slate-500">Administrador</span>
       </div>
     </div>
     <nav class="flex-1 space-y-1">
-      <a href="dashboard.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-slate-500 hover:bg-slate-200/50" data-page="dashboard">
+      <a href="dashboard.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-slate-500 hover:bg-slate-200/50">
         <span class="material-symbols-outlined">dashboard</span>
         <span class="text-sm font-semibold">Dashboard</span>
       </a>
-      <a href="mensajes.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-slate-500 hover:bg-slate-200/50" data-page="mensajes">
+      <a href="mensajes.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-slate-500 hover:bg-slate-200/50">
         <span class="material-symbols-outlined">forum</span>
         <span class="text-sm font-semibold">Mensajes</span>
       </a>
-      <a href="calendario.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all bg-white text-primary shadow-sm" data-page="calendario">
+      <a href="calendario.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all bg-white text-primary shadow-sm">
         <span class="material-symbols-outlined">calendar_today</span>
         <span class="text-sm font-semibold">Calendario</span>
       </a>
-      <a href="inventario.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-slate-500 hover:bg-slate-200/50" data-page="inventario">
+      <a href="inventario.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-slate-500 hover:bg-slate-200/50">
         <span class="material-symbols-outlined">inventory_2</span>
         <span class="text-sm font-semibold">Inventario</span>
       </a>
     </nav>
-    <button id="new-event-btn" class="bg-gradient-to-br from-primary to-primary-container text-white py-3 rounded-full font-bold text-sm shadow-lg mb-4 active:scale-95 transition-transform">Nuevo Evento</button>
+    <button onclick="openAddModal(null)" class="bg-gradient-to-br from-primary to-primary-container text-white py-3 rounded-full font-bold text-sm shadow-lg mb-4 active:scale-95 transition-transform">+ Nuevo Evento</button>
     <div class="pt-4 border-t border-slate-200 space-y-1">
       <a href="#" class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:bg-slate-200/50 rounded-xl transition-all">
         <span class="material-symbols-outlined">settings</span>
         <span class="text-sm font-semibold">Configuración</span>
       </a>
-      <a href="#" id="logout-btn" class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:bg-slate-200/50 rounded-xl transition-all">
+      <a href="#" onclick="logout(); return false;" class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:bg-slate-200/50 rounded-xl transition-all">
         <span class="material-symbols-outlined">logout</span>
         <span class="text-sm font-semibold">Cerrar Sesión</span>
       </a>
     </div>
   </aside>
 
-  <!-- Main Content -->
+  <!-- Main -->
   <main class="ml-64 min-h-screen">
 
     <!-- Top Bar -->
-    <div class="sticky top-0 z-40 bg-background/80 backdrop-blur-lg border-b border-outline-variant/30 px-8 py-4 flex items-center justify-between">
+    <div class="sticky top-0 z-40 bg-background/90 backdrop-blur-lg border-b border-outline-variant/30 px-8 py-4 flex items-center justify-between">
       <h1 class="text-2xl font-bold font-headline text-on-surface">Calendario de Eventos</h1>
       <div class="flex items-center gap-3">
-        <button class="flex items-center gap-2 px-4 py-2.5 bg-surface-container rounded-xl text-sm font-semibold text-on-surface-variant hover:bg-surface-container-high transition-colors">
-          <span class="material-symbols-outlined text-lg">filter_list</span>
-          Filtrar
-        </button>
-        <div class="flex items-center gap-2 bg-surface-container rounded-xl px-3 py-2">
-          <button class="p-1 rounded-lg hover:bg-surface-container-high transition-colors">
+        <!-- Tab switcher -->
+        <div class="flex items-center gap-1 bg-surface-container rounded-xl p-1">
+          <button id="tab-custom" class="tab-btn active text-sm font-semibold px-4 py-2 rounded-lg" onclick="switchTab('custom')">
+            Mi Calendario
+          </button>
+          <button id="tab-google" class="tab-btn text-sm font-semibold px-4 py-2 rounded-lg text-slate-500" onclick="switchTab('google')">
+            <span class="flex items-center gap-1.5">
+              <svg width="14" height="14" viewBox="0 0 48 48"><path fill="#4285F4" d="M24 9.5c3.1 0 5.7 1.1 7.7 2.9l5.7-5.7C33.9 3.6 29.3 1.5 24 1.5 14.8 1.5 7 7.3 4.1 15.3l6.6 5.1C12.3 13.9 17.6 9.5 24 9.5z"/><path fill="#34A853" d="M46.5 24c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.5 2.8-2.2 5.2-4.7 6.8l7.3 5.7c4.3-4 6.8-9.9 6.8-16.5z"/><path fill="#FBBC05" d="M10.7 28.6c-.7-2-1-4.1-1-6.1 0-2 .4-3.9 1-5.7l-6.6-5.1C2.5 14.6 1.5 19.2 1.5 24c0 4.8 1 9.4 2.6 13.3l6.6-8.7z"/><path fill="#EA4335" d="M24 46.5c5.4 0 9.9-1.8 13.2-4.8l-6.4-5c-1.8 1.2-4.1 1.9-6.8 1.9-6.4 0-11.7-4.3-13.7-10.1l-6.5 8.1C7 41.7 14.9 46.5 24 46.5z"/></svg>
+              Google Calendar
+            </span>
+          </button>
+        </div>
+        <!-- Nav mes (solo para custom) -->
+        <div id="month-nav" class="flex items-center gap-2 bg-surface-container rounded-xl px-3 py-2">
+          <button onclick="changeMonth(-1)" class="p-1 rounded-lg hover:bg-surface-container-high transition-colors">
             <span class="material-symbols-outlined text-on-surface-variant text-xl">chevron_left</span>
           </button>
-          <span class="text-sm font-bold text-on-surface min-w-[140px] text-center">Septiembre 2024</span>
-          <button class="p-1 rounded-lg hover:bg-surface-container-high transition-colors">
+          <span id="month-label" class="text-sm font-bold text-on-surface min-w-[160px] text-center"></span>
+          <button onclick="changeMonth(1)" class="p-1 rounded-lg hover:bg-surface-container-high transition-colors">
             <span class="material-symbols-outlined text-on-surface-variant text-xl">chevron_right</span>
           </button>
         </div>
@@ -142,201 +190,523 @@
     </div>
 
     <div class="p-8">
-      <div class="grid grid-cols-12 gap-6">
 
-        <!-- Calendar Grid (8 cols) -->
-        <div class="col-span-12 xl:col-span-8">
-          <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/20 p-6">
+      <!-- ── VISTA PERSONALIZADA ───────────────────────── -->
+      <div id="view-custom">
+        <div class="grid grid-cols-12 gap-6">
 
-            <!-- Day Headers -->
-            <div class="grid grid-cols-7 mb-3">
-              <div class="text-center text-xs font-bold text-outline uppercase tracking-wider py-3">Lun</div>
-              <div class="text-center text-xs font-bold text-outline uppercase tracking-wider py-3">Mar</div>
-              <div class="text-center text-xs font-bold text-outline uppercase tracking-wider py-3">Mié</div>
-              <div class="text-center text-xs font-bold text-outline uppercase tracking-wider py-3">Jue</div>
-              <div class="text-center text-xs font-bold text-outline uppercase tracking-wider py-3">Vie</div>
-              <div class="text-center text-xs font-bold text-outline uppercase tracking-wider py-3">Sáb</div>
-              <div class="text-center text-xs font-bold text-outline uppercase tracking-wider py-3">Dom</div>
-            </div>
+          <!-- Calendario (8 cols) -->
+          <div class="col-span-12 xl:col-span-8">
+            <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/20 p-5">
 
-            <!-- Calendar Grid: Sept 2024 starts on Sunday -->
-            <div class="grid grid-cols-7 gap-1">
-              <!-- Row 1: Sept starts on Sunday, so Mon-Sat are empty from prev month -->
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-outline/40 bg-surface-container-low/30">26</div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-outline/40 bg-surface-container-low/30">27</div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-outline/40 bg-surface-container-low/30">28</div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-outline/40 bg-surface-container-low/30">29</div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-outline/40 bg-surface-container-low/30">30</div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-outline/40 bg-surface-container-low/30">31</div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-on-surface hover:bg-surface-container transition-colors cursor-pointer relative">
-                <span class="font-semibold">1</span>
-                <div class="mt-1 text-[10px] bg-secondary/10 text-secondary font-semibold px-1.5 py-0.5 rounded truncate">Cumpleaños de Sophie</div>
+              <!-- Cabecera días -->
+              <div class="grid grid-cols-7 mb-2">
+                <div class="text-center text-xs font-bold text-outline uppercase tracking-wider py-2">Lun</div>
+                <div class="text-center text-xs font-bold text-outline uppercase tracking-wider py-2">Mar</div>
+                <div class="text-center text-xs font-bold text-outline uppercase tracking-wider py-2">Mié</div>
+                <div class="text-center text-xs font-bold text-outline uppercase tracking-wider py-2">Jue</div>
+                <div class="text-center text-xs font-bold text-outline uppercase tracking-wider py-2">Vie</div>
+                <div class="text-center text-xs font-bold text-outline uppercase tracking-wider py-2">Sáb</div>
+                <div class="text-center text-xs font-bold text-outline uppercase tracking-wider py-2">Dom</div>
               </div>
 
-              <!-- Row 2 -->
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-on-surface hover:bg-surface-container transition-colors cursor-pointer"><span class="font-semibold">2</span></div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-on-surface hover:bg-surface-container transition-colors cursor-pointer"><span class="font-semibold">3</span></div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-on-surface hover:bg-surface-container transition-colors cursor-pointer"><span class="font-semibold">4</span></div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-on-surface hover:bg-surface-container transition-colors cursor-pointer"><span class="font-semibold">5</span></div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-on-surface hover:bg-surface-container transition-colors cursor-pointer"><span class="font-semibold">6</span></div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-on-surface hover:bg-surface-container transition-colors cursor-pointer relative">
-                <span class="font-semibold">7</span>
-                <div class="mt-1 text-[10px] bg-primary/10 text-primary font-semibold px-1.5 py-0.5 rounded truncate">Boda Gomez</div>
-              </div>
-              <div class="min-h-[90px] rounded-xl p-2 text-sm text-on-primary bg-primary ring-2 ring-primary ring-offset-2 cursor-pointer relative">
-                <span class="font-bold">8</span>
-                <div class="mt-1 text-[10px] bg-white/20 text-white font-semibold px-1.5 py-0.5 rounded truncate">Quinceañera de Lucia</div>
-              </div>
+              <!-- Grid dinámico -->
+              <div id="cal-grid" class="grid grid-cols-7 gap-1"></div>
 
-              <!-- Row 3 -->
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-on-surface hover:bg-surface-container transition-colors cursor-pointer"><span class="font-semibold">9</span></div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-on-surface hover:bg-surface-container transition-colors cursor-pointer"><span class="font-semibold">10</span></div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-on-surface hover:bg-surface-container transition-colors cursor-pointer"><span class="font-semibold">11</span></div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-on-surface hover:bg-surface-container transition-colors cursor-pointer relative">
-                <span class="font-semibold">12</span>
-                <div class="mt-1 text-[10px] bg-tertiary/10 text-tertiary font-semibold px-1.5 py-0.5 rounded truncate">Baby Shower</div>
-              </div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-on-surface hover:bg-surface-container transition-colors cursor-pointer"><span class="font-semibold">13</span></div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-on-surface hover:bg-surface-container transition-colors cursor-pointer relative">
-                <span class="font-semibold">14</span>
-                <div class="mt-1 text-[10px] bg-secondary/10 text-secondary font-semibold px-1.5 py-0.5 rounded truncate">Cumple 15 de Martinez</div>
-              </div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-on-surface hover:bg-surface-container transition-colors cursor-pointer"><span class="font-semibold">15</span></div>
-
-              <!-- Row 4 -->
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-on-surface hover:bg-surface-container transition-colors cursor-pointer"><span class="font-semibold">16</span></div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-on-surface hover:bg-surface-container transition-colors cursor-pointer"><span class="font-semibold">17</span></div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-on-surface hover:bg-surface-container transition-colors cursor-pointer"><span class="font-semibold">18</span></div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-on-surface hover:bg-surface-container transition-colors cursor-pointer"><span class="font-semibold">19</span></div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-on-surface hover:bg-surface-container transition-colors cursor-pointer relative">
-                <span class="font-semibold">20</span>
-                <div class="mt-1 text-[10px] bg-tertiary/10 text-tertiary font-semibold px-1.5 py-0.5 rounded truncate">Fiesta Infantil</div>
-              </div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-on-surface hover:bg-surface-container transition-colors cursor-pointer"><span class="font-semibold">21</span></div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-on-surface hover:bg-surface-container transition-colors cursor-pointer"><span class="font-semibold">22</span></div>
-
-              <!-- Row 5 -->
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-on-surface hover:bg-surface-container transition-colors cursor-pointer"><span class="font-semibold">23</span></div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-on-surface hover:bg-surface-container transition-colors cursor-pointer"><span class="font-semibold">24</span></div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-on-surface hover:bg-surface-container transition-colors cursor-pointer"><span class="font-semibold">25</span></div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-on-surface hover:bg-surface-container transition-colors cursor-pointer"><span class="font-semibold">26</span></div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-on-surface hover:bg-surface-container transition-colors cursor-pointer"><span class="font-semibold">27</span></div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-on-surface hover:bg-surface-container transition-colors cursor-pointer"><span class="font-semibold">28</span></div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-on-surface hover:bg-surface-container transition-colors cursor-pointer"><span class="font-semibold">29</span></div>
-
-              <!-- Row 6 (partial) -->
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-on-surface hover:bg-surface-container transition-colors cursor-pointer"><span class="font-semibold">30</span></div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-outline/40 bg-surface-container-low/30">1</div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-outline/40 bg-surface-container-low/30">2</div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-outline/40 bg-surface-container-low/30">3</div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-outline/40 bg-surface-container-low/30">4</div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-outline/40 bg-surface-container-low/30">5</div>
-              <div class="min-h-[90px] rounded-lg p-2 text-sm text-outline/40 bg-surface-container-low/30">6</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Event Detail Sidebar (4 cols) -->
-        <div class="col-span-12 xl:col-span-4 space-y-6">
-
-          <!-- Focus Day -->
-          <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/20 p-6">
-            <div class="flex items-center gap-2 mb-5">
-              <span class="material-symbols-outlined text-primary">today</span>
-              <h2 class="text-base font-bold font-headline text-on-surface">Foco: Domingo, 8 de Sept</h2>
-            </div>
-
-            <div class="bg-gradient-to-br from-primary to-primary-container rounded-xl p-5 text-white mb-5">
-              <div class="flex items-center gap-2 mb-2">
-                <span class="material-symbols-outlined text-sm">celebration</span>
-                <span class="text-xs font-bold uppercase tracking-wider opacity-80">Quinceañera</span>
-              </div>
-              <h3 class="text-lg font-bold mb-1">Quinceañera de Lucia</h3>
-              <p class="text-sm opacity-80">150 invitados</p>
-            </div>
-
-            <div class="space-y-3">
-              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-secondary/10 flex items-center justify-center">
-                  <span class="material-symbols-outlined text-secondary text-lg">build</span>
-                </div>
-                <div>
-                  <p class="text-xs font-bold text-on-surface">Montaje</p>
-                  <p class="text-xs text-outline">10:00 — 14:00</p>
-                </div>
-              </div>
-              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <span class="material-symbols-outlined text-primary text-lg">restaurant</span>
-                </div>
-                <div>
-                  <p class="text-xs font-bold text-on-surface">Catering</p>
-                  <p class="text-xs text-outline">18:00 — 22:00</p>
-                </div>
-              </div>
-              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-tertiary/10 flex items-center justify-center">
-                  <span class="material-symbols-outlined text-tertiary text-lg">local_bar</span>
-                </div>
-                <div>
-                  <p class="text-xs font-bold text-on-surface">Brindis</p>
-                  <p class="text-xs text-outline">22:00 — 23:00</p>
-                </div>
+              <!-- Leyenda -->
+              <div class="flex flex-wrap items-center gap-4 mt-5 pt-4 border-t border-slate-100">
+                <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-blue-200 inline-block"></span><span class="text-xs text-outline">Boda</span></div>
+                <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-pink-200 inline-block"></span><span class="text-xs text-outline">Cumpleaños</span></div>
+                <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-green-200 inline-block"></span><span class="text-xs text-outline">Infantil</span></div>
+                <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-purple-200 inline-block"></span><span class="text-xs text-outline">Corporativo</span></div>
+                <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-yellow-200 inline-block"></span><span class="text-xs text-outline">15 Años</span></div>
+                <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-slate-200 inline-block"></span><span class="text-xs text-outline">Otro</span></div>
               </div>
             </div>
           </div>
 
-          <!-- Stats Grid -->
-          <div class="grid grid-cols-2 gap-4">
-            <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/20 p-5 text-center">
-              <div class="text-3xl font-black text-primary mb-1">12</div>
-              <p class="text-xs font-semibold text-on-surface-variant">Fiestas Infantiles</p>
-            </div>
-            <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/20 p-5 text-center">
-              <div class="text-3xl font-black text-secondary mb-1">04</div>
-              <p class="text-xs font-semibold text-on-surface-variant">Bodas</p>
-            </div>
-          </div>
+          <!-- Panel lateral (4 cols) -->
+          <div class="col-span-12 xl:col-span-4 space-y-5">
 
-          <!-- Pending Messages -->
-          <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/20 p-6">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="text-sm font-bold text-on-surface">Mensajes Pendientes</h3>
-              <span class="text-xs bg-primary/10 text-primary font-bold px-2 py-0.5 rounded-full">3</span>
-            </div>
-            <div class="space-y-3">
-              <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-surface-container transition-colors cursor-pointer">
-                <div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed font-bold text-xs flex-shrink-0">LG</div>
-                <div class="flex-1 min-w-0">
-                  <p class="text-xs font-bold text-on-surface truncate">Lucia Garcia</p>
-                  <p class="text-[11px] text-outline truncate">Sobre la decoración del salón...</p>
-                </div>
-                <span class="w-2 h-2 bg-primary rounded-full flex-shrink-0"></span>
+            <!-- Próximos eventos -->
+            <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/20 p-5">
+              <div class="flex items-center justify-between mb-4">
+                <h2 class="text-sm font-bold text-on-surface">Próximos Eventos</h2>
+                <span id="badge-count" class="text-xs bg-primary/10 text-primary font-bold px-2.5 py-0.5 rounded-full">0</span>
               </div>
-              <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-surface-container transition-colors cursor-pointer">
-                <div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-secondary font-bold text-xs flex-shrink-0">MR</div>
-                <div class="flex-1 min-w-0">
-                  <p class="text-xs font-bold text-on-surface truncate">Marcos Ruiz</p>
-                  <p class="text-[11px] text-outline truncate">Confirmación de proveedor...</p>
-                </div>
-                <span class="w-2 h-2 bg-primary rounded-full flex-shrink-0"></span>
-              </div>
-              <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-surface-container transition-colors cursor-pointer">
-                <div class="w-8 h-8 rounded-full bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed font-bold text-xs flex-shrink-0">AP</div>
-                <div class="flex-1 min-w-0">
-                  <p class="text-xs font-bold text-on-surface truncate">Ana Perez</p>
-                  <p class="text-[11px] text-outline truncate">Cambio de horario del baby shower...</p>
-                </div>
-                <span class="w-2 h-2 bg-primary rounded-full flex-shrink-0"></span>
+              <div id="events-list" class="space-y-2">
+                <p class="text-xs text-outline text-center py-4">Cargando eventos...</p>
               </div>
             </div>
-          </div>
 
+            <!-- Stats rápidos -->
+            <div class="grid grid-cols-2 gap-3">
+              <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/20 p-4 text-center">
+                <div id="stat-mes" class="text-2xl font-black text-primary mb-0.5">—</div>
+                <p class="text-xs font-semibold text-on-surface-variant">Este mes</p>
+              </div>
+              <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/20 p-4 text-center">
+                <div id="stat-proximo" class="text-2xl font-black text-secondary mb-0.5">—</div>
+                <p class="text-xs font-semibold text-on-surface-variant">Próximo</p>
+              </div>
+            </div>
+
+            <!-- Bloquear fecha manual -->
+            <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/20 p-5">
+              <h3 class="text-sm font-bold text-on-surface mb-3 flex items-center gap-2">
+                <span class="material-symbols-outlined text-lg text-primary">block</span>
+                Bloquear fecha
+              </h3>
+              <p class="text-xs text-outline mb-3">Marca una fecha como ocupada para que el bot no la ofrezca.</p>
+              <div class="flex gap-2">
+                <input type="date" id="block-date-input" class="flex-1 text-sm border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20" />
+                <button onclick="bloquearFecha()" class="bg-primary text-white text-xs font-bold px-3 py-2 rounded-lg hover:bg-primary/90 transition-colors">
+                  Bloquear
+                </button>
+              </div>
+            </div>
+
+          </div>
         </div>
       </div>
+
+      <!-- ── GOOGLE CALENDAR ───────────────────────────── -->
+      <div id="view-google" style="display:none">
+        <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/20 p-6">
+          <div id="gcal-content"></div>
+        </div>
+      </div>
+
     </div>
   </main>
 
-  <script src="../assets/js/admin.js"></script>
+  <!-- ── MODAL AGREGAR EVENTO ────────────────────────── -->
+  <div id="add-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-lg font-bold text-on-surface font-headline">Nuevo Evento</h2>
+        <button onclick="closeAddModal()" class="p-2 rounded-lg hover:bg-slate-100 transition-colors">
+          <span class="material-symbols-outlined text-outline">close</span>
+        </button>
+      </div>
+      <form id="add-event-form" class="space-y-4">
+        <div>
+          <label class="block text-sm font-semibold text-on-surface mb-1.5">Nombre del evento *</label>
+          <input type="text" id="ev-nombre" required placeholder="Ej: Boda García"
+            class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-sm font-semibold text-on-surface mb-1.5">Fecha *</label>
+            <input type="date" id="ev-fecha" required
+              class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-on-surface mb-1.5">Tipo</label>
+            <select id="ev-tipo" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+              <option value="otro">Otro</option>
+              <option value="boda">Boda</option>
+              <option value="cumple">Cumpleaños</option>
+              <option value="infantil">Fiesta infantil</option>
+              <option value="quince">15 Años</option>
+              <option value="corporativo">Corporativo</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-on-surface mb-1.5">Cantidad de personas</label>
+          <input type="number" id="ev-personas" min="1" placeholder="Ej: 80"
+            class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-on-surface mb-1.5">Notas</label>
+          <textarea id="ev-notas" rows="2" placeholder="Observaciones del evento..."
+            class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none"></textarea>
+        </div>
+        <div class="flex gap-3 pt-2">
+          <button type="button" onclick="closeAddModal()" class="flex-1 py-2.5 border border-slate-200 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors">
+            Cancelar
+          </button>
+          <button type="submit" class="flex-1 py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary/90 transition-colors">
+            Guardar evento
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── MODAL VER/ELIMINAR EVENTO ──────────────────── -->
+  <div id="view-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="text-lg font-bold text-on-surface font-headline" id="vm-titulo">—</h2>
+        <button onclick="closeViewModal()" class="p-2 rounded-lg hover:bg-slate-100 transition-colors">
+          <span class="material-symbols-outlined text-outline">close</span>
+        </button>
+      </div>
+      <div class="space-y-3" id="vm-body"></div>
+      <div class="flex gap-3 mt-6">
+        <button onclick="closeViewModal()" class="flex-1 py-2.5 border border-slate-200 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors">
+          Cerrar
+        </button>
+        <button id="vm-delete-btn" class="flex-1 py-2.5 bg-error text-white rounded-xl text-sm font-bold hover:bg-error/90 transition-colors flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-sm">delete</span>
+          Eliminar evento
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="auth.js"></script>
+  <script>
+    requireAuth();
+
+    /* ── Estado ───────────────────────────────────────── */
+    var eventos = [];
+    var currentYear = new Date().getFullYear();
+    var currentMonth = new Date().getMonth(); // 0-indexed
+    var activeTab = 'custom';
+    var MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    var API_BASE = '/api';
+
+    /* ── Toast ───────────────────────────────────────── */
+    function showToast(msg, type) {
+      var t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast show' + (type ? ' ' + type : '');
+      setTimeout(function() { t.className = 'toast'; }, 3000);
+    }
+
+    /* ── API Reservas ────────────────────────────────── */
+    function fetchEventos() {
+      fetch(API_BASE + '/reservas')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          eventos = data.eventos || [];
+          renderCalendar();
+          renderEventsList();
+        })
+        .catch(function() {
+          // En desarrollo sin el servidor, usar array vacío
+          eventos = [];
+          renderCalendar();
+          renderEventsList();
+        });
+    }
+
+    function addEvento(ev) {
+      return fetch(API_BASE + '/reservas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(ev)
+      }).then(function(r) { return r.json(); });
+    }
+
+    function deleteEvento(id) {
+      return fetch(API_BASE + '/reservas/' + encodeURIComponent(id), { method: 'DELETE' })
+        .then(function(r) { return r.json(); });
+    }
+
+    /* ── Tabs ────────────────────────────────────────── */
+    function switchTab(tab) {
+      activeTab = tab;
+      document.getElementById('view-custom').style.display = tab === 'custom' ? '' : 'none';
+      document.getElementById('view-google').style.display = tab === 'google' ? '' : 'none';
+      document.getElementById('month-nav').style.display = tab === 'custom' ? '' : 'none';
+      document.getElementById('tab-custom').className = 'tab-btn ' + (tab === 'custom' ? 'active' : 'text-slate-500') + ' text-sm font-semibold px-4 py-2 rounded-lg';
+      document.getElementById('tab-google').className = 'tab-btn ' + (tab === 'google' ? 'active' : 'text-slate-500') + ' text-sm font-semibold px-4 py-2 rounded-lg';
+      if (tab === 'google') renderGoogleCalendar();
+    }
+
+    function renderGoogleCalendar() {
+      var container = document.getElementById('gcal-content');
+      if (GOOGLE_CALENDAR_EMBED_URL) {
+        container.innerHTML = '<iframe class="gcal-iframe" src="' + GOOGLE_CALENDAR_EMBED_URL + '"></iframe>';
+      } else {
+        container.innerHTML =
+          '<div class="gcal-placeholder">' +
+          '<span class="material-symbols-outlined text-5xl text-outline mb-4 block">calendar_month</span>' +
+          '<h3 class="text-lg font-bold text-on-surface mb-2">Configurá tu Google Calendar</h3>' +
+          '<p class="text-sm text-outline max-w-sm mx-auto mb-4">Para ver tu Google Calendar acá, editá el archivo <code class="bg-slate-100 px-2 py-0.5 rounded">admin/auth.js</code> y pegá tu URL de embed en la variable <code class="bg-slate-100 px-2 py-0.5 rounded">GOOGLE_CALENDAR_EMBED_URL</code>.</p>' +
+          '<div class="bg-slate-100 rounded-xl p-4 text-left text-xs font-mono text-slate-700 max-w-md mx-auto">' +
+          'Pasos:<br>1. Abrí Google Calendar<br>2. ⚙ Configuración → tu calendario<br>3. "Integrar el calendario"<br>4. Copiá la URL del iframe (el src="...")<br>5. Pegála en auth.js en GOOGLE_CALENDAR_EMBED_URL' +
+          '</div>' +
+          '</div>';
+      }
+    }
+
+    /* ── Calendario ──────────────────────────────────── */
+    function changeMonth(delta) {
+      currentMonth += delta;
+      if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+      if (currentMonth < 0)  { currentMonth = 11; currentYear--; }
+      renderCalendar();
+    }
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function dateStr(y, m, d) { return y + '-' + pad(m + 1) + '-' + pad(d); }
+
+    function chipClass(tipo) {
+      var map = { boda: 'chip-boda', cumple: 'chip-cumple', infantil: 'chip-infantil',
+                  corporativo: 'chip-corporativo', quince: 'chip-quince', otro: 'chip-otro' };
+      return map[tipo] || 'chip-otro';
+    }
+
+    function renderCalendar() {
+      document.getElementById('month-label').textContent = MESES[currentMonth] + ' ' + currentYear;
+      var grid = document.getElementById('cal-grid');
+      grid.innerHTML = '';
+      var today = new Date();
+      var todayStr = dateStr(today.getFullYear(), today.getMonth(), today.getDate());
+
+      // Índice de eventos por fecha
+      var eventsByDate = {};
+      eventos.forEach(function(ev) {
+        if (!eventsByDate[ev.fecha]) eventsByDate[ev.fecha] = [];
+        eventsByDate[ev.fecha].push(ev);
+      });
+
+      // Primer día del mes (0=Dom,1=Lun,...)
+      var firstDow = new Date(currentYear, currentMonth, 1).getDay();
+      // Ajustar para Lunes como primer día (0=Lun)
+      var offset = (firstDow + 6) % 7;
+      var totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
+      var prevTotal = new Date(currentYear, currentMonth, 0).getDate();
+      var cells = [];
+
+      // Días del mes anterior
+      for (var i = offset - 1; i >= 0; i--) {
+        cells.push({ day: prevTotal - i, thisMonth: false, fecha: null });
+      }
+      // Días del mes
+      for (var d = 1; d <= totalDays; d++) {
+        cells.push({ day: d, thisMonth: true, fecha: dateStr(currentYear, currentMonth, d) });
+      }
+      // Completar hasta múltiplo de 7
+      var rem = cells.length % 7;
+      if (rem > 0) {
+        for (var nd = 1; nd <= 7 - rem; nd++) {
+          cells.push({ day: nd, thisMonth: false, fecha: null });
+        }
+      }
+
+      cells.forEach(function(cell) {
+        var div = document.createElement('div');
+        var cls = 'cal-day';
+        if (!cell.thisMonth) cls += ' other-month';
+        if (cell.fecha === todayStr) cls += ' today';
+        var evs = cell.fecha ? (eventsByDate[cell.fecha] || []) : [];
+        if (evs.length > 0) cls += ' has-event';
+        div.className = cls;
+
+        var numDiv = document.createElement('span');
+        numDiv.className = 'cal-num';
+        numDiv.textContent = cell.day;
+        div.appendChild(numDiv);
+
+        evs.slice(0, 2).forEach(function(ev) {
+          var chip = document.createElement('span');
+          chip.className = 'event-chip ' + chipClass(ev.tipo);
+          chip.textContent = ev.nombre;
+          chip.onclick = function(e) { e.stopPropagation(); openViewModal(ev); };
+          div.appendChild(chip);
+        });
+        if (evs.length > 2) {
+          var more = document.createElement('span');
+          more.className = 'event-chip chip-otro';
+          more.textContent = '+' + (evs.length - 2) + ' más';
+          div.appendChild(more);
+        }
+
+        if (cell.thisMonth) {
+          div.onclick = function() { openAddModal(cell.fecha); };
+        }
+        grid.appendChild(div);
+      });
+
+      updateStats();
+    }
+
+    function updateStats() {
+      var now = new Date();
+      var mesCount = eventos.filter(function(ev) {
+        var d = new Date(ev.fecha + 'T12:00:00');
+        return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+      }).length;
+      document.getElementById('stat-mes').textContent = mesCount;
+
+      var future = eventos
+        .filter(function(ev) { return ev.fecha >= dateStr(now.getFullYear(), now.getMonth(), now.getDate()); })
+        .sort(function(a, b) { return a.fecha.localeCompare(b.fecha); });
+      document.getElementById('stat-proximo').textContent = future.length > 0 ? future[0].fecha.slice(8) + '/' + future[0].fecha.slice(5, 7) : '—';
+    }
+
+    function renderEventsList() {
+      var list = document.getElementById('events-list');
+      var now = new Date();
+      var todayStr = dateStr(now.getFullYear(), now.getMonth(), now.getDate());
+      var futuros = eventos
+        .filter(function(ev) { return ev.fecha >= todayStr; })
+        .sort(function(a, b) { return a.fecha.localeCompare(b.fecha); })
+        .slice(0, 8);
+
+      document.getElementById('badge-count').textContent = futuros.length;
+
+      if (futuros.length === 0) {
+        list.innerHTML = '<p class="text-xs text-outline text-center py-4">No hay eventos próximos.<br>Creá uno tocando un día del calendario.</p>';
+        return;
+      }
+
+      list.innerHTML = futuros.map(function(ev) {
+        var parts = ev.fecha.split('-');
+        var d = new Date(ev.fecha + 'T12:00:00');
+        var dias = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+        return '<div class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-surface-container transition-colors cursor-pointer" onclick="openViewModal(' + JSON.stringify(ev).replace(/"/g, '&quot;') + ')">' +
+          '<div class="flex-shrink-0 w-10 h-10 rounded-xl bg-primary/10 flex flex-col items-center justify-center">' +
+          '<span class="text-primary font-black text-sm leading-none">' + parts[2] + '</span>' +
+          '<span class="text-primary text-[9px] font-bold">' + dias[d.getDay()] + '</span>' +
+          '</div>' +
+          '<div class="flex-1 min-w-0">' +
+          '<p class="text-xs font-bold text-on-surface truncate">' + ev.nombre + '</p>' +
+          '<p class="text-[11px] text-outline">' + MESES[d.getMonth()].slice(0,3) + ' ' + parts[2] + (ev.personas ? ' · ' + ev.personas + ' pers.' : '') + '</p>' +
+          '</div>' +
+          '<span class="event-chip ' + chipClass(ev.tipo) + ' flex-shrink-0">' + tipoLabel(ev.tipo) + '</span>' +
+          '</div>';
+      }).join('');
+    }
+
+    function tipoLabel(tipo) {
+      var m = { boda:'Boda', cumple:'Cumple', infantil:'Infantil', quince:'15 Años', corporativo:'Corp.', otro:'Otro' };
+      return m[tipo] || tipo;
+    }
+
+    /* ── Modal Agregar ───────────────────────────────── */
+    function openAddModal(fecha) {
+      document.getElementById('ev-nombre').value = '';
+      document.getElementById('ev-fecha').value = fecha || '';
+      document.getElementById('ev-tipo').value = 'otro';
+      document.getElementById('ev-personas').value = '';
+      document.getElementById('ev-notas').value = '';
+      document.getElementById('add-modal').classList.add('active');
+    }
+
+    function closeAddModal() {
+      document.getElementById('add-modal').classList.remove('active');
+    }
+
+    document.getElementById('add-event-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var nombre = document.getElementById('ev-nombre').value.trim();
+      var fecha  = document.getElementById('ev-fecha').value;
+      if (!nombre || !fecha) { showToast('Nombre y fecha son obligatorios', 'error'); return; }
+      var ev = {
+        nombre: nombre,
+        fecha: fecha,
+        tipo: document.getElementById('ev-tipo').value,
+        personas: parseInt(document.getElementById('ev-personas').value) || 0,
+        notas: document.getElementById('ev-notas').value.trim()
+      };
+      addEvento(ev)
+        .then(function(res) {
+          if (res.ok) {
+            showToast('Evento guardado ✓', 'success');
+            closeAddModal();
+            fetchEventos();
+          } else {
+            showToast('Error al guardar', 'error');
+          }
+        })
+        .catch(function() {
+          // Modo offline: agregar localmente
+          var localEv = Object.assign({ id: fecha + '-' + Date.now() }, ev);
+          eventos.push(localEv);
+          renderCalendar();
+          renderEventsList();
+          showToast('Guardado localmente (sin servidor)', 'success');
+          closeAddModal();
+        });
+    });
+
+    /* ── Modal Ver/Eliminar ──────────────────────────── */
+    var currentViewId = null;
+
+    function openViewModal(ev) {
+      currentViewId = ev.id;
+      document.getElementById('vm-titulo').textContent = ev.nombre;
+      var d = new Date(ev.fecha + 'T12:00:00');
+      var DIAS = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+      document.getElementById('vm-body').innerHTML =
+        '<div class="flex items-center gap-3 p-3 bg-surface-container-low rounded-xl">' +
+        '<span class="material-symbols-outlined text-primary">event</span>' +
+        '<div><p class="text-sm font-bold text-on-surface">' + DIAS[d.getDay()] + ' ' + ev.fecha.split('-')[2] + ' de ' + MESES[d.getMonth()] + ' ' + ev.fecha.split('-')[0] + '</p>' +
+        '<p class="text-xs text-outline">' + tipoLabel(ev.tipo) + (ev.personas ? ' · ' + ev.personas + ' personas' : '') + '</p></div></div>' +
+        (ev.notas ? '<div class="p-3 bg-surface-container-low rounded-xl"><p class="text-xs font-semibold text-on-surface-variant mb-1">Notas</p><p class="text-sm text-on-surface">' + ev.notas + '</p></div>' : '');
+      document.getElementById('view-modal').classList.add('active');
+    }
+
+    function closeViewModal() {
+      document.getElementById('view-modal').classList.remove('active');
+      currentViewId = null;
+    }
+
+    document.getElementById('vm-delete-btn').addEventListener('click', function() {
+      if (!currentViewId) return;
+      if (!confirm('¿Eliminar este evento? El bot podrá volver a ofrecer esa fecha.')) return;
+      deleteEvento(currentViewId)
+        .then(function() {
+          showToast('Evento eliminado', 'success');
+          closeViewModal();
+          fetchEventos();
+        })
+        .catch(function() {
+          eventos = eventos.filter(function(e) { return e.id !== currentViewId; });
+          renderCalendar();
+          renderEventsList();
+          showToast('Eliminado localmente', 'success');
+          closeViewModal();
+        });
+    });
+
+    /* ── Bloquear fecha rápida ───────────────────────── */
+    function bloquearFecha() {
+      var input = document.getElementById('block-date-input');
+      var fecha = input.value;
+      if (!fecha) { showToast('Seleccioná una fecha', 'error'); return; }
+      addEvento({ nombre: 'Fecha bloqueada', fecha: fecha, tipo: 'otro', personas: 0, notas: '' })
+        .then(function(res) {
+          if (res.ok) {
+            showToast('Fecha bloqueada para el bot ✓', 'success');
+            input.value = '';
+            fetchEventos();
+          }
+        })
+        .catch(function() {
+          var localEv = { id: fecha + '-' + Date.now(), nombre: 'Fecha bloqueada', fecha: fecha, tipo: 'otro', personas: 0, notas: '' };
+          eventos.push(localEv);
+          renderCalendar();
+          renderEventsList();
+          showToast('Bloqueada localmente', 'success');
+          input.value = '';
+        });
+    }
+
+    // Cerrar modales al hacer click fuera
+    document.getElementById('add-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeAddModal();
+    });
+    document.getElementById('view-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeViewModal();
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') { closeAddModal(); closeViewModal(); }
+    });
+
+    // Inicializar
+    fetchEventos();
+  </script>
 </body>
 </html>
