@@ -42,7 +42,7 @@ echo "Web:       http://localhost"
 echo "Chatwoot:  http://localhost:3000   (crea tu usuario admin)"
 echo "Agente IA: corriendo (interno)"
 echo
-echo "Siguientes pasos manuales en QUICK-START.md (paso 3 y 4):"
+echo "Siguientes pasos manuales en DEPLOY.md (paso 3 y 4):"
 echo "  - Crear usuario en Chatwoot y copiar el API token al .env"
 echo "  - Conectar WhatsApp/Instagram/Facebook"
 echo "  - Correr: bash scripts/configure-chatwoot-webhook.sh"
