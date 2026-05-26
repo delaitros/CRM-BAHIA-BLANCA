@@ -198,6 +198,7 @@ gather_config() {
     ask_secret ANTHROPIC_KEY "API Key de Anthropic (sk-ant-...)"
     ask_optional MP_TOKEN    "Token de MercadoPago (Access Token de producción)"
     ask_optional GCAL_URL    "URL iCal de Google Calendar"
+    ask_optional OPENAI_KEY  "API Key de OpenAI para transcripción de audios (Whisper)"
     echo ""
     echo -e "${YELLOW}--- Credenciales del administrador de Chatwoot ---${NC}"
     ask      CW_ADMIN_NAME     "Nombre del admin de Chatwoot" "Juan"
@@ -316,6 +317,9 @@ IG_VERIFY_TOKEN=${FB_VERIFY_TOKEN}
 ANTHROPIC_API_KEY=${ANTHROPIC_KEY}
 ANTHROPIC_MODEL=claude-opus-4-7
 
+# ── OpenAI Whisper (transcripción de audios) ────────────────
+OPENAI_API_KEY=${OPENAI_KEY:-}
+
 # ── MercadoPago ─────────────────────────────────────────────
 MERCADOPAGO_ACCESS_TOKEN=${MP_TOKEN:-}
 
@@ -326,7 +330,7 @@ PUBLIC_URL=http://${DOMAIN}
 GOOGLE_CALENDAR_ICS_URL=${GCAL_URL:-}
 
 # ── Timing del agente ───────────────────────────────────────
-DEBOUNCE_MS=7000
+DEBOUNCE_MS=60000
 
 # ── Email (SMTP - opcional) ─────────────────────────────────
 MAILER_SENDER_EMAIL=noreply@${DOMAIN}
