@@ -140,9 +140,11 @@ URL secreta del calendario de Google en formato iCal. Para obtenerla:
 3. Bajá hasta "Dirección secreta en formato iCal"
 4. Copiá esa URL y pegala acá
 
+**`OPENAI_API_KEY`**
+API key de OpenAI para transcripción de audios con Whisper. Opcional — si no la configurás, el bot pide que escriban por texto. La obtenés en https://platform.openai.com/api-keys. Cuesta ~USD 0.006/minuto de audio.
+
 **`MERCADOPAGO_ACCESS_TOKEN`**
-Token de producción de MercadoPago. Lo obtenés en:
-https://www.mercadopago.com.ar/developers → Tus integraciones → Credenciales de producción → Access Token
+Token de producción de MercadoPago. Ver la sección "Obtener credenciales de MercadoPago" más abajo para el paso a paso.
 
 **`CHATWOOT_API_TOKEN`**
 Lo completás **después** de crear el usuario admin en Chatwoot (Paso 8). Por ahora dejalo vacío.
@@ -172,11 +174,12 @@ IG_VERIFY_TOKEN=
 ANTHROPIC_API_KEY=sk-ant-api03-...
 ANTHROPIC_MODEL=claude-sonnet-4-6
 
+OPENAI_API_KEY=sk-...                # opcional, para transcripción de audios
 MERCADOPAGO_ACCESS_TOKEN=APP_USR-...
 PUBLIC_URL=https://tudominio.com
 GOOGLE_CALENDAR_ICS_URL=https://calendar.google.com/calendar/ical/...
 
-DEBOUNCE_MS=7000
+DEBOUNCE_MS=60000
 
 MAILER_SENDER_EMAIL=noreply@lodejuan.com
 SMTP_ADDRESS=smtp.gmail.com
@@ -682,4 +685,155 @@ docker compose up -d
 | `FB_APP_ID` | App ID de Meta | De Meta for Developers |
 | `FB_APP_SECRET` | App Secret de Meta | De Meta for Developers |
 | `FB_VERIFY_TOKEN` | Token de verificación webhook | `openssl rand -hex 16` |
-| `DEBOUNCE_MS` | Ms de espera antes de responder | `7000` |
+| `OPENAI_API_KEY` | API key de OpenAI (Whisper) | `sk-...` (opcional) |
+| `DEBOUNCE_MS` | Ms de espera antes de responder | `60000` |
+
+---
+
+## 🔑 Obtener credenciales de MercadoPago
+
+El bot genera links de pago para cobrar la seña. Para que funcione necesitás el Access Token de producción.
+
+### Paso a paso
+
+1. **Crear cuenta de MercadoPago** (si no tenés): https://www.mercadopago.com.ar/registration
+
+2. **Entrar al portal de desarrolladores**: https://www.mercadopago.com.ar/developers/panel
+
+3. **Crear una aplicación**:
+   - Hacé clic en **"Crear aplicación"**
+   - Nombre: `Lo de Juan CRM` (o el nombre que quieras)
+   - Seleccioná **"Pagos online"** como producto
+   - Modelo de integración: **"CheckoutPro"**
+   - Aceptá los términos y hacé clic en **Crear aplicación**
+
+4. **Obtener las credenciales de producción**:
+   - Una vez creada la app, entrá a la misma
+   - Andá a la sección **"Credenciales de producción"** (pestaña "Producción")
+   - Copiá el **Access Token** — tiene el formato `APP_USR-1234567890123456-...`
+   - Ese valor va en `MERCADOPAGO_ACCESS_TOKEN` del `.env`
+
+5. **Activar credenciales de producción** (importante):
+   - MercadoPago requiere que actives las credenciales de producción
+   - Puede pedir que verifiques tu identidad
+   - Hasta que no estén activas, solo podés usar las de **prueba** (test)
+
+### Probar con credenciales de prueba
+
+Si querés probar antes de activar producción:
+- Usá las credenciales de la pestaña **"Credenciales de prueba"**
+- Los pagos se hacen con tarjetas de prueba de MercadoPago
+- Documentación de tarjetas de prueba: https://www.mercadopago.com.ar/developers/es/docs/checkout-pro/additional-content/your-integrations/test/cards
+
+### Resumen de lo que va en .env
+
+```env
+MERCADOPAGO_ACCESS_TOKEN=APP_USR-1234567890123456-123456-abcdef1234567890abcdef1234567890-123456789
+PUBLIC_URL=https://tudominio.com
+```
+
+> `PUBLIC_URL` es necesario para que MercadoPago avise cuando se confirma un pago (webhook de notificación).
+
+---
+
+## 📅 Obtener URL de Google Calendar (ICS)
+
+El bot y la landing page usan una URL secreta de Google Calendar para saber qué fechas están ocupadas. Es solo lectura — el calendario no se modifica.
+
+### Paso a paso
+
+1. **Abrir Google Calendar**: https://calendar.google.com
+
+2. **Elegir o crear un calendario**:
+   - Podés usar el calendario principal o crear uno específico para eventos
+   - Para crear uno nuevo: en la barra izquierda, hacé clic en **"+"** al lado de "Otros calendarios" → **"Crear un calendario"**
+   - Nombre: `Eventos Lo de Juan` (por ejemplo)
+
+3. **Abrir la configuración del calendario**:
+   - En la barra izquierda, buscá el calendario
+   - Hacé clic en los **tres puntos** (⋮) al lado del nombre
+   - Elegí **"Configuración y uso compartido"**
+
+4. **Copiar la dirección secreta en formato iCal**:
+   - Bajá hasta la sección **"Integrar calendario"**
+   - Buscá **"Dirección secreta en formato iCal"**
+   - Hacé clic en el ícono de copiar al lado de la URL
+   - La URL tiene este formato: `https://calendar.google.com/calendar/ical/xxxx/private-yyyy/basic.ics`
+
+5. **Pegar en el .env**:
+
+```env
+GOOGLE_CALENDAR_ICS_URL=https://calendar.google.com/calendar/ical/xxxx/private-yyyy/basic.ics
+```
+
+### Cómo funciona
+
+- El bot y la landing consultan esta URL cada 5 minutos (cache)
+- Si hay un evento en una fecha, esa fecha aparece como **ocupada** en el calendario de la landing
+- También el bot la usa para responder "esa fecha no está disponible" al cliente
+- Los eventos se cargan tanto desde Google Calendar como desde las reservas hechas por el bot (se combinan)
+
+### Importante
+
+- La URL es **secreta** — no la compartas públicamente. Quien tenga la URL puede ver los eventos del calendario
+- Si cambiás o regenerás la URL en Google Calendar, actualizá el `.env` y reiniciá: `docker compose restart ai-agent`
+
+---
+
+## 🤖 Obtener API Key de Anthropic (Claude)
+
+El bot usa la API de Claude para responder a los clientes.
+
+### Paso a paso
+
+1. **Crear cuenta**: https://console.anthropic.com
+2. Ir a **Settings → API Keys**
+3. Hacer clic en **"Create Key"**
+4. Copiar la key — tiene formato `sk-ant-api03-...`
+5. Pegar en el `.env`:
+
+```env
+ANTHROPIC_API_KEY=sk-ant-api03-xxxxxxxxxxxxxx
+ANTHROPIC_MODEL=claude-sonnet-4-6
+```
+
+### Cargar crédito
+
+- La API de Claude es prepago
+- Ir a **Settings → Billing → Add funds**
+- Con USD 10 tenés para arrancar (~300-500 conversaciones con Sonnet)
+- Recomendación: configurar un **límite de gasto mensual** en Settings → Limits
+
+### Modelos disponibles
+
+| Modelo | Calidad | Costo aprox. por conversación |
+|--------|---------|-------------------------------|
+| `claude-sonnet-4-6` | Muy buena (recomendado) | ~USD 0.01-0.03 |
+| `claude-opus-4-7` | Máxima | ~USD 0.05-0.15 |
+| `claude-haiku-4-5` | Buena (rápido) | ~USD 0.002-0.005 |
+
+---
+
+## 🎤 Obtener API Key de OpenAI (Whisper — opcional)
+
+Si querés que el bot transcriba audios de WhatsApp en vez de pedir que escriban por texto.
+
+### Paso a paso
+
+1. **Crear cuenta**: https://platform.openai.com
+2. Ir a **API Keys**: https://platform.openai.com/api-keys
+3. Hacer clic en **"Create new secret key"**
+4. Copiar la key — tiene formato `sk-...`
+5. Pegar en el `.env`:
+
+```env
+OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+### Cargar crédito
+
+- También es prepago
+- Ir a **Settings → Billing → Add funds**
+- Con USD 5 tenés para meses (Whisper cuesta USD 0.006/minuto de audio)
+
+> Si no configurás esta key, el bot simplemente le pide al cliente que escriba por texto. No rompe nada.
