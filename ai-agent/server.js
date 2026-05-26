@@ -28,6 +28,10 @@ const PUBLIC_URL = (process.env.PUBLIC_URL || "").replace(/\/$/, "");
 const GOOGLE_CALENDAR_ICS = process.env.GOOGLE_CALENDAR_ICS_URL || "";
 const DATA_DIR = process.env.DATA_DIR || "/data";
 const DEBOUNCE_MS = Number(process.env.DEBOUNCE_MS || 7000);
+const MAX_MSGS_PER_CONV = Number(process.env.MAX_MSGS_PER_CONV || 30);
+const MAX_MSG_LENGTH = Number(process.env.MAX_MSG_LENGTH || 1000);
+const RATE_LIMIT_WINDOW = 60 * 1000;
+const RATE_LIMIT_MAX = Number(process.env.RATE_LIMIT_MAX || 6);
 const RESERVAS_FILE = path.join(DATA_DIR, "reservas.json");
 const ESTADO_FILE = path.join(DATA_DIR, "estado.json");
 
@@ -434,7 +438,7 @@ async function responderConClaude(historial, convId) {
   for (let i = 0; i < 6; i++) {
     const response = await anthropic.messages.create({
       model: MODEL,
-      max_tokens: 2048,
+      max_tokens: 1024,
       system: [
         { type: "text", text: systemPrompt, cache_control: { type: "ephemeral" } }
       ],
@@ -489,6 +493,15 @@ async function responderConClaude(historial, convId) {
 // ── Cola con debounce (junta mensajes seguidos, no pisa ni ignora) ────────
 const pendientes = new Map(); // convId -> timeout
 const procesando = new Set(); // convId en proceso
+const rateLimiter = new Map(); // convId -> [timestamp, timestamp, ...]
+
+function isRateLimited(convId) {
+  const now = Date.now();
+  const timestamps = (rateLimiter.get(convId) || []).filter(t => now - t < RATE_LIMIT_WINDOW);
+  timestamps.push(now);
+  rateLimiter.set(convId, timestamps);
+  return timestamps.length > RATE_LIMIT_MAX;
+}
 
 function encolar(convId) {
   if (pendientes.has(convId)) clearTimeout(pendientes.get(convId));
@@ -507,12 +520,35 @@ async function procesarConversacion(convId) {
     encolar(convId);
     return;
   }
-  if (modoConversacion(convId) === "humano") return; // lo maneja una persona
+  if (modoConversacion(convId) === "humano") return;
+
+  if (isRateLimited(convId)) {
+    console.warn(`Rate limit alcanzado para conversación ${convId}`);
+    return;
+  }
+
   procesando.add(convId);
   await chatwootTyping(convId, "on");
   try {
-    const historial = await chatwootGetHistorial(convId);
-    if (modoConversacion(convId) === "humano") return; // cambio mientras tanto
+    let historial = await chatwootGetHistorial(convId);
+
+    // Limitar mensajes por conversación
+    const userMsgCount = historial.filter(m => m.role === "user").length;
+    if (userMsgCount > MAX_MSGS_PER_CONV) {
+      await chatwootEnviarMensaje(convId, "Para seguir atendiéndote mejor, te derivo con una persona del equipo.");
+      await ejecutarDerivarHumano({ razon: "Límite de mensajes automáticos alcanzado" }, convId);
+      return;
+    }
+
+    // Truncar mensajes muy largos
+    historial = historial.map(m => ({
+      ...m,
+      content: m.content.length > MAX_MSG_LENGTH
+        ? m.content.slice(0, MAX_MSG_LENGTH) + "... (mensaje recortado)"
+        : m.content
+    }));
+
+    if (modoConversacion(convId) === "humano") return;
     const respuesta = await responderConClaude(historial, convId);
     await chatwootEnviarMensaje(convId, respuesta);
   } catch (err) {
