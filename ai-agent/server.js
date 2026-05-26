@@ -27,7 +27,7 @@ const MP_ACCESS_TOKEN = process.env.MERCADOPAGO_ACCESS_TOKEN || "";
 const PUBLIC_URL = (process.env.PUBLIC_URL || "").replace(/\/$/, "");
 const GOOGLE_CALENDAR_ICS = process.env.GOOGLE_CALENDAR_ICS_URL || "";
 const DATA_DIR = process.env.DATA_DIR || "/data";
-const DEBOUNCE_MS = Number(process.env.DEBOUNCE_MS || 7000);
+const DEBOUNCE_MS = Number(process.env.DEBOUNCE_MS || 60000);
 const MAX_MSGS_PER_CONV = Number(process.env.MAX_MSGS_PER_CONV || 30);
 const MAX_MSG_LENGTH = Number(process.env.MAX_MSG_LENGTH || 1000);
 const RATE_LIMIT_WINDOW = 60 * 1000;
@@ -565,18 +565,37 @@ app.use(express.json({ limit: "1mb" }));
 
 app.get("/health", (_req, res) => res.json({ ok: true, model: MODEL }));
 
+const audioReplied = new Set();
+
 app.post("/webhook/chatwoot", (req, res) => {
   res.json({ received: true });
   try {
     const body = req.body || {};
     if (body.event !== "message_created") return;
-    if (body.message_type !== "incoming") return; // solo el cliente
+    if (body.message_type !== "incoming") return;
     if (body.private) return;
     const convId =
       body.conversation && body.conversation.id ? body.conversation.id : null;
     if (!convId) return;
-    if (modoConversacion(convId) === "humano") return; // bot callado
-    encolar(convId); // junta mensajes seguidos antes de responder
+    if (modoConversacion(convId) === "humano") return;
+
+    const attachments = body.content_attributes?.attachments || body.attachments || [];
+    const hasAudio = attachments.some(a =>
+      a.file_type === "audio" || (a.content_type || "").startsWith("audio/")
+    );
+    const hasContent = body.content && body.content.trim().length > 0;
+
+    if (hasAudio && !hasContent) {
+      const key = convId + "_audio";
+      if (!audioReplied.has(key)) {
+        audioReplied.add(key);
+        setTimeout(() => audioReplied.delete(key), 5 * 60 * 1000);
+        chatwootEnviarMensaje(convId, "¡Hola! No puedo escuchar audios por ahora. ¿Podrías escribirme tu consulta por texto así te ayudo mejor? 😊");
+      }
+      return;
+    }
+
+    encolar(convId);
   } catch (err) {
     console.error("Error webhook chatwoot:", err);
   }
