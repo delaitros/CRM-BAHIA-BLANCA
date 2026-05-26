@@ -25,6 +25,7 @@ const CHATWOOT_ACCOUNT_ID = process.env.CHATWOOT_ACCOUNT_ID || "1";
 const CHATWOOT_API_TOKEN = process.env.CHATWOOT_API_TOKEN || "";
 const MP_ACCESS_TOKEN = process.env.MERCADOPAGO_ACCESS_TOKEN || "";
 const PUBLIC_URL = (process.env.PUBLIC_URL || "").replace(/\/$/, "");
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
 const GOOGLE_CALENDAR_ICS = process.env.GOOGLE_CALENDAR_ICS_URL || "";
 const DATA_DIR = process.env.DATA_DIR || "/data";
 const DEBOUNCE_MS = Number(process.env.DEBOUNCE_MS || 60000);
@@ -384,6 +385,46 @@ async function chatwootTyping(conversationId, status) {
   }
 }
 
+// ── Transcripción de audio (Whisper) ─────────────────────────────────────
+async function transcribeAudio(audioUrl) {
+  const audioRes = await fetch(audioUrl);
+  if (!audioRes.ok) throw new Error(`Download failed: ${audioRes.status}`);
+  const audioBuffer = Buffer.from(await audioRes.arrayBuffer());
+
+  const boundary = "----WhisperBoundary" + Date.now();
+  const fieldParts = [
+    { name: "model", value: "whisper-1" },
+    { name: "language", value: "es" }
+  ];
+  const chunks = [];
+  chunks.push(Buffer.from(
+    `--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="audio.ogg"\r\nContent-Type: audio/ogg\r\n\r\n`
+  ));
+  chunks.push(audioBuffer);
+  for (const f of fieldParts) {
+    chunks.push(Buffer.from(
+      `\r\n--${boundary}\r\nContent-Disposition: form-data; name="${f.name}"\r\n\r\n${f.value}`
+    ));
+  }
+  chunks.push(Buffer.from(`\r\n--${boundary}--\r\n`));
+
+  const body = Buffer.concat(chunks);
+  const res = await fetch("https://api.openai.com/v1/audio/transcriptions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${OPENAI_API_KEY}`,
+      "Content-Type": `multipart/form-data; boundary=${boundary}`
+    },
+    body
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`Whisper API ${res.status}: ${err}`);
+  }
+  const data = await res.json();
+  return (data.text || "").trim();
+}
+
 // ── System prompt ─────────────────────────────────────────────────────────
 function construirSystemPrompt(negocio) {
   const servicios = negocio.servicios
@@ -494,6 +535,7 @@ async function responderConClaude(historial, convId) {
 const pendientes = new Map(); // convId -> timeout
 const procesando = new Set(); // convId en proceso
 const rateLimiter = new Map(); // convId -> [timestamp, timestamp, ...]
+const audioTranscriptions = new Map(); // convId -> [text, ...]
 
 function isRateLimited(convId) {
   const now = Date.now();
@@ -531,6 +573,14 @@ async function procesarConversacion(convId) {
   await chatwootTyping(convId, "on");
   try {
     let historial = await chatwootGetHistorial(convId);
+
+    const pendingAudio = audioTranscriptions.get(convId);
+    if (pendingAudio && pendingAudio.length > 0) {
+      audioTranscriptions.delete(convId);
+      for (const text of pendingAudio) {
+        historial.push({ role: "user", content: `[Audio del cliente]: ${text}` });
+      }
+    }
 
     // Limitar mensajes por conversación
     const userMsgCount = historial.filter(m => m.role === "user").length;
@@ -586,11 +636,33 @@ app.post("/webhook/chatwoot", (req, res) => {
     const hasContent = body.content && body.content.trim().length > 0;
 
     if (hasAudio && !hasContent) {
-      const key = convId + "_audio";
-      if (!audioReplied.has(key)) {
-        audioReplied.add(key);
-        setTimeout(() => audioReplied.delete(key), 5 * 60 * 1000);
-        chatwootEnviarMensaje(convId, "¡Hola! No puedo escuchar audios por ahora. ¿Podrías escribirme tu consulta por texto así te ayudo mejor? 😊");
+      if (OPENAI_API_KEY) {
+        const att = attachments.find(a =>
+          a.file_type === "audio" || (a.content_type || "").startsWith("audio/")
+        );
+        const audioUrl = att && (att.data_url || att.url);
+        if (audioUrl) {
+          const fullUrl = audioUrl.startsWith("http") ? audioUrl : `${CHATWOOT_URL}${audioUrl}`;
+          transcribeAudio(fullUrl).then(text => {
+            if (text) {
+              const pending = audioTranscriptions.get(convId) || [];
+              pending.push(text);
+              audioTranscriptions.set(convId, pending);
+              chatwootNotaPrivada(convId, `[Transcripción de audio] ${text}`);
+              encolar(convId);
+            }
+          }).catch(err => {
+            console.error("Error transcribiendo audio:", err.message);
+            chatwootEnviarMensaje(convId, "No pude procesar el audio. ¿Podrías escribirme tu consulta por texto? 😊");
+          });
+        }
+      } else {
+        const key = convId + "_audio";
+        if (!audioReplied.has(key)) {
+          audioReplied.add(key);
+          setTimeout(() => audioReplied.delete(key), 5 * 60 * 1000);
+          chatwootEnviarMensaje(convId, "¡Hola! No puedo escuchar audios por ahora. ¿Podrías escribirme tu consulta por texto así te ayudo mejor? 😊");
+        }
       }
       return;
     }
