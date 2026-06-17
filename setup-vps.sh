@@ -219,7 +219,9 @@ gather_config() {
     echo ""
     read -r -p "¿Confirmar y continuar? [S/n]: " yn
     yn="${yn:-S}"
-    [[ "${yn,,}" == "n" ]] && die "Instalación cancelada por el usuario."
+    if [[ "${yn,,}" == "n" ]]; then
+        die "Instalación cancelada por el usuario."
+    fi
 }
 
 # ── PASO 2: Instalar dependencias del sistema ─────────────────────────────────
