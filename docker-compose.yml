@@ -152,6 +152,7 @@ services:
     restart: unless-stopped
     ports:
       - "${WEB_PORT:-80}:80"
+      - "443:443"
     volumes:
       - ./index.html:/usr/share/nginx/html/index.html:ro
       - ./servicios.html:/usr/share/nginx/html/servicios.html:ro
@@ -161,6 +162,8 @@ services:
       - ./admin:/usr/share/nginx/html/admin:ro
       - ./assets:/usr/share/nginx/html/assets:ro
       - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /var/www/certbot:/var/www/certbot:ro
     depends_on:
       - chatwoot-web
       - ai-agent
