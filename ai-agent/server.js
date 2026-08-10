@@ -96,13 +96,12 @@ async function getGCalToken() {
   const sig = sign.sign(sa.private_key).toString("base64url");
   const jwt = `${unsigned}.${sig}`;
 
+  const bodyStr = "grant_type=" + encodeURIComponent("urn:ietf:params:oauth2:grant_type:jwt-bearer") +
+    "&assertion=" + encodeURIComponent(jwt);
   const res = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({
-      grant_type: "urn:ietf:params:oauth2:grant_type:jwt-bearer",
-      assertion: jwt
-    })
+    body: bodyStr
   });
   const data = await res.json();
   if (!data.access_token) throw new Error("GCal token error: " + JSON.stringify(data));
