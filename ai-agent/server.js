@@ -167,9 +167,14 @@ function parsearMetaEvento(ev) {
 
 async function leerEventos() {
   if (!googleCalendarActivo()) return leerEventosLocal();
-  const hoy = new Date().toISOString();
-  const data = await gcalRequest("GET", `/events?timeMin=${hoy}&maxResults=200&singleEvents=true&orderBy=startTime`);
-  return (data.items || []).map(parsearMetaEvento);
+  try {
+    const hoy = new Date().toISOString();
+    const data = await gcalRequest("GET", `/events?timeMin=${hoy}&maxResults=200&singleEvents=true&orderBy=startTime`);
+    return (data.items || []).map(parsearMetaEvento);
+  } catch (e) {
+    console.error("Google Calendar no disponible, usando almacenamiento local:", e.message);
+    return leerEventosLocal();
+  }
 }
 
 async function crearEvento(evento) {
@@ -179,15 +184,23 @@ async function crearEvento(evento) {
     guardarEventosLocal(eventos);
     return evento;
   }
-  const endDate = new Date(evento.fecha);
-  endDate.setDate(endDate.getDate() + 1);
-  const ev = await gcalRequest("POST", "/events", {
-    summary: evento.nombre,
-    description: `tipo:${evento.tipo}|personas:${evento.personas}|notas:${evento.notas}`,
-    start: { date: evento.fecha },
-    end: { date: endDate.toISOString().slice(0, 10) }
-  });
-  return { ...evento, id: ev.id };
+  try {
+    const endDate = new Date(evento.fecha);
+    endDate.setDate(endDate.getDate() + 1);
+    const ev = await gcalRequest("POST", "/events", {
+      summary: evento.nombre,
+      description: `tipo:${evento.tipo}|personas:${evento.personas}|notas:${evento.notas}`,
+      start: { date: evento.fecha },
+      end: { date: endDate.toISOString().slice(0, 10) }
+    });
+    return { ...evento, id: ev.id };
+  } catch (e) {
+    console.error("Google Calendar no disponible, guardando local:", e.message);
+    const eventos = leerEventosLocal();
+    eventos.push(evento);
+    guardarEventosLocal(eventos);
+    return evento;
+  }
 }
 
 async function eliminarEvento(id) {
@@ -198,7 +211,15 @@ async function eliminarEvento(id) {
     guardarEventosLocal(nuevos);
     return;
   }
-  await gcalRequest("DELETE", `/events/${encodeURIComponent(id)}`);
+  try {
+    await gcalRequest("DELETE", `/events/${encodeURIComponent(id)}`);
+  } catch (e) {
+    console.error("Google Calendar no disponible, eliminando local:", e.message);
+    const eventos = leerEventosLocal();
+    const nuevos = eventos.filter((ev) => ev.id !== id);
+    if (nuevos.length === eventos.length) throw new Error("not_found");
+    guardarEventosLocal(nuevos);
+  }
 }
 
 // ── Estado persistente (modo bot/humano y pagos procesados) ─────────────────
