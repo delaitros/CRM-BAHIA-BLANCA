@@ -17,7 +17,7 @@ const path = require("path");
 const express = require("express");
 const Anthropic = require("@anthropic-ai/sdk");
 
-// ── Config ────────────────────────────────────────────────────────────────
+// ── Config ────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 4000;
 const MODEL = process.env.ANTHROPIC_MODEL || "claude-opus-4-7";
 const CHATWOOT_URL = process.env.CHATWOOT_URL || "http://chatwoot-web:3000";
@@ -45,7 +45,7 @@ if (!MP_ACCESS_TOKEN)
 
 const anthropic = new Anthropic(); // usa ANTHROPIC_API_KEY del entorno
 
-// ── Datos del negocio (editables) ─────────────────────────────────────────
+// ── Datos del negocio (editables) ───────────────────────────────────────
 function cargarNegocio() {
   return JSON.parse(fs.readFileSync(path.join(__dirname, "negocio.json"), "utf8"));
 }
@@ -80,8 +80,7 @@ function cargarReservas() {
   return { fechas_ocupadas: eventos.map((e) => e.fecha) };
 }
 
-// ── Estado persistente (modo bot/humano y pagos procesados) ───────────────
-// Forma: { conversaciones: { "<id>": { modo: "humano" } }, pagos: { "<id>": true } }
+// ── Estado persistente (modo bot/humano y pagos procesados) ─────────────────
 function leerEstado() {
   try {
     return JSON.parse(fs.readFileSync(ESTADO_FILE, "utf8"));
@@ -110,15 +109,20 @@ function marcarHumano(convId) {
   guardarEstado(est);
 }
 
-// ── Calculo de presupuesto ────────────────────────────────────────────────
+// ── Calculo de presupuesto ──────────────────────────────────────────
 function calcularPresupuesto(input, negocio) {
   const servicio = negocio.servicios.find((s) => s.id === input.servicio_id);
   if (!servicio) return null;
 
   const personas = Number(input.cantidad_personas) || 0;
-  let subtotal = servicio.precio_por_persona * personas;
+  const servicioMonto = servicio.precio_total
+    ? servicio.precio_total
+    : (servicio.precio_por_persona || 0) * personas;
+  let subtotal = servicioMonto;
   const lineas = [
-    `${servicio.nombre}: ${personas} personas x $${servicio.precio_por_persona.toLocaleString("es-AR")} = $${subtotal.toLocaleString("es-AR")}`
+    servicio.precio_total
+      ? `${servicio.nombre}: $${servicioMonto.toLocaleString("es-AR")} (precio fijo)`
+      : `${servicio.nombre}: ${personas} personas x $${servicio.precio_por_persona.toLocaleString("es-AR")} = $${servicioMonto.toLocaleString("es-AR")}`
   ];
 
   for (const id of input.extras_ids || []) {
@@ -137,7 +141,7 @@ function calcularPresupuesto(input, negocio) {
   return { servicio, personas, lineas, subtotal, iva, total, sena };
 }
 
-// ── MercadoPago ───────────────────────────────────────────────────────────
+// ── MercadoPago ─────────────────────────────────────────────────────
 async function mpCrearPreferencia(convId, titulo, monto, negocio) {
   const body = {
     items: [
@@ -181,7 +185,7 @@ async function mpConsultarPago(pagoId) {
   return res.json();
 }
 
-// ── Herramientas de Claude ────────────────────────────────────────────────
+// ── Herramientas de Claude ────────────────────────────────────────────
 const TOOLS = [
   {
     name: "generar_presupuesto",
@@ -192,11 +196,15 @@ const TOOLS = [
       properties: {
         servicio_id: {
           type: "string",
-          enum: ["basico", "premium", "deluxe", "corporativo"]
+          enum: ["cumple_noche_salon", "cumple_noche_menu", "cumple_teens"]
         },
         cantidad_personas: { type: "integer" },
         fecha: { type: "string", description: "YYYY-MM-DD" },
-        extras_ids: { type: "array", items: { type: "string" } }
+        extras_ids: {
+          type: "array",
+          items: { type: "string" },
+          description: "IDs de opcionales: dj_noche, dj_teens, daikiris, fluo, rueda_hamster, tobogan_pelotas, circuito_multiaventura, cuatris, tobogan_acuatico, bowling_humano, pile_rueda, combo_tobogan_pile, super_combo_verano"
+        }
       },
       required: ["servicio_id", "cantidad_personas", "fecha"]
     }
@@ -219,7 +227,7 @@ const TOOLS = [
       properties: {
         servicio_id: {
           type: "string",
-          enum: ["basico", "premium", "deluxe", "corporativo"]
+          enum: ["cumple_noche_salon", "cumple_noche_menu", "cumple_teens"]
         },
         cantidad_personas: { type: "integer" },
         fecha: { type: "string", description: "YYYY-MM-DD" },
@@ -244,17 +252,18 @@ function ejecutarGenerarPresupuesto(input, negocio) {
   const p = calcularPresupuesto(input, negocio);
   if (!p) return "Error: servicio no encontrado.";
   let aviso = "";
-  if (p.personas > p.servicio.max_personas) {
+  if (p.servicio.max_personas && p.personas > p.servicio.max_personas) {
     aviso = `\n(Nota: ${p.servicio.nombre} es hasta ${p.servicio.max_personas} personas. Para ${p.personas} conviene confirmar con el equipo.)`;
+  }
+  if (p.servicio.min_personas && p.personas < p.servicio.min_personas) {
+    aviso = `\n(Nota: el mínimo para ${p.servicio.nombre} es ${p.servicio.min_personas} personas.)`;
   }
   return (
     `Presupuesto ${negocio.nombre}\n` +
     `Evento: ${p.servicio.nombre}\nFecha: ${input.fecha}\n` +
     `Cantidad: ${p.personas} personas\n\n` +
     p.lineas.join("\n") +
-    `\n\nSubtotal: $${p.subtotal.toLocaleString("es-AR")}\n` +
-    `IVA (${negocio.iva_porcentaje}%): $${p.iva.toLocaleString("es-AR")}\n` +
-    `TOTAL: $${p.total.toLocaleString("es-AR")}\n` +
+    `\n\nTOTAL: $${p.total.toLocaleString("es-AR")}\n` +
     `Sena para reservar (${negocio.sena_porcentaje}%): $${p.sena.toLocaleString("es-AR")}\n\n` +
     `Vigencia: ${negocio.vigencia_presupuesto_dias} dias.` +
     aviso
@@ -287,7 +296,7 @@ async function ejecutarGenerarLinkPago(input, negocio) {
     return "No se pudo generar el link de pago. Deriva al cliente con un humano.";
   return (
     `LINK DE PAGO GENERADO. Envialo al cliente con este texto:\n\n` +
-    `Para reservar la fecha ${input.fecha} aboná la seña de ` +
+    `Para reservar la fecha ${input.fecha} abo\u00dná la seña de ` +
     `$${p.sena.toLocaleString("es-AR")} (${negocio.sena_porcentaje}% del total ` +
     `$${p.total.toLocaleString("es-AR")}) desde este link seguro de MercadoPago:\n` +
     `${link}\n\n` +
@@ -306,7 +315,7 @@ async function ejecutarDerivarHumano(input, convId) {
   return "Conversacion derivada. Avisale al cliente que en breve lo atiende una persona del equipo. No sigas respondiendo despues de esto.";
 }
 
-// ── Chatwoot API ──────────────────────────────────────────────────────────
+// ── Chatwoot API ──────────────────────────────────────────────────────
 function chatwootBase() {
   return `${CHATWOOT_URL}/api/v1/accounts/${CHATWOOT_ACCOUNT_ID}`;
 }
@@ -425,13 +434,19 @@ async function transcribeAudio(audioUrl) {
   return (data.text || "").trim();
 }
 
-// ── System prompt ─────────────────────────────────────────────────────────
+// ── System prompt ────────────────────────────────────────────────────────
 function construirSystemPrompt(negocio) {
   const servicios = negocio.servicios
-    .map(
-      (s) =>
-        `- ${s.nombre} (hasta ${s.max_personas} personas): $${s.precio_por_persona.toLocaleString("es-AR")} por persona. Incluye: ${s.incluye}`
-    )
+    .map((s) => {
+      const precioStr = s.precio_total
+        ? `$${s.precio_total.toLocaleString("es-AR")} precio fijo`
+        : `$${s.precio_por_persona.toLocaleString("es-AR")} por persona${s.min_personas ? ` (mínimo ${s.min_personas} personas)` : ""}`;
+      const capacidad = s.max_personas ? ` | hasta ${s.max_personas} personas` : s.min_personas ? ` | mínimo ${s.min_personas} personas` : "";
+      const dias = s.dias_disponibles ? ` | ${s.dias_disponibles}` : "";
+      const horario = s.horario ? ` | Horario: ${s.horario}` : "";
+      const noIncluye = s.no_incluye ? ` | El cliente trae: ${s.no_incluye}` : "";
+      return `- ${s.nombre}${horario}${dias}${capacidad}: ${precioStr}. Incluye: ${s.incluye}${noIncluye}`;
+    })
     .join("\n");
   const extras = negocio.extras
     .map((e) => {
@@ -463,12 +478,12 @@ ${extras}
 1. Entendé qué evento quiere: tipo, cantidad de personas, fecha.
 2. Si pregunta por una fecha puntual: verificar_disponibilidad.
 3. Mostrá el presupuesto con generar_presupuesto (incluye la seña).
-4. Si el cliente CONFIRMA que quiere reservar: usá generar_link_pago y mandale el link de la seña. Explicale que al pagar queda reservada la fecha y que después lo contacta una persona del equipo.
-5. NO digas que el pago está confirmado vos: la confirmación es automática. Después de mandar el link, segui respondiendo dudas pero no presiones.
+4. Si el cliente CONFIRMA que quiere reservar: usá generar_link_pago y mandale el link de la seña. Explicále que al pagar queda reservada la fecha y que después lo contacta una persona del equipo.
+5. NO digas que el pago está confirmado vos: la confirmación es automática. Después de mandar el link, seguí respondiendo dudas pero no presiones.
 6. Reclamos, casos raros o si pide una persona: derivar_humano.`;
 }
 
-// ── Loop de Claude ────────────────────────────────────────────────────────
+// ── Loop de Claude ─────────────────────────────────────────────────────────
 async function responderConClaude(historial, convId) {
   const negocio = cargarNegocio();
   const systemPrompt = construirSystemPrompt(negocio);
@@ -609,7 +624,7 @@ async function procesarConversacion(convId) {
   }
 }
 
-// ── Servidor ──────────────────────────────────────────────────────────────
+// ── Servidor ───────────────────────────────────────────────────────────────
 const app = express();
 app.use(express.json({ limit: "1mb" }));
 
