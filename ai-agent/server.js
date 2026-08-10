@@ -391,7 +391,7 @@ async function ejecutarGenerarLinkPago(input, negocio) {
     return "No se pudo generar el link de pago. Deriva al cliente con un humano.";
   return (
     `LINK DE PAGO GENERADO. Envialo al cliente con este texto:\n\n` +
-    `Para reservar la fecha ${input.fecha} abo\u00dná la seña de ` +
+    `Para reservar la fecha ${input.fecha} aboná la seña de ` +
     `$${p.sena.toLocaleString("es-AR")} (${negocio.sena_porcentaje}% del total ` +
     `$${p.total.toLocaleString("es-AR")}) desde este link seguro de MercadoPago:\n` +
     `${link}\n\n` +
