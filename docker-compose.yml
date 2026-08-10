@@ -135,12 +135,14 @@ services:
       MERCADOPAGO_ACCESS_TOKEN: ${MERCADOPAGO_ACCESS_TOKEN:-}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       PUBLIC_URL: ${PUBLIC_URL:-}
-      GOOGLE_CALENDAR_ICS_URL: ${GOOGLE_CALENDAR_ICS_URL:-}
+      GOOGLE_CALENDAR_ID: ${GOOGLE_CALENDAR_ID:-}
+      GOOGLE_SERVICE_ACCOUNT_FILE: /app/google-service-account.json
       DEBOUNCE_MS: ${DEBOUNCE_MS:-60000}
       DATA_DIR: /data
       TZ: America/Argentina/Buenos_Aires
     volumes:
       - ai_agent_data:/data
+      - ./ai-agent/google-service-account.json:/app/google-service-account.json:ro
     depends_on:
       - chatwoot-web
     networks:

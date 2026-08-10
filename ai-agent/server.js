@@ -14,6 +14,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const crypto = require("crypto");
 const express = require("express");
 const Anthropic = require("@anthropic-ai/sdk");
 
@@ -26,7 +27,8 @@ const CHATWOOT_API_TOKEN = process.env.CHATWOOT_API_TOKEN || "";
 const MP_ACCESS_TOKEN = process.env.MERCADOPAGO_ACCESS_TOKEN || "";
 const PUBLIC_URL = (process.env.PUBLIC_URL || "").replace(/\/$/, "");
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
-const GOOGLE_CALENDAR_ICS = process.env.GOOGLE_CALENDAR_ICS_URL || "";
+const GOOGLE_CALENDAR_ID = process.env.GOOGLE_CALENDAR_ID || "";
+const GOOGLE_SA_FILE = process.env.GOOGLE_SERVICE_ACCOUNT_FILE || "/app/google-service-account.json";
 const DATA_DIR = process.env.DATA_DIR || "/data";
 const DEBOUNCE_MS = Number(process.env.DEBOUNCE_MS || 60000);
 const MAX_MSGS_PER_CONV = Number(process.env.MAX_MSGS_PER_CONV || 30);
@@ -50,34 +52,129 @@ function cargarNegocio() {
   return JSON.parse(fs.readFileSync(path.join(__dirname, "negocio.json"), "utf8"));
 }
 
-function leerEventos() {
+// ── Reservas locales (fallback sin Google Calendar) ───────────────────────
+function leerEventosLocal() {
   try {
     const data = JSON.parse(fs.readFileSync(RESERVAS_FILE, "utf8"));
     if (Array.isArray(data.eventos)) return data.eventos;
-    // compatibilidad con formato antiguo
     return (data.fechas_ocupadas || []).map((f) => ({
-      id: f,
-      fecha: f,
-      nombre: "Reservado",
-      tipo: "otro"
+      id: f, fecha: f, nombre: "Reservado", tipo: "otro"
     }));
-  } catch (e) {
-    return [];
-  }
+  } catch (e) { return []; }
 }
 
-function guardarEventos(eventos) {
+function guardarEventosLocal(eventos) {
   try {
     fs.mkdirSync(DATA_DIR, { recursive: true });
     fs.writeFileSync(RESERVAS_FILE, JSON.stringify({ eventos }, null, 2));
-  } catch (e) {
-    console.error("No se pudo guardar eventos:", e);
-  }
+  } catch (e) { console.error("No se pudo guardar eventos:", e); }
 }
 
-function cargarReservas() {
-  const eventos = leerEventos();
-  return { fechas_ocupadas: eventos.map((e) => e.fecha) };
+// ── Google Calendar API ───────────────────────────────────────────────────
+function googleCalendarActivo() {
+  return GOOGLE_CALENDAR_ID && fs.existsSync(GOOGLE_SA_FILE);
+}
+
+let gcalTokenCache = { token: null, exp: 0 };
+
+async function getGCalToken() {
+  const now = Math.floor(Date.now() / 1000);
+  if (gcalTokenCache.token && gcalTokenCache.exp > now + 60) return gcalTokenCache.token;
+
+  const sa = JSON.parse(fs.readFileSync(GOOGLE_SA_FILE, "utf8"));
+  const header = Buffer.from(JSON.stringify({ alg: "RS256", typ: "JWT" })).toString("base64url");
+  const claim = Buffer.from(JSON.stringify({
+    iss: sa.client_email,
+    scope: "https://www.googleapis.com/auth/calendar",
+    aud: "https://oauth2.googleapis.com/token",
+    exp: now + 3600,
+    iat: now
+  })).toString("base64url");
+  const unsigned = `${header}.${claim}`;
+  const sign = crypto.createSign("RSA-SHA256");
+  sign.update(unsigned);
+  const sig = sign.sign(sa.private_key).toString("base64url");
+  const jwt = `${unsigned}.${sig}`;
+
+  const res = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      grant_type: "urn:ietf:params:oauth2:grant_type:jwt-bearer",
+      assertion: jwt
+    })
+  });
+  const data = await res.json();
+  if (!data.access_token) throw new Error("GCal token error: " + JSON.stringify(data));
+  gcalTokenCache = { token: data.access_token, exp: now + 3600 };
+  return data.access_token;
+}
+
+async function gcalRequest(method, endpoint, body) {
+  const token = await getGCalToken();
+  const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(GOOGLE_CALENDAR_ID)}${endpoint}`;
+  const opts = { method, headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(url, opts);
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`GCal ${res.status}: ${err}`);
+  }
+  if (method === "DELETE") return null;
+  return res.json();
+}
+
+function parsearMetaEvento(ev) {
+  const desc = ev.description || "";
+  const meta = {};
+  desc.split("|").forEach((p) => {
+    const i = p.indexOf(":");
+    if (i > 0) meta[p.slice(0, i).trim()] = p.slice(i + 1).trim();
+  });
+  return {
+    id: ev.id,
+    fecha: (ev.start.date || ev.start.dateTime || "").slice(0, 10),
+    nombre: ev.summary || "Reservado",
+    tipo: meta.tipo || "otro",
+    personas: Number(meta.personas) || 0,
+    notas: meta.notas || ""
+  };
+}
+
+async function leerEventos() {
+  if (!googleCalendarActivo()) return leerEventosLocal();
+  const hoy = new Date().toISOString();
+  const data = await gcalRequest("GET", `/events?timeMin=${hoy}&maxResults=200&singleEvents=true&orderBy=startTime`);
+  return (data.items || []).map(parsearMetaEvento);
+}
+
+async function crearEvento(evento) {
+  if (!googleCalendarActivo()) {
+    const eventos = leerEventosLocal();
+    eventos.push(evento);
+    guardarEventosLocal(eventos);
+    return evento;
+  }
+  const endDate = new Date(evento.fecha);
+  endDate.setDate(endDate.getDate() + 1);
+  const ev = await gcalRequest("POST", "/events", {
+    summary: evento.nombre,
+    description: `tipo:${evento.tipo}|personas:${evento.personas}|notas:${evento.notas}`,
+    start: { date: evento.fecha },
+    end: { date: endDate.toISOString().slice(0, 10) }
+  });
+  return { ...evento, id: ev.id };
+}
+
+async function eliminarEvento(id) {
+  if (!googleCalendarActivo()) {
+    const eventos = leerEventosLocal();
+    const nuevos = eventos.filter((e) => e.id !== id);
+    if (nuevos.length === eventos.length) throw new Error("not_found");
+    guardarEventosLocal(nuevos);
+    return;
+  }
+  await gcalRequest("DELETE", `/events/${encodeURIComponent(id)}`);
 }
 
 // ── Estado persistente (modo bot/humano y pagos procesados) ─────────────────
@@ -271,10 +368,8 @@ function ejecutarGenerarPresupuesto(input, negocio) {
 }
 
 async function ejecutarVerificarDisponibilidad(input) {
-  const localDates = leerEventos().map((e) => e.fecha);
-  const icsDates = await fetchIcsDates();
-  const allReserved = new Set([...localDates, ...icsDates]);
-  const ocupada = allReserved.has(input.fecha);
+  const eventos = await leerEventos();
+  const ocupada = eventos.some((e) => e.fecha === input.fecha);
   return ocupada
     ? `La fecha ${input.fecha} ya esta reservada. Ofrecele al cliente otra fecha.`
     : `La fecha ${input.fecha} figura disponible.`;
@@ -741,35 +836,44 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/api/reservas", (_req, res) => {
-  res.json({ eventos: leerEventos() });
+app.get("/api/reservas", async (_req, res) => {
+  try {
+    res.json({ eventos: await leerEventos() });
+  } catch (e) {
+    console.error("Error leyendo reservas:", e);
+    res.status(500).json({ error: "No se pudo leer el calendario" });
+  }
 });
 
-app.post("/api/reservas", (req, res) => {
+app.post("/api/reservas", async (req, res) => {
   const { fecha, nombre, tipo, personas, notas } = req.body || {};
   if (!fecha || !nombre) return res.status(400).json({ error: "fecha y nombre son obligatorios" });
-  const eventos = leerEventos();
-  const evento = {
-    id: `${fecha}-${Date.now()}`,
-    fecha: String(fecha),
-    nombre: String(nombre),
-    tipo: String(tipo || "otro"),
-    personas: Number(personas) || 0,
-    notas: String(notas || "")
-  };
-  eventos.push(evento);
-  guardarEventos(eventos);
-  res.json({ ok: true, evento });
+  try {
+    const evento = {
+      id: `${fecha}-${Date.now()}`,
+      fecha: String(fecha),
+      nombre: String(nombre),
+      tipo: String(tipo || "otro"),
+      personas: Number(personas) || 0,
+      notas: String(notas || "")
+    };
+    const creado = await crearEvento(evento);
+    res.json({ ok: true, evento: creado });
+  } catch (e) {
+    console.error("Error creando reserva:", e);
+    res.status(500).json({ error: "No se pudo crear la reserva" });
+  }
 });
 
-app.delete("/api/reservas/:id", (req, res) => {
-  const { id } = req.params;
-  const eventos = leerEventos();
-  const nuevos = eventos.filter((e) => e.id !== id);
-  if (nuevos.length === eventos.length)
-    return res.status(404).json({ error: "evento no encontrado" });
-  guardarEventos(nuevos);
-  res.json({ ok: true });
+app.delete("/api/reservas/:id", async (req, res) => {
+  try {
+    await eliminarEvento(req.params.id);
+    res.json({ ok: true });
+  } catch (e) {
+    if (e.message === "not_found") return res.status(404).json({ error: "evento no encontrado" });
+    console.error("Error eliminando reserva:", e);
+    res.status(500).json({ error: "No se pudo eliminar la reserva" });
+  }
 });
 
 // Estado del sistema: qué integraciones están configuradas
@@ -779,7 +883,7 @@ app.get("/api/status", (_req, res) => {
     chatwoot: !!CHATWOOT_API_TOKEN,
     mercadopago: !!MP_ACCESS_TOKEN,
     public_url: !!PUBLIC_URL,
-    google_calendar: !!GOOGLE_CALENDAR_ICS,
+    google_calendar: !!GOOGLE_CALENDAR_ID,
     model: MODEL,
     debounce_ms: DEBOUNCE_MS
   });
@@ -825,58 +929,24 @@ app.get("/api/messages/recent", async (_req, res) => {
   }
 });
 
-// ── Disponibilidad pública (Google Calendar ICS + reservas locales) ──────
-function parseICS(text) {
-  const dates = [];
-  const lines = text.replace(/\r\n /g, "").split(/\r?\n/);
-  let inEvent = false, dtstart = "";
-  for (const line of lines) {
-    if (line === "BEGIN:VEVENT") { inEvent = true; dtstart = ""; }
-    if (inEvent && line.startsWith("DTSTART")) {
-      const val = line.split(":").pop().trim();
-      dtstart = val.replace(/^(\d{4})(\d{2})(\d{2}).*$/, "$1-$2-$3");
-    }
-    if (line === "END:VEVENT" && dtstart) {
-      dates.push(dtstart);
-      inEvent = false;
-    }
-  }
-  return dates;
-}
-
-let icsCache = { dates: [], ts: 0 };
-const ICS_TTL = 5 * 60 * 1000;
-
-async function fetchIcsDates() {
-  if (!GOOGLE_CALENDAR_ICS) return [];
-  if (Date.now() - icsCache.ts < ICS_TTL) return icsCache.dates;
-  try {
-    const r = await fetch(GOOGLE_CALENDAR_ICS);
-    if (!r.ok) return icsCache.dates;
-    const text = await r.text();
-    icsCache.dates = parseICS(text);
-    icsCache.ts = Date.now();
-    return icsCache.dates;
-  } catch (e) {
-    console.error("Error fetching ICS:", e.message);
-    return icsCache.dates;
-  }
-}
-
+// ── Disponibilidad pública (Google Calendar o reservas locales) ───────────
 app.get("/api/disponibilidad", async (_req, res) => {
-  const localDates = leerEventos().map((e) => e.fecha);
-  const icsDates = await fetchIcsDates();
-  const allReserved = new Set([...localDates, ...icsDates]);
-
-  const hoy = new Date();
-  const dias = [];
-  for (let i = 0; i < 60; i++) {
-    const d = new Date(hoy);
-    d.setDate(d.getDate() + i);
-    const str = d.toISOString().slice(0, 10);
-    dias.push({ fecha: str, reservado: allReserved.has(str) });
+  try {
+    const eventos = await leerEventos();
+    const reservadas = new Set(eventos.map((e) => e.fecha));
+    const hoy = new Date();
+    const dias = [];
+    for (let i = 0; i < 60; i++) {
+      const d = new Date(hoy);
+      d.setDate(d.getDate() + i);
+      const str = d.toISOString().slice(0, 10);
+      dias.push({ fecha: str, reservado: reservadas.has(str) });
+    }
+    res.json({ dias, fuente: googleCalendarActivo() ? "google" : "local" });
+  } catch (e) {
+    console.error("Error disponibilidad:", e);
+    res.status(500).json({ error: "No se pudo leer disponibilidad" });
   }
-  res.json({ dias, fuente: GOOGLE_CALENDAR_ICS ? "google+local" : "local" });
 });
 
 app.listen(PORT, () =>

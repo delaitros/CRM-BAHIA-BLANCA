@@ -1,6 +1,9 @@
 # Environment
 .env
 
+# Google Service Account (credencial privada - NO subir al repo)
+ai-agent/google-service-account.json
+
 # Docker volumes
 postgres_data/
 redis_data/
