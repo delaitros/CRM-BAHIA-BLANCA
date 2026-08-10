@@ -84,6 +84,17 @@ cp docker/nginx.conf docker/nginx.conf.http-backup
 cp docker/nginx-ssl.conf docker/nginx.conf
 ok "nginx.conf actualizado con HTTPS"
 
+# Parchear docker-compose.yml para agregar puerto 443 y volúmenes SSL
+# (se hace in-place para preservar modificaciones locales como pgvector)
+if ! grep -q '"443:443"' docker-compose.yml; then
+    sed -i 's|"${WEB_PORT:-80}:80"|"${WEB_PORT:-80}:80"\n      - "443:443"|' docker-compose.yml
+    ok "Puerto 443 agregado a docker-compose.yml"
+fi
+if ! grep -q '/etc/letsencrypt' docker-compose.yml; then
+    sed -i 's|docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro|docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro\n      - /etc/letsencrypt:/etc/letsencrypt:ro\n      - /var/www/certbot:/var/www/certbot:ro|' docker-compose.yml
+    ok "Volúmenes SSL agregados a docker-compose.yml"
+fi
+
 # ── Paso 4: Actualizar variables de entorno ──────────────
 echo ""
 echo "[4/5] Actualizando .env..."
