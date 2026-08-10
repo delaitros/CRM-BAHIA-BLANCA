@@ -15,6 +15,7 @@
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
+const https = require("https");
 const express = require("express");
 const Anthropic = require("@anthropic-ai/sdk");
 
@@ -75,6 +76,22 @@ function googleCalendarActivo() {
   return GOOGLE_CALENDAR_ID && fs.existsSync(GOOGLE_SA_FILE);
 }
 
+function httpsRequest(options, body) {
+  return new Promise((resolve, reject) => {
+    const req = https.request(options, (res) => {
+      const chunks = [];
+      res.on("data", (c) => chunks.push(c));
+      res.on("end", () => {
+        const text = Buffer.concat(chunks).toString("utf8");
+        resolve({ ok: res.statusCode >= 200 && res.statusCode < 300, status: res.statusCode, text, json: JSON.parse(text) });
+      });
+    });
+    req.on("error", reject);
+    if (body) req.write(body);
+    req.end();
+  });
+}
+
 let gcalTokenCache = { token: null, exp: 0 };
 
 async function getGCalToken() {
@@ -96,14 +113,17 @@ async function getGCalToken() {
   const sig = sign.sign(sa.private_key).toString("base64url");
   const jwt = `${unsigned}.${sig}`;
 
-  const bodyStr = "grant_type=" + encodeURIComponent("urn:ietf:params:oauth2:grant_type:jwt-bearer") +
-    "&assertion=" + encodeURIComponent(jwt);
-  const res = await fetch("https://oauth2.googleapis.com/token", {
+  const bodyStr = "grant_type=urn%3Aietf%3Aparams%3Aoauth2%3Agrant_type%3Ajwt-bearer&assertion=" + encodeURIComponent(jwt);
+  const res = await httpsRequest({
+    hostname: "oauth2.googleapis.com",
+    path: "/token",
     method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: bodyStr
-  });
-  const data = await res.json();
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Content-Length": Buffer.byteLength(bodyStr)
+    }
+  }, bodyStr);
+  const data = res.json;
   if (!data.access_token) throw new Error("GCal token error: " + JSON.stringify(data));
   gcalTokenCache = { token: data.access_token, exp: now + 3600 };
   return data.access_token;
@@ -111,16 +131,21 @@ async function getGCalToken() {
 
 async function gcalRequest(method, endpoint, body) {
   const token = await getGCalToken();
-  const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(GOOGLE_CALENDAR_ID)}${endpoint}`;
-  const opts = { method, headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } };
-  if (body) opts.body = JSON.stringify(body);
-  const res = await fetch(url, opts);
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`GCal ${res.status}: ${err}`);
-  }
+  const path = `/calendar/v3/calendars/${encodeURIComponent(GOOGLE_CALENDAR_ID)}${endpoint}`;
+  const bodyStr = body ? JSON.stringify(body) : null;
+  const res = await httpsRequest({
+    hostname: "www.googleapis.com",
+    path,
+    method,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+      ...(bodyStr ? { "Content-Length": Buffer.byteLength(bodyStr) } : {})
+    }
+  }, bodyStr);
+  if (!res.ok) throw new Error(`GCal ${res.status}: ${res.text}`);
   if (method === "DELETE") return null;
-  return res.json();
+  return res.json;
 }
 
 function parsearMetaEvento(ev) {
