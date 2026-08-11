@@ -128,7 +128,7 @@ services:
     environment:
       PORT: 4000
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
-      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-opus-4-7}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-sonnet-4-6}
       CHATWOOT_URL: http://chatwoot-web:3000
       CHATWOOT_ACCOUNT_ID: ${CHATWOOT_ACCOUNT_ID:-1}
       CHATWOOT_API_TOKEN: ${CHATWOOT_API_TOKEN}
@@ -136,13 +136,14 @@ services:
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       PUBLIC_URL: ${PUBLIC_URL:-}
       GOOGLE_CALENDAR_ID: ${GOOGLE_CALENDAR_ID:-}
-      GOOGLE_SERVICE_ACCOUNT_FILE: /app/google-service-account.json
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      GOOGLE_REFRESH_TOKEN: ${GOOGLE_REFRESH_TOKEN:-}
       DEBOUNCE_MS: ${DEBOUNCE_MS:-60000}
       DATA_DIR: /data
       TZ: America/Argentina/Buenos_Aires
     volumes:
       - ai_agent_data:/data
-      - ./ai-agent/google-service-account.json:/app/google-service-account.json:ro
     depends_on:
       - chatwoot-web
     networks:
