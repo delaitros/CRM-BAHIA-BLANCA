@@ -21,7 +21,7 @@ const Anthropic = require("@anthropic-ai/sdk");
 
 // ── Config ────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 4000;
-const MODEL = process.env.ANTHROPIC_MODEL || "claude-opus-4-7";
+const MODEL = process.env.ANTHROPIC_MODEL || "claude-sonnet-4-6";
 const CHATWOOT_URL = process.env.CHATWOOT_URL || "http://chatwoot-web:3000";
 const CHATWOOT_ACCOUNT_ID = process.env.CHATWOOT_ACCOUNT_ID || "1";
 const CHATWOOT_API_TOKEN = process.env.CHATWOOT_API_TOKEN || "";
@@ -29,7 +29,9 @@ const MP_ACCESS_TOKEN = process.env.MERCADOPAGO_ACCESS_TOKEN || "";
 const PUBLIC_URL = (process.env.PUBLIC_URL || "").replace(/\/$/, "");
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
 const GOOGLE_CALENDAR_ID = process.env.GOOGLE_CALENDAR_ID || "";
-const GOOGLE_SA_FILE = process.env.GOOGLE_SERVICE_ACCOUNT_FILE || "/app/google-service-account.json";
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "";
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || "";
+const GOOGLE_REFRESH_TOKEN = process.env.GOOGLE_REFRESH_TOKEN || "";
 const DATA_DIR = process.env.DATA_DIR || "/data";
 const DEBOUNCE_MS = Number(process.env.DEBOUNCE_MS || 60000);
 const MAX_MSGS_PER_CONV = Number(process.env.MAX_MSGS_PER_CONV || 30);
@@ -73,7 +75,7 @@ function guardarEventosLocal(eventos) {
 
 // ── Google Calendar API ───────────────────────────────────────────────────
 function googleCalendarActivo() {
-  return GOOGLE_CALENDAR_ID && fs.existsSync(GOOGLE_SA_FILE);
+  return GOOGLE_CALENDAR_ID && GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET && GOOGLE_REFRESH_TOKEN;
 }
 
 function httpsRequest(options, body) {
@@ -98,22 +100,13 @@ async function getGCalToken() {
   const now = Math.floor(Date.now() / 1000);
   if (gcalTokenCache.token && gcalTokenCache.exp > now + 60) return gcalTokenCache.token;
 
-  const sa = JSON.parse(fs.readFileSync(GOOGLE_SA_FILE, "utf8"));
-  const header = Buffer.from(JSON.stringify({ alg: "RS256", typ: "JWT" })).toString("base64url");
-  const claim = Buffer.from(JSON.stringify({
-    iss: sa.client_email,
-    scope: "https://www.googleapis.com/auth/calendar",
-    aud: "https://oauth2.googleapis.com/token",
-    exp: now + 3600,
-    iat: now
-  })).toString("base64url");
-  const unsigned = `${header}.${claim}`;
-  const sign = crypto.createSign("RSA-SHA256");
-  sign.update(unsigned);
-  const sig = sign.sign(sa.private_key).toString("base64url");
-  const jwt = `${unsigned}.${sig}`;
+  const bodyStr = [
+    "grant_type=refresh_token",
+    "refresh_token=" + encodeURIComponent(GOOGLE_REFRESH_TOKEN),
+    "client_id=" + encodeURIComponent(GOOGLE_CLIENT_ID),
+    "client_secret=" + encodeURIComponent(GOOGLE_CLIENT_SECRET)
+  ].join("&");
 
-  const bodyStr = "grant_type=urn%3Aietf%3Aparams%3Aoauth2%3Agrant_type%3Ajwt-bearer&assertion=" + encodeURIComponent(jwt);
   const res = await httpsRequest({
     hostname: "oauth2.googleapis.com",
     path: "/token",
@@ -125,7 +118,7 @@ async function getGCalToken() {
   }, bodyStr);
   const data = res.json;
   if (!data.access_token) throw new Error("GCal token error: " + JSON.stringify(data));
-  gcalTokenCache = { token: data.access_token, exp: now + 3600 };
+  gcalTokenCache = { token: data.access_token, exp: now + (data.expires_in || 3600) };
   return data.access_token;
 }
 
