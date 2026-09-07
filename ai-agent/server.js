@@ -770,7 +770,7 @@ app.post("/webhook/chatwoot", (req, res) => {
   try {
     const body = req.body || {};
     if (body.event !== "message_created") return;
-    if (body.message_type !== "incoming") return;
+    if (body.message_type !== "incoming" && body.message_type !== 0) return;
     if (body.private) return;
     const convId =
       body.conversation && body.conversation.id ? body.conversation.id : null;
