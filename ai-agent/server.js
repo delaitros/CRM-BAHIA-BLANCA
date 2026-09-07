@@ -769,6 +769,7 @@ app.post("/webhook/chatwoot", (req, res) => {
   res.json({ received: true });
   try {
     const body = req.body || {};
+    console.log("[webhook] event=%s type=%s private=%s convId=%s", body.event, body.message_type, body.private, body.conversation && body.conversation.id);
     if (body.event !== "message_created") return;
     if (body.message_type !== "incoming" && body.message_type !== 0) return;
     if (body.private) return;
