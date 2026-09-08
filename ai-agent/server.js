@@ -76,7 +76,12 @@ let _serviceAccount = null;
 function loadServiceAccount() {
   if (_serviceAccount) return _serviceAccount;
   try {
-    _serviceAccount = JSON.parse(fs.readFileSync(GOOGLE_SERVICE_ACCOUNT_FILE, "utf8"));
+    const b64 = process.env.GOOGLE_SERVICE_ACCOUNT_B64;
+    if (b64) {
+      _serviceAccount = JSON.parse(Buffer.from(b64, "base64").toString("utf8"));
+    } else {
+      _serviceAccount = JSON.parse(fs.readFileSync(GOOGLE_SERVICE_ACCOUNT_FILE, "utf8"));
+    }
     return _serviceAccount;
   } catch (e) {
     return null;
