@@ -134,9 +134,7 @@ services:
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       PUBLIC_URL: ${PUBLIC_URL:-}
       GOOGLE_CALENDAR_ID: ${GOOGLE_CALENDAR_ID:-}
-      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
-      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
-      GOOGLE_REFRESH_TOKEN: ${GOOGLE_REFRESH_TOKEN:-}
+      GOOGLE_SERVICE_ACCOUNT_FILE: /data/google-service-account.json
       DEBOUNCE_MS: ${DEBOUNCE_MS:-60000}
       DATA_DIR: /data
       TZ: America/Argentina/Buenos_Aires
