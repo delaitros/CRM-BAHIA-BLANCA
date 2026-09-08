@@ -29,9 +29,7 @@ const MP_ACCESS_TOKEN = process.env.MERCADOPAGO_ACCESS_TOKEN || "";
 const PUBLIC_URL = (process.env.PUBLIC_URL || "").replace(/\/$/, "");
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
 const GOOGLE_CALENDAR_ID = process.env.GOOGLE_CALENDAR_ID || "";
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "";
-const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || "";
-const GOOGLE_REFRESH_TOKEN = process.env.GOOGLE_REFRESH_TOKEN || "";
+const GOOGLE_SERVICE_ACCOUNT_FILE = process.env.GOOGLE_SERVICE_ACCOUNT_FILE || path.join(__dirname, "google-service-account.json");
 const DATA_DIR = process.env.DATA_DIR || "/data";
 const DEBOUNCE_MS = Number(process.env.DEBOUNCE_MS || 60000);
 const MAX_MSGS_PER_CONV = Number(process.env.MAX_MSGS_PER_CONV || 30);
@@ -74,8 +72,19 @@ function guardarEventosLocal(eventos) {
 }
 
 // ── Google Calendar API ───────────────────────────────────────────────────
+let _serviceAccount = null;
+function loadServiceAccount() {
+  if (_serviceAccount) return _serviceAccount;
+  try {
+    _serviceAccount = JSON.parse(fs.readFileSync(GOOGLE_SERVICE_ACCOUNT_FILE, "utf8"));
+    return _serviceAccount;
+  } catch (e) {
+    return null;
+  }
+}
+
 function googleCalendarActivo() {
-  return GOOGLE_CALENDAR_ID && GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET && GOOGLE_REFRESH_TOKEN;
+  return GOOGLE_CALENDAR_ID && loadServiceAccount() !== null;
 }
 
 function httpsRequest(options, body) {
@@ -96,16 +105,32 @@ function httpsRequest(options, body) {
 
 let gcalTokenCache = { token: null, exp: 0 };
 
+function buildServiceAccountJWT(sa) {
+  const now = Math.floor(Date.now() / 1000);
+  const header = Buffer.from(JSON.stringify({ alg: "RS256", typ: "JWT" })).toString("base64url");
+  const payload = Buffer.from(JSON.stringify({
+    iss: sa.client_email,
+    scope: "https://www.googleapis.com/auth/calendar",
+    aud: sa.token_uri || "https://oauth2.googleapis.com/token",
+    iat: now,
+    exp: now + 3600
+  })).toString("base64url");
+  const sign = crypto.createSign("RSA-SHA256");
+  sign.update(`${header}.${payload}`);
+  const sig = sign.sign(sa.private_key, "base64url");
+  return `${header}.${payload}.${sig}`;
+}
+
 async function getGCalToken() {
   const now = Math.floor(Date.now() / 1000);
   if (gcalTokenCache.token && gcalTokenCache.exp > now + 60) return gcalTokenCache.token;
 
-  const bodyStr = [
-    "grant_type=refresh_token",
-    "refresh_token=" + encodeURIComponent(GOOGLE_REFRESH_TOKEN),
-    "client_id=" + encodeURIComponent(GOOGLE_CLIENT_ID),
-    "client_secret=" + encodeURIComponent(GOOGLE_CLIENT_SECRET)
-  ].join("&");
+  const sa = loadServiceAccount();
+  if (!sa) throw new Error("google-service-account.json no encontrado");
+
+  const jwt = buildServiceAccountJWT(sa);
+  const bodyStr = "grant_type=" + encodeURIComponent("urn:ietf:params:oauth:grant-type:jwt-bearer") +
+    "&assertion=" + encodeURIComponent(jwt);
 
   const res = await httpsRequest({
     hostname: "oauth2.googleapis.com",
