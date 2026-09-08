@@ -23,7 +23,7 @@ function setPassword(nuevoPwd) {
 }
 
 function getChatwootUrl() {
-  return localStorage.getItem(CW_URL_KEY) || (window.location.protocol + '//' + window.location.hostname + ':3000');
+  return localStorage.getItem(CW_URL_KEY) || 'https://chat.complejolodejuan.com';
 }
 
 function setChatwootUrl(url) {

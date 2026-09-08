@@ -952,7 +952,7 @@ app.get("/api/status", (_req, res) => {
     chatwoot: !!CHATWOOT_API_TOKEN,
     mercadopago: !!MP_ACCESS_TOKEN,
     public_url: !!PUBLIC_URL,
-    google_calendar: !!GOOGLE_CALENDAR_ID,
+    google_calendar: googleCalendarActivo(),
     model: MODEL,
     debounce_ms: DEBOUNCE_MS
   });
