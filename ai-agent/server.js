@@ -265,15 +265,38 @@ function guardarEstado(estado) {
   }
 }
 
+const HUMANO_TIMEOUT_MS = 24 * 60 * 60 * 1000; // 24 horas sin agente → vuelve al bot
+
 function modoConversacion(convId) {
   const est = leerEstado();
-  return (est.conversaciones[String(convId)] || {}).modo || "bot";
+  const conv = est.conversaciones[String(convId)] || {};
+  if (conv.modo === "humano") {
+    const ultimoAgente = conv.ultimo_agente || 0;
+    if (Date.now() - ultimoAgente > HUMANO_TIMEOUT_MS) {
+      conv.modo = "bot";
+      delete conv.ultimo_agente;
+      est.conversaciones[String(convId)] = conv;
+      guardarEstado(est);
+      console.log(`[modo] Conv ${convId}: 24h sin agente → vuelve al bot`);
+      return "bot";
+    }
+  }
+  return conv.modo || "bot";
 }
 
 function marcarHumano(convId) {
   const est = leerEstado();
-  est.conversaciones[String(convId)] = { modo: "humano" };
+  est.conversaciones[String(convId)] = { modo: "humano", ultimo_agente: Date.now() };
   guardarEstado(est);
+}
+
+function actualizarUltimoAgente(convId) {
+  const est = leerEstado();
+  const conv = est.conversaciones[String(convId)];
+  if (conv && conv.modo === "humano") {
+    conv.ultimo_agente = Date.now();
+    guardarEstado(est);
+  }
 }
 
 // ── Calculo de presupuesto ──────────────────────────────────────────
@@ -501,8 +524,11 @@ async function chatwootGetHistorial(conversationId) {
     }));
 }
 
+// IDs de mensajes enviados por el bot (para distinguirlos de respuestas de agentes humanos)
+const botMsgIds = new Set();
+
 async function chatwootEnviarMensaje(conversationId, contenido) {
-  await fetch(`${chatwootBase()}/conversations/${conversationId}/messages`, {
+  const res = await fetch(`${chatwootBase()}/conversations/${conversationId}/messages`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -510,6 +536,16 @@ async function chatwootEnviarMensaje(conversationId, contenido) {
     },
     body: JSON.stringify({ content: contenido, message_type: "outgoing" })
   });
+  if (res.ok) {
+    const data = await res.json().catch(() => null);
+    if (data && data.id) {
+      botMsgIds.add(data.id);
+      if (botMsgIds.size > 2000) {
+        const iter = botMsgIds.values();
+        for (let i = 0; i < 500; i++) botMsgIds.delete(iter.next().value);
+      }
+    }
+  }
 }
 
 async function chatwootNotaPrivada(conversationId, contenido) {
@@ -803,11 +839,28 @@ app.post("/webhook/chatwoot", (req, res) => {
     const body = req.body || {};
     console.log("[webhook] event=%s type=%s private=%s convId=%s", body.event, body.message_type, body.private, body.conversation && body.conversation.id);
     if (body.event !== "message_created") return;
-    if (body.message_type !== "incoming" && body.message_type !== 0) return;
-    if (body.private) return;
     const convId =
       body.conversation && body.conversation.id ? body.conversation.id : null;
     if (!convId) return;
+
+    // Mensaje saliente no privado: detectar si es de un agente humano (no del bot)
+    const isOutgoing = body.message_type === "outgoing" || body.message_type === 1;
+    if (isOutgoing && !body.private) {
+      const msgId = body.id;
+      if (msgId && !botMsgIds.has(msgId)) {
+        // Un agente humano respondió → modo manual
+        if (modoConversacion(convId) === "bot") {
+          marcarHumano(convId);
+          console.log(`[modo] Conv ${convId}: agente respondió (msg ${msgId}) → modo humano`);
+        } else {
+          actualizarUltimoAgente(convId);
+        }
+      }
+      return;
+    }
+
+    if (body.message_type !== "incoming" && body.message_type !== 0) return;
+    if (body.private) return;
     if (modoConversacion(convId) === "humano") return;
 
     const attachments = body.content_attributes?.attachments || body.attachments || [];
@@ -875,7 +928,7 @@ app.post("/webhook/mercadopago", async (req, res) => {
     if (!convId) return;
 
     est.pagos[String(pagoId)] = true;
-    est.conversaciones[String(convId)] = { modo: "humano" };
+    est.conversaciones[String(convId)] = { modo: "humano", ultimo_agente: Date.now() };
     guardarEstado(est);
 
     const monto = Number(pago.transaction_amount || 0).toLocaleString("es-AR");
