@@ -99,7 +99,9 @@ function httpsRequest(options, body) {
       res.on("data", (c) => chunks.push(c));
       res.on("end", () => {
         const text = Buffer.concat(chunks).toString("utf8");
-        resolve({ ok: res.statusCode >= 200 && res.statusCode < 300, status: res.statusCode, text, json: JSON.parse(text) });
+        let json = null;
+        try { json = JSON.parse(text); } catch (_) {}
+        resolve({ ok: res.statusCode >= 200 && res.statusCode < 300, status: res.statusCode, text, json });
       });
     });
     req.on("error", reject);
