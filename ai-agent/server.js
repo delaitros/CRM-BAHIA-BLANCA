@@ -559,7 +559,12 @@ async function chatwootTyping(conversationId, status) {
 
 // ── Transcripción de audio (Whisper) ─────────────────────────────────────
 async function transcribeAudio(audioUrl) {
-  const audioRes = await fetch(audioUrl);
+  let audioRes;
+  for (let intento = 1; intento <= 4; intento++) {
+    audioRes = await fetch(audioUrl);
+    if (audioRes.ok) break;
+    if (intento < 4) await new Promise(r => setTimeout(r, 2000 * intento));
+  }
   if (!audioRes.ok) throw new Error(`Download failed: ${audioRes.status}`);
   const audioBuffer = Buffer.from(await audioRes.arrayBuffer());
 
@@ -821,7 +826,8 @@ app.post("/webhook/chatwoot", (req, res) => {
         );
         const audioUrl = att && (att.data_url || att.url);
         if (audioUrl) {
-          const fullUrl = audioUrl.startsWith("http") ? audioUrl : `${CHATWOOT_URL}${audioUrl}`;
+          let fullUrl = audioUrl.startsWith("http") ? audioUrl : `${CHATWOOT_URL}${audioUrl}`;
+          fullUrl = fullUrl.replace("https://chat.complejolodejuan.com", CHATWOOT_URL);
           transcribeAudio(fullUrl).then(text => {
             if (text) {
               const pending = audioTranscriptions.get(convId) || [];
