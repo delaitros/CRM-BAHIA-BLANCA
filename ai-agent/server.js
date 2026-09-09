@@ -99,7 +99,9 @@ function httpsRequest(options, body) {
       res.on("data", (c) => chunks.push(c));
       res.on("end", () => {
         const text = Buffer.concat(chunks).toString("utf8");
-        resolve({ ok: res.statusCode >= 200 && res.statusCode < 300, status: res.statusCode, text, json: JSON.parse(text) });
+        let json = null;
+        try { json = JSON.parse(text); } catch (_) {}
+        resolve({ ok: res.statusCode >= 200 && res.statusCode < 300, status: res.statusCode, text, json });
       });
     });
     req.on("error", reject);
@@ -977,30 +979,41 @@ app.get("/api/negocio", (_req, res) => {
 app.get("/api/messages/recent", async (_req, res) => {
   if (!CHATWOOT_API_TOKEN) return res.json({ ok: false, configured: false, conversaciones: [] });
   try {
-    const r = await fetch(`${chatwootBase()}/conversations?status=open&page=1`, {
+    // Intentar con filtro de estado abierto; si falla con 500 (bug de cierta versión de Chatwoot)
+    // intentar sin filtro y filtrar del lado cliente.
+    let r = await fetch(`${chatwootBase()}/conversations?status=open&page=1`, {
       headers: { api_access_token: CHATWOOT_API_TOKEN }
     });
+    if (!r.ok && r.status === 500) {
+      console.warn("Chatwoot: 500 con status=open, reintentando sin filtro");
+      r = await fetch(`${chatwootBase()}/conversations?page=1`, {
+        headers: { api_access_token: CHATWOOT_API_TOKEN }
+      });
+    }
     if (!r.ok) {
       const errText = await r.text().catch(() => "");
       console.error(`Chatwoot API error ${r.status}: ${errText.slice(0, 200)}`);
       return res.json({ ok: false, configured: true, conversaciones: [], error: r.status });
     }
     const data = await r.json();
-    const convs = ((data.data && data.data.payload) || []).slice(0, 8).map((c) => {
-      const meta = c.meta || {};
-      const sender = meta.sender || {};
-      const last = (c.messages && c.messages[c.messages.length - 1]) || {};
-      return {
-        id: c.id,
-        nombre: sender.name || "Cliente",
-        iniciales: (sender.name || "?").split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase(),
-        canal: (meta.channel || "web").replace("Channel::", "").toLowerCase(),
-        ultimo: (last.content || "").slice(0, 80),
-        hora: last.created_at ? new Date(last.created_at * 1000).toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" }) : "",
-        no_leidos: c.unread_count || 0,
-        modo: modoConversacion(c.id)
-      };
-    });
+    const payload = (data.data && data.data.payload) || data.payload || [];
+    const convs = payload
+      .filter((c) => !c.status || c.status === "open")
+      .slice(0, 8).map((c) => {
+        const meta = c.meta || {};
+        const sender = meta.sender || {};
+        const last = (c.messages && c.messages[c.messages.length - 1]) || {};
+        return {
+          id: c.id,
+          nombre: sender.name || "Cliente",
+          iniciales: (sender.name || "?").split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase(),
+          canal: (meta.channel || "web").replace("Channel::", "").toLowerCase(),
+          ultimo: (last.content || "").slice(0, 80),
+          hora: last.created_at ? new Date(last.created_at * 1000).toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" }) : "",
+          no_leidos: c.unread_count || 0,
+          modo: modoConversacion(c.id)
+        };
+      });
     res.json({ ok: true, configured: true, conversaciones: convs });
   } catch (e) {
     console.error("Error leyendo conversaciones:", e);
