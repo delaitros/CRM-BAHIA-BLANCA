@@ -974,7 +974,11 @@ app.get("/api/messages/recent", async (_req, res) => {
     const r = await fetch(`${chatwootBase()}/conversations?status=open&page=1`, {
       headers: { api_access_token: CHATWOOT_API_TOKEN }
     });
-    if (!r.ok) return res.json({ ok: false, configured: true, conversaciones: [] });
+    if (!r.ok) {
+      const errText = await r.text().catch(() => "");
+      console.error(`Chatwoot API error ${r.status}: ${errText.slice(0, 200)}`);
+      return res.json({ ok: false, configured: true, conversaciones: [], error: r.status });
+    }
     const data = await r.json();
     const convs = ((data.data && data.data.payload) || []).slice(0, 8).map((c) => {
       const meta = c.meta || {};
