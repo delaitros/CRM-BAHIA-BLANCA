@@ -247,13 +247,18 @@ async function eliminarEvento(id) {
   }
 }
 
-// ── Estado persistente (modo bot/humano y pagos procesados) ─────────────────
+// ── Estado persistente (modo bot/humano, pagos y bot global) ─────────────────
 function leerEstado() {
   try {
     return JSON.parse(fs.readFileSync(ESTADO_FILE, "utf8"));
   } catch (e) {
-    return { conversaciones: {}, pagos: {} };
+    return { conversaciones: {}, pagos: {}, bot_activo: true };
   }
+}
+
+function botGlobalActivo() {
+  const est = leerEstado();
+  return est.bot_activo !== false; // activo por defecto
 }
 
 function guardarEstado(estado) {
@@ -844,6 +849,7 @@ app.post("/webhook/chatwoot", (req, res) => {
     const body = req.body || {};
     console.log("[webhook] event=%s type=%s private=%s convId=%s", body.event, body.message_type, body.private, body.conversation && body.conversation.id);
     if (body.event !== "message_created") return;
+    if (!botGlobalActivo()) return; // bot apagado globalmente
     const convId =
       body.conversation && body.conversation.id ? body.conversation.id : null;
     if (!convId) return;
@@ -1006,10 +1012,24 @@ app.delete("/api/reservas/:id", async (req, res) => {
   }
 });
 
+// Control global del bot (encender/apagar)
+app.get("/api/bot/estado", (_req, res) => {
+  res.json({ activo: botGlobalActivo() });
+});
+
+app.post("/api/bot/toggle", (_req, res) => {
+  const est = leerEstado();
+  est.bot_activo = !botGlobalActivo();
+  guardarEstado(est);
+  console.log(`[bot] Estado global: ${est.bot_activo ? "ACTIVO" : "APAGADO"}`);
+  res.json({ activo: est.bot_activo });
+});
+
 // Estado del sistema: qué integraciones están configuradas
 app.get("/api/status", (_req, res) => {
   res.json({
     bot: !!process.env.ANTHROPIC_API_KEY,
+    bot_activo: botGlobalActivo(),
     chatwoot: !!CHATWOOT_API_TOKEN,
     mercadopago: !!MP_ACCESS_TOKEN,
     public_url: !!PUBLIC_URL,

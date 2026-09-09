@@ -245,6 +245,23 @@
         <!-- ── Derecha: Estado y acciones ──────── -->
         <div class="xl:col-span-5 space-y-5">
 
+          <!-- Control Bot IA -->
+          <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-slate-100 p-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="text-lg font-bold font-headline text-on-surface">Bot IA</h2>
+                <p class="text-xs text-outline" id="bot-estado-label">Verificando...</p>
+              </div>
+              <button id="bot-toggle-btn" onclick="toggleBot()"
+                class="relative inline-flex h-8 w-14 items-center rounded-full transition-colors focus:outline-none disabled:opacity-50"
+                style="background:#d1d5db" disabled>
+                <span id="bot-toggle-knob"
+                  class="inline-block h-6 w-6 transform rounded-full bg-white shadow transition-transform translate-x-1">
+                </span>
+              </button>
+            </div>
+          </div>
+
           <!-- Estado del sistema -->
           <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-slate-100 p-6">
             <div class="flex items-center justify-between mb-5">
@@ -467,6 +484,41 @@
       }).join('');
     }
 
+    /* ── Bot toggle ─────────────────────────────────── */
+    function aplicarEstadoBot(activo) {
+      var btn = document.getElementById('bot-toggle-btn');
+      var knob = document.getElementById('bot-toggle-knob');
+      var label = document.getElementById('bot-estado-label');
+      btn.disabled = false;
+      if (activo) {
+        btn.style.background = '#22c55e';
+        knob.style.transform = 'translateX(1.5rem)';
+        label.textContent = 'Activo — respondiendo mensajes';
+        label.className = 'text-xs text-emerald-600 font-medium';
+      } else {
+        btn.style.background = '#d1d5db';
+        knob.style.transform = 'translateX(0.25rem)';
+        label.textContent = 'Apagado — no responde automáticamente';
+        label.className = 'text-xs text-outline';
+      }
+    }
+
+    function cargarEstadoBot() {
+      fetch(API_BASE + '/bot/estado')
+        .then(function(r) { return r.json(); })
+        .then(function(d) { aplicarEstadoBot(d.activo); })
+        .catch(function() {});
+    }
+
+    function toggleBot() {
+      var btn = document.getElementById('bot-toggle-btn');
+      btn.disabled = true;
+      fetch(API_BASE + '/bot/toggle', { method: 'POST' })
+        .then(function(r) { return r.json(); })
+        .then(function(d) { aplicarEstadoBot(d.activo); })
+        .catch(function() { btn.disabled = false; });
+    }
+
     /* ── Estado del sistema ──────────────────────────── */
     function cargarStatus() {
       fetch(API_BASE + '/status')
@@ -549,6 +601,7 @@
     cargarEventosConCache();
     cargarBandeja();
     cargarStatus();
+    cargarEstadoBot();
   </script>
 </body>
 </html>
