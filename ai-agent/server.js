@@ -1257,26 +1257,40 @@ const DRIVE_FOLDERS = {
 let galeriaCacheData = null;
 let galeriaCacheExp = 0;
 
+function driveApiRequest(path) {
+  return new Promise((resolve, reject) => {
+    const url = new URL("https://www.googleapis.com" + path);
+    const opts = { hostname: url.hostname, path: url.pathname + url.search, method: "GET", headers: { "Accept": "application/json" } };
+    const req = https.request(opts, (res) => {
+      const chunks = [];
+      res.on("data", c => chunks.push(c));
+      res.on("end", () => {
+        const text = Buffer.concat(chunks).toString("utf8");
+        let json = null;
+        try { json = JSON.parse(text); } catch (_) {}
+        resolve({ ok: res.statusCode >= 200 && res.statusCode < 300, status: res.statusCode, text, json });
+      });
+    });
+    req.on("error", reject);
+    req.end();
+  });
+}
+
 async function listarFotosDrive(folderId) {
   const q = encodeURIComponent(`'${folderId}' in parents and mimeType contains 'image/' and trashed = false`);
-  let requestOptions;
+  const fields = encodeURIComponent("files(id,name)");
+  let res;
   if (GOOGLE_DRIVE_API_KEY) {
-    requestOptions = {
-      hostname: "www.googleapis.com",
-      path: `/drive/v3/files?q=${q}&fields=files(id,name)&pageSize=200&orderBy=name&key=${GOOGLE_DRIVE_API_KEY}`,
-      method: "GET",
-      headers: {}
-    };
+    res = await driveApiRequest(`/drive/v3/files?q=${q}&fields=${fields}&pageSize=200&orderBy=name&key=${encodeURIComponent(GOOGLE_DRIVE_API_KEY)}`);
   } else {
     const token = await getDriveToken();
-    requestOptions = {
+    res = await httpsRequest({
       hostname: "www.googleapis.com",
-      path: `/drive/v3/files?q=${q}&fields=files(id,name)&pageSize=200&orderBy=name&supportsAllDrives=true&includeItemsFromAllDrives=true`,
+      path: `/drive/v3/files?q=${q}&fields=${fields}&pageSize=200&orderBy=name&supportsAllDrives=true&includeItemsFromAllDrives=true`,
       method: "GET",
       headers: { Authorization: `Bearer ${token}` }
-    };
+    });
   }
-  const res = await httpsRequest(requestOptions);
   if (!res.ok) {
     console.error(`[galeria] Drive list error folder ${folderId} → status ${res.status}: ${res.text.slice(0, 300)}`);
     throw new Error(`Drive list error ${res.status}: ${res.text.slice(0, 200)}`);
@@ -1322,20 +1336,22 @@ app.get("/api/galeria", async (_req, res) => {
 app.get("/api/galeria/debug", async (_req, res) => {
   const firstFolder = Object.values(DRIVE_FOLDERS)[0];
   const firstCat = Object.keys(DRIVE_FOLDERS)[0];
-  const q = encodeURIComponent(`'${firstFolder}' in parents and mimeType contains 'image/' and trashed = false`);
   try {
-    let reqOpts, method;
+    let raw, method;
     if (GOOGLE_DRIVE_API_KEY) {
       method = "api_key";
-      reqOpts = { hostname: "www.googleapis.com", path: `/drive/v3/files?q=${q}&fields=files(id,name)&pageSize=5&key=${GOOGLE_DRIVE_API_KEY}`, method: "GET", headers: {} };
+      const q = encodeURIComponent(`'${firstFolder}' in parents and mimeType contains 'image/' and trashed = false`);
+      const fields = encodeURIComponent("files(id,name)");
+      raw = await driveApiRequest(`/drive/v3/files?q=${q}&fields=${fields}&pageSize=5&key=${encodeURIComponent(GOOGLE_DRIVE_API_KEY)}`);
     } else {
       const sa = loadServiceAccount();
       if (!sa) return res.json({ error: "sin api_key ni service account" });
       method = "service_account";
       const token = await getDriveToken();
-      reqOpts = { hostname: "www.googleapis.com", path: `/drive/v3/files?q=${q}&fields=files(id,name)&pageSize=5&supportsAllDrives=true&includeItemsFromAllDrives=true`, method: "GET", headers: { Authorization: `Bearer ${token}` } };
+      const q = encodeURIComponent(`'${firstFolder}' in parents and mimeType contains 'image/' and trashed = false`);
+      const fields = encodeURIComponent("files(id,name)");
+      raw = await httpsRequest({ hostname: "www.googleapis.com", path: `/drive/v3/files?q=${q}&fields=${fields}&pageSize=5&supportsAllDrives=true&includeItemsFromAllDrives=true`, method: "GET", headers: { Authorization: `Bearer ${token}` } });
     }
-    const raw = await httpsRequest(reqOpts);
     res.json({ auth_method: method, folder: firstCat, status: raw.status, ok: raw.ok, body: raw.json || raw.text.slice(0, 500) });
   } catch (e) {
     res.json({ error: e.message });
