@@ -391,44 +391,9 @@
   </div>
 
   <script>
-  // ═══════════════════════════════════════════════════════════════
-  //  FOTOS — Agregá los IDs de Google Drive acá
-  //
-  //  Cómo obtener el ID de una foto:
-  //  1. Abrí la foto en Google Drive
-  //  2. Hacé clic derecho → "Compartir" → "Cualquier persona con el enlace"
-  //  3. Copiá el enlace: https://drive.google.com/file/d/ESTE_ES_EL_ID/view
-  //  4. Pegá el ID en el campo "id" de abajo
-  //
-  //  Categorías disponibles:
-  //    acuatico | cumple-peques | cumples-noche | egresaditos
-  //    packs-peques | promo-egresaditos | varios
-  // ═══════════════════════════════════════════════════════════════
-  const FOTOS = [
-
-    // ── ACUÁTICO ─────────────────────────────────────────────
-    // { id: "PEGA_EL_ID_ACÁ", cat: "acuatico" },
-
-    // ── CUMPLE PEQUES ─────────────────────────────────────────
-    // { id: "PEGA_EL_ID_ACÁ", cat: "cumple-peques" },
-
-    // ── CUMPLES NOCHE ─────────────────────────────────────────
-    // { id: "PEGA_EL_ID_ACÁ", cat: "cumples-noche" },
-
-    // ── EGRESADITOS ───────────────────────────────────────────
-    // { id: "PEGA_EL_ID_ACÁ", cat: "egresaditos" },
-
-    // ── PACKS CUMPLES PEQUES ──────────────────────────────────
-    // { id: "PEGA_EL_ID_ACÁ", cat: "packs-peques" },
-
-    // ── PROMO EGRESADITOS ─────────────────────────────────────
-    // { id: "PEGA_EL_ID_ACÁ", cat: "promo-egresaditos" },
-
-    // ── VARIOS ────────────────────────────────────────────────
-    // { id: "PEGA_EL_ID_ACÁ", cat: "varios" },
-
-  ];
-  // ═══════════════════════════════════════════════════════════════
+  // Las fotos se cargan automáticamente desde Google Drive vía /api/galeria
+  // Cuando agregás fotos a las carpetas de Drive, aparecen solas acá.
+  let FOTOS = [];
 
   const CAT_LABELS = {
     "acuatico":          "🌊 Acuático",
@@ -583,9 +548,26 @@
     if (overlay) overlay.addEventListener("click", closeMenu);
   })();
 
-  // ── Init ─────────────────────────────────────────────────────
-  updateCounts();
-  renderGallery();
+  // ── Init: carga fotos desde la API ───────────────────────────
+  (function() {
+    var grid = document.getElementById("gallery-grid");
+    // Skeleton de carga
+    grid.innerHTML = Array(10).fill(
+      '<div class="story-placeholder"><span style="font-size:2rem;opacity:.3">📸</span></div>'
+    ).join('');
+
+    fetch('/api/galeria')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        FOTOS = (data.fotos || []);
+        updateCounts();
+        renderGallery();
+      })
+      .catch(function() {
+        updateCounts();
+        renderGallery();
+      });
+  })();
   </script>
 </body>
 </html>

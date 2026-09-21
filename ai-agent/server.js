@@ -120,14 +120,22 @@ function httpsRequest(options, body) {
   });
 }
 
-let gcalTokenCache = { token: null, exp: 0 };
+const tokenCache = {
+  calendar: { token: null, exp: 0 },
+  drive:    { token: null, exp: 0 }
+};
+// backwards compat alias
+Object.defineProperty(tokenCache, "gcal", {
+  get() { return tokenCache.calendar; },
+  set(v) { tokenCache.calendar = v; }
+});
 
-function buildServiceAccountJWT(sa) {
+function buildServiceAccountJWT(sa, scope) {
   const now = Math.floor(Date.now() / 1000);
   const header = Buffer.from(JSON.stringify({ alg: "RS256", typ: "JWT" })).toString("base64url");
   const payload = Buffer.from(JSON.stringify({
     iss: sa.client_email,
-    scope: "https://www.googleapis.com/auth/calendar",
+    scope,
     aud: sa.token_uri || "https://oauth2.googleapis.com/token",
     iat: now,
     exp: now + 3600
@@ -138,14 +146,15 @@ function buildServiceAccountJWT(sa) {
   return `${header}.${payload}.${sig}`;
 }
 
-async function getGCalToken() {
+async function getSAToken(scope) {
+  const key = scope.includes("drive") ? "drive" : "calendar";
   const now = Math.floor(Date.now() / 1000);
-  if (gcalTokenCache.token && gcalTokenCache.exp > now + 60) return gcalTokenCache.token;
+  if (tokenCache[key].token && tokenCache[key].exp > now + 60) return tokenCache[key].token;
 
   const sa = loadServiceAccount();
   if (!sa) throw new Error("google-service-account.json no encontrado");
 
-  const jwt = buildServiceAccountJWT(sa);
+  const jwt = buildServiceAccountJWT(sa, scope);
   const bodyStr = "grant_type=" + encodeURIComponent("urn:ietf:params:oauth:grant-type:jwt-bearer") +
     "&assertion=" + encodeURIComponent(jwt);
 
@@ -159,10 +168,13 @@ async function getGCalToken() {
     }
   }, bodyStr);
   const data = res.json;
-  if (!data.access_token) throw new Error("GCal token error: " + JSON.stringify(data));
-  gcalTokenCache = { token: data.access_token, exp: now + (data.expires_in || 3600) };
+  if (!data.access_token) throw new Error("SA token error: " + JSON.stringify(data));
+  tokenCache[key] = { token: data.access_token, exp: now + (data.expires_in || 3600) };
   return data.access_token;
 }
+
+async function getGCalToken() { return getSAToken("https://www.googleapis.com/auth/calendar"); }
+async function getDriveToken() { return getSAToken("https://www.googleapis.com/auth/drive.readonly"); }
 
 async function gcalRequest(method, endpoint, body) {
   const token = await getGCalToken();
@@ -1223,6 +1235,65 @@ app.get("/api/messages/recent", async (_req, res) => {
   } catch (e) {
     console.error("Error leyendo conversaciones:", e);
     res.json({ ok: false, configured: true, conversaciones: [] });
+  }
+});
+
+// ── Galería de fotos desde Google Drive ──────────────────────────────────
+const DRIVE_FOLDERS = {
+  "acuatico":          "1nq4UNCKY5lDFZnNqggnaGQ6UcsJFNo-4",
+  "cumple-peques":     "1--bZvIJCusNdhqZCFZbAtiYOVORoAwuT",
+  "cumples-noche":     "18m0Ev2WVvuxuztXUTjLSbGPotf-EEwSb",
+  "egresaditos":       "1Zyn6cOyVd4kJxtcZqR4bsM36Tm7s0KPS",
+  "packs-peques":      "1l6JYJdPjrWJLDwFmRMGscAPb2m-RGAdr",
+  "promo-egresaditos": "1vl5v3LrgB1rA0S82m7lSyPQWmemIUzII",
+  "varios":            "1AcxZtbWu2KncfFBLZOLvR7IQjI_mlaTK"
+};
+
+let galeriaCacheData = null;
+let galeriaCacheExp = 0;
+
+async function listarFotosDrive(folderId) {
+  const token = await getDriveToken();
+  const q = encodeURIComponent(`'${folderId}' in parents and mimeType contains 'image/' and trashed = false`);
+  const res = await httpsRequest({
+    hostname: "www.googleapis.com",
+    path: `/drive/v3/files?q=${q}&fields=files(id,name)&pageSize=200&orderBy=name`,
+    method: "GET",
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  if (!res.ok) throw new Error(`Drive list error ${res.status}: ${res.text.slice(0, 200)}`);
+  return (res.json && res.json.files) || [];
+}
+
+async function cargarGaleria(force) {
+  const now = Date.now();
+  if (!force && galeriaCacheData && now < galeriaCacheExp) return galeriaCacheData;
+  if (!googleCalendarActivo()) return [];
+  try {
+    const fotos = [];
+    for (const [cat, folderId] of Object.entries(DRIVE_FOLDERS)) {
+      const archivos = await listarFotosDrive(folderId);
+      for (const f of archivos) {
+        fotos.push({ id: f.id, cat, nombre: f.name });
+      }
+    }
+    galeriaCacheData = fotos;
+    galeriaCacheExp = now + 5 * 60 * 1000; // cache 5 min
+    console.log(`[galeria] ${fotos.length} fotos cargadas de Drive`);
+    return fotos;
+  } catch (e) {
+    console.error("[galeria] Error cargando fotos de Drive:", e.message);
+    return galeriaCacheData || [];
+  }
+}
+
+app.get("/api/galeria", async (_req, res) => {
+  try {
+    const fotos = await cargarGaleria(false);
+    res.json({ ok: true, fotos });
+  } catch (e) {
+    console.error("Error galeria:", e);
+    res.status(500).json({ ok: false, fotos: [] });
   }
 });
 
