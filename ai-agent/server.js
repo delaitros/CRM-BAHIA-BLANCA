@@ -39,6 +39,16 @@ const RATE_LIMIT_MAX = Number(process.env.RATE_LIMIT_MAX || 6);
 const RESERVAS_FILE = path.join(DATA_DIR, "reservas.json");
 const ESTADO_FILE = path.join(DATA_DIR, "estado.json");
 
+const TURNOS = {
+  manana: { nombre: "Turno Mañana", inicio: "11:30", fin: "15:30" },
+  tarde:  { nombre: "Turno Tarde",  inicio: "16:30", fin: "20:30" },
+  noche:  { nombre: "Turno Noche",  inicio: "21:30", fin: "04:00" }
+};
+const LIMPIEZA_ENTRE = {
+  manana_tarde: { inicio: "15:30", fin: "16:30" },
+  tarde_noche:  { inicio: "20:30", fin: "21:30" }
+};
+
 if (!process.env.ANTHROPIC_API_KEY)
   console.error("FALTA ANTHROPIC_API_KEY - el agente no puede responder.");
 if (!CHATWOOT_API_TOKEN)
@@ -180,13 +190,51 @@ function parsearMetaEvento(ev) {
     const i = p.indexOf(":");
     if (i > 0) meta[p.slice(0, i).trim()] = p.slice(i + 1).trim();
   });
+  let turno = meta.turno || null;
+  if (!turno && ev.start && ev.start.dateTime) {
+    const h = new Date(ev.start.dateTime).getHours();
+    if (h >= 11 && h < 16) turno = "manana";
+    else if (h >= 16 && h < 21) turno = "tarde";
+    else turno = "noche";
+  }
   return {
     id: ev.id,
     fecha: (ev.start.date || ev.start.dateTime || "").slice(0, 10),
     nombre: ev.summary || "Reservado",
     tipo: meta.tipo || "otro",
+    turno: turno || null,
     personas: Number(meta.personas) || 0,
     notas: meta.notas || ""
+  };
+}
+
+function buildGCalEvent(evento) {
+  const tk = evento.turno;
+  const t = tk && TURNOS[tk];
+  const desc = `tipo:${evento.tipo}|turno:${tk || ""}|personas:${evento.personas}|notas:${evento.notas}`;
+  if (t) {
+    const [endH] = t.fin.split(":").map(Number);
+    const [startH] = t.inicio.split(":").map(Number);
+    let endFecha = evento.fecha;
+    if (endH < startH) {
+      const d = new Date(evento.fecha + "T00:00:00");
+      d.setDate(d.getDate() + 1);
+      endFecha = d.toISOString().slice(0, 10);
+    }
+    return {
+      summary: evento.nombre,
+      description: desc,
+      start: { dateTime: `${evento.fecha}T${t.inicio}:00`, timeZone: "America/Argentina/Buenos_Aires" },
+      end:   { dateTime: `${endFecha}T${t.fin}:00`,        timeZone: "America/Argentina/Buenos_Aires" }
+    };
+  }
+  const endDate = new Date(evento.fecha);
+  endDate.setDate(endDate.getDate() + 1);
+  return {
+    summary: evento.nombre,
+    description: desc,
+    start: { date: evento.fecha },
+    end:   { date: endDate.toISOString().slice(0, 10) }
   };
 }
 
@@ -207,24 +255,70 @@ async function crearEvento(evento) {
     const eventos = leerEventosLocal();
     eventos.push(evento);
     guardarEventosLocal(eventos);
+    await autoCrearLimpieza(evento.fecha, evento.turno);
     return evento;
   }
   try {
-    const endDate = new Date(evento.fecha);
-    endDate.setDate(endDate.getDate() + 1);
-    const ev = await gcalRequest("POST", "/events", {
-      summary: evento.nombre,
-      description: `tipo:${evento.tipo}|personas:${evento.personas}|notas:${evento.notas}`,
-      start: { date: evento.fecha },
-      end: { date: endDate.toISOString().slice(0, 10) }
-    });
-    return { ...evento, id: ev.id };
+    const ev = await gcalRequest("POST", "/events", buildGCalEvent(evento));
+    const creado = { ...evento, id: ev.id };
+    await autoCrearLimpieza(evento.fecha, evento.turno);
+    return creado;
   } catch (e) {
     console.error("Google Calendar no disponible, guardando local:", e.message);
     const eventos = leerEventosLocal();
     eventos.push(evento);
     guardarEventosLocal(eventos);
+    await autoCrearLimpieza(evento.fecha, evento.turno);
     return evento;
+  }
+}
+
+async function autoCrearLimpieza(fecha, turnoCreado) {
+  if (!turnoCreado || turnoCreado === "limpieza") return;
+  const todos = await leerEventos();
+  const evsDia = todos.filter((e) => e.fecha === fecha && e.nombre !== "Limpieza");
+  const ocupados = new Set(evsDia.map((e) => e.turno).filter(Boolean));
+
+  const pares = [
+    { key: "manana_tarde", a: "manana", b: "tarde" },
+    { key: "tarde_noche",  a: "tarde",  b: "noche" }
+  ];
+  for (const par of pares) {
+    if (!ocupados.has(par.a) || !ocupados.has(par.b)) continue;
+    const yaExiste = todos.some((e) => e.fecha === fecha && e.nombre === "Limpieza" && e.notas === par.key);
+    if (yaExiste) continue;
+    const horario = LIMPIEZA_ENTRE[par.key];
+    const limpEv = {
+      id: `${fecha}-limpieza-${par.key}-${Date.now()}`,
+      fecha,
+      nombre: "Limpieza",
+      tipo: "limpieza",
+      turno: "limpieza",
+      notas: par.key,
+      personas: 0
+    };
+    if (googleCalendarActivo()) {
+      try {
+        const ev = await gcalRequest("POST", "/events", {
+          summary: "Limpieza",
+          description: `tipo:limpieza|turno:limpieza|notas:${par.key}|personas:0`,
+          start: { dateTime: `${fecha}T${horario.inicio}:00`, timeZone: "America/Argentina/Buenos_Aires" },
+          end:   { dateTime: `${fecha}T${horario.fin}:00`,   timeZone: "America/Argentina/Buenos_Aires" }
+        });
+        limpEv.id = ev.id;
+        console.log(`[limpieza] GCal: ${par.key} para ${fecha}`);
+      } catch (e) {
+        console.error("Error limpieza GCal, guardando local:", e.message);
+        const local = leerEventosLocal();
+        local.push(limpEv);
+        guardarEventosLocal(local);
+      }
+    } else {
+      const local = leerEventosLocal();
+      local.push(limpEv);
+      guardarEventosLocal(local);
+      console.log(`[limpieza] Local: ${par.key} para ${fecha}`);
+    }
   }
 }
 
@@ -381,24 +475,31 @@ async function mpConsultarPago(pagoId) {
 }
 
 // ── Herramientas de Claude ────────────────────────────────────────────
+const SERVICE_IDS = [
+  "infantil_pack_aventura", "infantil_pack_full", "infantil_pack_experiencia",
+  "teens_pack_fun", "teens_pack_night", "teens_pack_ultimate",
+  "egresaditos_con_menu", "egresaditos_sin_menu",
+  "egresados_6_grado",
+  "cumple_tarde_merienda",
+  "cumple_noche_premium", "cumple_noche_gold", "cumple_noche_silver"
+];
+
 const TOOLS = [
   {
     name: "generar_presupuesto",
     description:
-      "Calcula un presupuesto detallado con subtotal, IVA, total y monto de sena. Usala cuando ya sabes tipo de evento, cantidad de personas y fecha.",
+      "Calcula un presupuesto detallado con subtotal, IVA, total y monto de sena. Usala cuando ya sabes tipo de evento, cantidad de personas, turno y fecha.",
     input_schema: {
       type: "object",
       properties: {
-        servicio_id: {
-          type: "string",
-          enum: ["cumple_noche_salon", "cumple_noche_menu", "cumple_teens"]
-        },
+        servicio_id: { type: "string", enum: SERVICE_IDS },
         cantidad_personas: { type: "integer" },
         fecha: { type: "string", description: "YYYY-MM-DD" },
+        turno: { type: "string", enum: ["manana", "tarde", "noche"], description: "Turno del evento" },
         extras_ids: {
           type: "array",
           items: { type: "string" },
-          description: "IDs de opcionales: dj_noche, dj_teens, daikiris, fluo, rueda_hamster, tobogan_pelotas, circuito_multiaventura, cuatris, tobogan_acuatico, bowling_humano, pile_rueda, combo_tobogan_pile, super_combo_verano"
+          description: "IDs de opcionales: rueda_hamster, tobogan_pelotas, circuito_multiaventura, cuatris, tobogan_acuatico, bowling_humano, combo_tobogan_pile, super_combo_verano, barra_tragos, dj_noche"
         }
       },
       required: ["servicio_id", "cantidad_personas", "fecha"]
@@ -406,10 +507,13 @@ const TOOLS = [
   },
   {
     name: "verificar_disponibilidad",
-    description: "Verifica si una fecha esta libre para tomar un evento.",
+    description: "Verifica la disponibilidad de turnos en una fecha. Si el cliente pide un turno específico lo verifica; si no, muestra todos los turnos del día.",
     input_schema: {
       type: "object",
-      properties: { fecha: { type: "string", description: "YYYY-MM-DD" } },
+      properties: {
+        fecha: { type: "string", description: "YYYY-MM-DD" },
+        turno: { type: "string", enum: ["manana", "tarde", "noche"], description: "Turno específico (opcional)" }
+      },
       required: ["fecha"]
     }
   },
@@ -420,12 +524,10 @@ const TOOLS = [
     input_schema: {
       type: "object",
       properties: {
-        servicio_id: {
-          type: "string",
-          enum: ["cumple_noche_salon", "cumple_noche_menu", "cumple_teens"]
-        },
+        servicio_id: { type: "string", enum: SERVICE_IDS },
         cantidad_personas: { type: "integer" },
         fecha: { type: "string", description: "YYYY-MM-DD" },
+        turno: { type: "string", enum: ["manana", "tarde", "noche"], description: "Turno del evento" },
         extras_ids: { type: "array", items: { type: "string" } }
       },
       required: ["servicio_id", "cantidad_personas", "fecha"]
@@ -467,10 +569,30 @@ function ejecutarGenerarPresupuesto(input, negocio) {
 
 async function ejecutarVerificarDisponibilidad(input) {
   const eventos = await leerEventos();
-  const ocupada = eventos.some((e) => e.fecha === input.fecha);
-  return ocupada
-    ? `La fecha ${input.fecha} ya esta reservada. Ofrecele al cliente otra fecha.`
-    : `La fecha ${input.fecha} figura disponible.`;
+  const fecha = input.fecha;
+  const evsDia = eventos.filter((e) => e.fecha === fecha && e.nombre !== "Limpieza");
+
+  if (input.turno) {
+    const info = TURNOS[input.turno];
+    const ocupado = evsDia.some((e) => e.turno === input.turno);
+    if (ocupado) {
+      const libres = Object.entries(TURNOS)
+        .filter(([k]) => !evsDia.some((e) => e.turno === k))
+        .map(([, t]) => `${t.nombre} (${t.inicio}-${t.fin})`);
+      return `El ${info ? info.nombre : input.turno} del ${fecha} está ocupado.` +
+        (libres.length > 0 ? ` Turnos disponibles ese día: ${libres.join(", ")}.` : " Todos los turnos están ocupados ese día.");
+    }
+    return `El ${info ? info.nombre : input.turno} del ${fecha} está disponible (${info ? info.inicio + "-" + info.fin : ""}).`;
+  }
+
+  const lineas = Object.entries(TURNOS).map(([k, t]) => {
+    const ocupado = evsDia.some((e) => e.turno === k);
+    return `• ${t.nombre} (${t.inicio}-${t.fin}): ${ocupado ? "OCUPADO" : "disponible"}`;
+  });
+  const hayLibre = Object.keys(TURNOS).some((k) => !evsDia.some((e) => e.turno === k));
+  return (hayLibre
+    ? `Disponibilidad para el ${fecha}:\n`
+    : `El ${fecha} está completo (todos los turnos ocupados).\n`) + lineas.join("\n");
 }
 
 async function ejecutarGenerarLinkPago(input, negocio) {
@@ -478,7 +600,8 @@ async function ejecutarGenerarLinkPago(input, negocio) {
     return "MercadoPago no esta configurado. Deriva al cliente con un humano para coordinar el pago.";
   const p = calcularPresupuesto(input, negocio);
   if (!p) return "Error: servicio no encontrado.";
-  const titulo = `Sena ${p.servicio.nombre} - ${input.fecha} (${p.personas} personas)`;
+  const turnoInfo = input.turno && TURNOS[input.turno] ? ` ${TURNOS[input.turno].nombre}` : "";
+  const titulo = `Sena ${p.servicio.nombre} - ${input.fecha}${turnoInfo} (${p.personas} personas)`;
   const link = await mpCrearPreferencia(
     input._conversation_id,
     titulo,
@@ -489,7 +612,7 @@ async function ejecutarGenerarLinkPago(input, negocio) {
     return "No se pudo generar el link de pago. Deriva al cliente con un humano.";
   return (
     `LINK DE PAGO GENERADO. Envialo al cliente con este texto:\n\n` +
-    `Para reservar la fecha ${input.fecha} aboná la seña de ` +
+    `Para reservar${turnoInfo ? " el" + turnoInfo : " la fecha"} ${input.fecha} aboná la seña de ` +
     `$${p.sena.toLocaleString("es-AR")} (${negocio.sena_porcentaje}% del total ` +
     `$${p.total.toLocaleString("es-AR")}) desde este link seguro de MercadoPago:\n` +
     `${link}\n\n` +
@@ -671,7 +794,15 @@ function construirSystemPrompt(negocio) {
   return `Sos el asistente virtual de "${negocio.nombre}", ${negocio.rubro} en ${negocio.ubicacion}.
 
 ## NEGOCIO
-- Horario: ${negocio.horario_atencion}
+- Horario de atención: ${negocio.horario_atencion}
+
+## TURNOS DEL DÍA
+El local opera en 3 turnos fijos por día:
+- Turno Mañana: 11:30 a 15:30 hs
+- Turno Tarde: 16:30 a 20:30 hs
+- Turno Noche: 21:30 a 04:00 hs
+
+Cuando alguien consulta disponibilidad o quiere reservar, siempre preguntá o verificá el turno. Mostrá qué turnos están libres u ocupados para esa fecha.
 
 ## SERVICIOS Y PRECIOS
 ${servicios}
@@ -686,10 +817,10 @@ ${extras}
 - SOLO respondés sobre nuestro negocio: servicios, precios, disponibilidad, eventos y reservas. Si te preguntan sobre código, matemáticas, política, u otro tema que no sea del negocio, respondé amablemente que solo podés ayudar con consultas sobre nuestros servicios y eventos.
 
 ## FLUJO DE VENTA (seguilo)
-1. Entendé qué evento quiere: tipo, cantidad de personas, fecha.
-2. Si pregunta por una fecha puntual: verificar_disponibilidad.
+1. Entendé qué evento quiere: tipo, cantidad de personas, fecha y turno.
+2. Si pregunta por una fecha: verificar_disponibilidad (con o sin turno específico). Mostrá qué turnos están disponibles.
 3. Mostrá el presupuesto con generar_presupuesto (incluye la seña).
-4. Si el cliente CONFIRMA que quiere reservar: usá generar_link_pago y mandale el link de la seña. Explicále que al pagar queda reservada la fecha y que después lo contacta una persona del equipo.
+4. Si el cliente CONFIRMA que quiere reservar: usá generar_link_pago (con turno) y mandale el link de la seña. Explicále que al pagar queda reservado el turno y que después lo contacta una persona del equipo.
 5. NO digas que el pago está confirmado vos: la confirmación es automática. Después de mandar el link, seguí respondiendo dudas pero no presiones.
 6. Reclamos, casos raros o si pide una persona: derivar_humano.`;
 }
@@ -982,14 +1113,15 @@ app.get("/api/reservas", async (_req, res) => {
 });
 
 app.post("/api/reservas", async (req, res) => {
-  const { fecha, nombre, tipo, personas, notas } = req.body || {};
+  const { fecha, nombre, tipo, turno, personas, notas } = req.body || {};
   if (!fecha || !nombre) return res.status(400).json({ error: "fecha y nombre son obligatorios" });
   try {
     const evento = {
-      id: `${fecha}-${Date.now()}`,
+      id: `${fecha}-${turno || "noturno"}-${Date.now()}`,
       fecha: String(fecha),
       nombre: String(nombre),
       tipo: String(tipo || "otro"),
+      turno: turno && TURNOS[turno] ? String(turno) : null,
       personas: Number(personas) || 0,
       notas: String(notas || "")
     };
@@ -1098,14 +1230,19 @@ app.get("/api/messages/recent", async (_req, res) => {
 app.get("/api/disponibilidad", async (_req, res) => {
   try {
     const eventos = await leerEventos();
-    const reservadas = new Set(eventos.map((e) => e.fecha));
     const hoy = new Date();
     const dias = [];
     for (let i = 0; i < 60; i++) {
       const d = new Date(hoy);
       d.setDate(d.getDate() + i);
       const str = d.toISOString().slice(0, 10);
-      dias.push({ fecha: str, reservado: reservadas.has(str) });
+      const evsDia = eventos.filter((e) => e.fecha === str && e.nombre !== "Limpieza");
+      const turnos = {};
+      for (const k of Object.keys(TURNOS)) {
+        turnos[k] = evsDia.some((e) => e.turno === k);
+      }
+      const todoOcupado = Object.values(turnos).every(Boolean);
+      dias.push({ fecha: str, reservado: todoOcupado, turnos });
     }
     res.json({ dias, fuente: googleCalendarActivo() ? "google" : "local" });
   } catch (e) {
