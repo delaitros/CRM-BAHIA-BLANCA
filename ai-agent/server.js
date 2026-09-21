@@ -30,6 +30,7 @@ const PUBLIC_URL = (process.env.PUBLIC_URL || "").replace(/\/$/, "");
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
 const GOOGLE_CALENDAR_ID = process.env.GOOGLE_CALENDAR_ID || "";
 const GOOGLE_SERVICE_ACCOUNT_FILE = process.env.GOOGLE_SERVICE_ACCOUNT_FILE || path.join(__dirname, "google-service-account.json");
+const GOOGLE_DRIVE_API_KEY = process.env.GOOGLE_DRIVE_API_KEY || "";
 const DATA_DIR = process.env.DATA_DIR || "/data";
 const DEBOUNCE_MS = Number(process.env.DEBOUNCE_MS || 60000);
 const MAX_MSGS_PER_CONV = Number(process.env.MAX_MSGS_PER_CONV || 30);
@@ -1257,14 +1258,25 @@ let galeriaCacheData = null;
 let galeriaCacheExp = 0;
 
 async function listarFotosDrive(folderId) {
-  const token = await getDriveToken();
   const q = encodeURIComponent(`'${folderId}' in parents and mimeType contains 'image/' and trashed = false`);
-  const res = await httpsRequest({
-    hostname: "www.googleapis.com",
-    path: `/drive/v3/files?q=${q}&fields=files(id,name)&pageSize=200&orderBy=name&supportsAllDrives=true&includeItemsFromAllDrives=true`,
-    method: "GET",
-    headers: { Authorization: `Bearer ${token}` }
-  });
+  let requestOptions;
+  if (GOOGLE_DRIVE_API_KEY) {
+    requestOptions = {
+      hostname: "www.googleapis.com",
+      path: `/drive/v3/files?q=${q}&fields=files(id,name)&pageSize=200&orderBy=name&key=${GOOGLE_DRIVE_API_KEY}`,
+      method: "GET",
+      headers: {}
+    };
+  } else {
+    const token = await getDriveToken();
+    requestOptions = {
+      hostname: "www.googleapis.com",
+      path: `/drive/v3/files?q=${q}&fields=files(id,name)&pageSize=200&orderBy=name&supportsAllDrives=true&includeItemsFromAllDrives=true`,
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` }
+    };
+  }
+  const res = await httpsRequest(requestOptions);
   if (!res.ok) {
     console.error(`[galeria] Drive list error folder ${folderId} → status ${res.status}: ${res.text.slice(0, 300)}`);
     throw new Error(`Drive list error ${res.status}: ${res.text.slice(0, 200)}`);
@@ -1308,19 +1320,23 @@ app.get("/api/galeria", async (_req, res) => {
 });
 
 app.get("/api/galeria/debug", async (_req, res) => {
-  const sa = loadServiceAccount();
-  if (!sa) return res.json({ error: "sin service account" });
+  const firstFolder = Object.values(DRIVE_FOLDERS)[0];
+  const firstCat = Object.keys(DRIVE_FOLDERS)[0];
+  const q = encodeURIComponent(`'${firstFolder}' in parents and mimeType contains 'image/' and trashed = false`);
   try {
-    const token = await getDriveToken();
-    const firstFolder = Object.values(DRIVE_FOLDERS)[0];
-    const q = encodeURIComponent(`'${firstFolder}' in parents and mimeType contains 'image/' and trashed = false`);
-    const raw = await httpsRequest({
-      hostname: "www.googleapis.com",
-      path: `/drive/v3/files?q=${q}&fields=files(id,name)&pageSize=5&supportsAllDrives=true&includeItemsFromAllDrives=true`,
-      method: "GET",
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    res.json({ status: raw.status, ok: raw.ok, body: raw.json || raw.text.slice(0, 500), sa_email: sa.client_email });
+    let reqOpts, method;
+    if (GOOGLE_DRIVE_API_KEY) {
+      method = "api_key";
+      reqOpts = { hostname: "www.googleapis.com", path: `/drive/v3/files?q=${q}&fields=files(id,name)&pageSize=5&key=${GOOGLE_DRIVE_API_KEY}`, method: "GET", headers: {} };
+    } else {
+      const sa = loadServiceAccount();
+      if (!sa) return res.json({ error: "sin api_key ni service account" });
+      method = "service_account";
+      const token = await getDriveToken();
+      reqOpts = { hostname: "www.googleapis.com", path: `/drive/v3/files?q=${q}&fields=files(id,name)&pageSize=5&supportsAllDrives=true&includeItemsFromAllDrives=true`, method: "GET", headers: { Authorization: `Bearer ${token}` } };
+    }
+    const raw = await httpsRequest(reqOpts);
+    res.json({ auth_method: method, folder: firstCat, status: raw.status, ok: raw.ok, body: raw.json || raw.text.slice(0, 500) });
   } catch (e) {
     res.json({ error: e.message });
   }
