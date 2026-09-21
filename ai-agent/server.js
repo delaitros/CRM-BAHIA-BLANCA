@@ -1257,12 +1257,17 @@ async function listarFotosDrive(folderId) {
   const q = encodeURIComponent(`'${folderId}' in parents and mimeType contains 'image/' and trashed = false`);
   const res = await httpsRequest({
     hostname: "www.googleapis.com",
-    path: `/drive/v3/files?q=${q}&fields=files(id,name)&pageSize=200&orderBy=name`,
+    path: `/drive/v3/files?q=${q}&fields=files(id,name)&pageSize=200&orderBy=name&supportsAllDrives=true&includeItemsFromAllDrives=true`,
     method: "GET",
     headers: { Authorization: `Bearer ${token}` }
   });
-  if (!res.ok) throw new Error(`Drive list error ${res.status}: ${res.text.slice(0, 200)}`);
-  return (res.json && res.json.files) || [];
+  if (!res.ok) {
+    console.error(`[galeria] Drive list error folder ${folderId} → status ${res.status}: ${res.text.slice(0, 300)}`);
+    throw new Error(`Drive list error ${res.status}: ${res.text.slice(0, 200)}`);
+  }
+  const files = (res.json && res.json.files) || [];
+  console.log(`[galeria] folder ${folderId} → ${files.length} archivos`);
+  return files;
 }
 
 async function cargarGaleria(force) {
@@ -1289,11 +1294,31 @@ async function cargarGaleria(force) {
 
 app.get("/api/galeria", async (_req, res) => {
   try {
-    const fotos = await cargarGaleria(false);
+    const force = _req.query.force === "1";
+    const fotos = await cargarGaleria(force);
     res.json({ ok: true, fotos });
   } catch (e) {
     console.error("Error galeria:", e);
     res.status(500).json({ ok: false, fotos: [] });
+  }
+});
+
+app.get("/api/galeria/debug", async (_req, res) => {
+  const sa = loadServiceAccount();
+  if (!sa) return res.json({ error: "sin service account" });
+  try {
+    const token = await getDriveToken();
+    const firstFolder = Object.values(DRIVE_FOLDERS)[0];
+    const q = encodeURIComponent(`'${firstFolder}' in parents and mimeType contains 'image/' and trashed = false`);
+    const raw = await httpsRequest({
+      hostname: "www.googleapis.com",
+      path: `/drive/v3/files?q=${q}&fields=files(id,name)&pageSize=5&supportsAllDrives=true&includeItemsFromAllDrives=true`,
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    res.json({ status: raw.status, ok: raw.ok, body: raw.json || raw.text.slice(0, 500), sa_email: sa.client_email });
+  } catch (e) {
+    res.json({ error: e.message });
   }
 });
 
