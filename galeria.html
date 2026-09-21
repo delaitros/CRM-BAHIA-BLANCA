@@ -292,13 +292,16 @@
     <div class="max-w-7xl mx-auto">
       <div id="gallery-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4"></div>
 
-      <!-- Empty state -->
-      <div id="empty-state" class="hidden text-center py-20">
-        <div class="w-20 h-20 rounded-full bg-surface-container mx-auto flex items-center justify-center mb-4">
-          <span class="material-symbols-outlined text-4xl text-outline">photo_library</span>
+      <!-- Empty state con links a Drive -->
+      <div id="empty-state" class="hidden py-12">
+        <div class="text-center mb-10">
+          <div class="w-16 h-16 rounded-full bg-surface-container mx-auto flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-3xl text-outline">photo_library</span>
+          </div>
+          <h3 class="font-headline font-bold text-lg text-on-surface mb-1">Mirá nuestros álbumes</h3>
+          <p class="text-on-surface-variant text-sm">Abrí cada categoría para ver todas las fotos en Drive.</p>
         </div>
-        <h3 class="font-headline font-bold text-lg text-on-surface mb-2">Próximamente</h3>
-        <p class="text-on-surface-variant text-sm">Estamos cargando las fotos. ¡Volvé pronto!</p>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-w-3xl mx-auto" id="drive-links-grid"></div>
       </div>
     </div>
   </section>
@@ -391,8 +394,6 @@
   </div>
 
   <script>
-  // Las fotos se cargan automáticamente desde Google Drive vía /api/galeria
-  // Cuando agregás fotos a las carpetas de Drive, aparecen solas acá.
   let FOTOS = [];
 
   const CAT_LABELS = {
@@ -403,6 +404,16 @@
     "packs-peques":      "🎁 Packs Peques",
     "promo-egresaditos": "📣 Promo Egresaditos",
     "varios":            "✨ Varios",
+  };
+
+  const DRIVE_LINKS = {
+    "acuatico":          "https://drive.google.com/drive/folders/1nq4UNCKY5lDFZnNqggnaGQ6UcsJFNo-4",
+    "cumple-peques":     "https://drive.google.com/drive/folders/1--bZvIJCusNdhqZCFZbAtiYOVORoAwuT",
+    "cumples-noche":     "https://drive.google.com/drive/folders/18m0Ev2WVvuxuztXUTjLSbGPotf-EEwSb",
+    "egresaditos":       "https://drive.google.com/drive/folders/1Zyn6cOyVd4kJxtcZqR4bsM36Tm7s0KPS",
+    "packs-peques":      "https://drive.google.com/drive/folders/1l6JYJdPjrWJLDwFmRMGscAPb2m-RGAdr",
+    "promo-egresaditos": "https://drive.google.com/drive/folders/1vl5v3LrgB1rA0S82m7lSyPQWmemIUzII",
+    "varios":            "https://drive.google.com/drive/folders/1AcxZtbWu2KncfFBLZOLvR7IQjI_mlaTK",
   };
 
   function driveThumb(id, size) {
@@ -428,6 +439,17 @@
     grid.innerHTML = "";
     if (list.length === 0) {
       empty.classList.remove("hidden");
+      const linksGrid = document.getElementById("drive-links-grid");
+      if (linksGrid) {
+        linksGrid.innerHTML = Object.entries(DRIVE_LINKS).map(([cat, url]) =>
+          `<a href="${url}" target="_blank" rel="noopener noreferrer"
+              class="flex flex-col items-center gap-2 p-4 bg-surface-container-lowest rounded-2xl border border-outline-variant/20 hover:border-primary/40 hover:shadow-md transition-all text-center group">
+            <span class="text-2xl">${(CAT_LABELS[cat]||"📁").split(" ")[0]}</span>
+            <span class="text-xs font-semibold text-on-surface group-hover:text-primary transition-colors leading-tight">${(CAT_LABELS[cat]||cat).replace(/^.\s/,"")}</span>
+            <span class="text-[10px] text-outline flex items-center gap-0.5"><span class="material-symbols-outlined text-[12px]">open_in_new</span> Ver fotos</span>
+          </a>`
+        ).join("");
+      }
       return;
     }
     empty.classList.add("hidden");

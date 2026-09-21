@@ -1127,13 +1127,17 @@ app.get("/api/reservas", async (_req, res) => {
 app.post("/api/reservas", async (req, res) => {
   const { fecha, nombre, tipo, turno, personas, notas } = req.body || {};
   if (!fecha || !nombre) return res.status(400).json({ error: "fecha y nombre son obligatorios" });
+  if (!turno || !TURNOS[turno]) return res.status(400).json({ error: "turno obligatorio (manana, tarde o noche)" });
   try {
+    const existentes = await leerEventos();
+    const conflicto = existentes.find((e) => e.fecha === fecha && e.turno === turno && e.nombre !== "Limpieza");
+    if (conflicto) return res.status(409).json({ error: `El ${TURNOS[turno].nombre} del ${fecha} ya está ocupado por: ${conflicto.nombre}` });
     const evento = {
       id: `${fecha}-${turno || "noturno"}-${Date.now()}`,
       fecha: String(fecha),
       nombre: String(nombre),
       tipo: String(tipo || "otro"),
-      turno: turno && TURNOS[turno] ? String(turno) : null,
+      turno: String(turno),
       personas: Number(personas) || 0,
       notas: String(notas || "")
     };

@@ -627,6 +627,8 @@
       var turno  = document.getElementById('ev-turno').value;
       if (!nombre || !fecha) { showToast('Nombre y fecha son obligatorios', 'error'); return; }
       if (!turno) { showToast('Seleccioná un turno', 'error'); return; }
+      var conflicto = eventos.find(function(e) { return e.fecha === fecha && e.turno === turno && e.nombre !== 'Limpieza'; });
+      if (conflicto) { showToast('Ese turno ya está ocupado por: ' + conflicto.nombre, 'error'); return; }
       var ev = {
         nombre: nombre,
         fecha: fecha,
