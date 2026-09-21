@@ -1,5 +1,5 @@
 {
-  "_comentario": "EDITA ESTE ARCHIVO para cambiar precios, servicios y horarios. No hace falta saber programar. Cambia los numeros y textos entre comillas. Despues actualiza el archivo en la VPS (ver instrucciones al pie).",
+  "_comentario": "EDITA ESTE ARCHIVO para cambiar precios, servicios y horarios. No hace falta saber programar. Cambia los numeros y textos entre comillas. Despues actualiza el archivo en la VPS.",
 
   "nombre": "Lo de Juan",
   "rubro": "Catering y organizacion de eventos",
@@ -10,122 +10,247 @@
   "moneda": "ARS",
   "sena_porcentaje": 40,
 
+  "turnos": {
+    "manana": { "nombre": "Turno Mañana", "inicio": "11:30", "fin": "15:30" },
+    "tarde":  { "nombre": "Turno Tarde",  "inicio": "16:30", "fin": "20:30" },
+    "noche":  { "nombre": "Turno Noche",  "inicio": "21:30", "fin": "04:00" }
+  },
+
+  "tipos_evento": [
+    "infantil", "teens", "egresaditos", "egresados", "cumple_tarde", "cumple_noche", "evento", "otro"
+  ],
+
   "servicios": [
     {
-      "id": "cumple_noche_salon",
-      "nombre": "Cumple Noche - Salón",
-      "precio_total": 1100000,
-      "precio_por_persona": null,
-      "max_personas": 40,
-      "min_personas": null,
-      "horario": "21:30 a 04:00",
-      "dias_disponibles": null,
-      "incluye": "personal de cocina, atención a las mesas, vajilla para servir, copas, baños completos, limpieza",
-      "no_incluye": "servilletas y vasos descartables para el momento del baile (los trae el cliente)"
-    },
-    {
-      "id": "cumple_noche_menu",
-      "nombre": "Cumple Noche con Menú Completo",
-      "precio_total": null,
-      "precio_por_persona": 75000,
-      "max_personas": null,
-      "min_personas": 50,
-      "horario": "21:30 a 04:00",
-      "dias_disponibles": null,
-      "incluye": "DJ luces y sonido, snacks, sandwiches triples de miga, tablas de fiambres, carne desmechada con panes y salcitas, helado. Bebidas cena: vino blanco, vino tinto, gaseosas, saborizadas, agua, soda. Barra libre: cerveza, Fernet, Gin, Campari",
-      "no_incluye": null
-    },
-    {
-      "id": "cumple_teens",
-      "nombre": "Cumple Teens Night",
+      "id": "infantil_pack_aventura",
+      "nombre": "Infantil – Pack Aventura",
+      "categoria": "infantil",
       "precio_total": 450000,
       "precio_por_persona": null,
       "max_personas": null,
       "min_personas": null,
-      "horario": "21:30 a 00:30",
-      "dias_disponibles": "Domingo a Viernes",
-      "incluye": "personal de cocina, atención a las mesas, vajilla para servir, copas, baños completos, limpieza",
-      "no_incluye": "servilletas y vasos descartables para el momento del baile (los trae el cliente)"
+      "duracion_horas": 3,
+      "turno_recomendado": "manana o tarde",
+      "incluye": "3hs de cumple, invitaciones virtuales interactivas, animación, ayudante de cocina, atención en mesas de adultos, piñata con caramelos, castillo inflable, metegol y mangrullo, plaza blanda, sala de baile, sala de acrobacia",
+      "no_incluye": "comida y bebida para los chicos (la trae el cliente)"
+    },
+    {
+      "id": "infantil_pack_full",
+      "nombre": "Infantil – Pack Full",
+      "categoria": "infantil",
+      "precio_total": 690000,
+      "precio_por_persona": null,
+      "max_personas": null,
+      "min_personas": null,
+      "duracion_horas": 3,
+      "turno_recomendado": "manana o tarde",
+      "incluye": "3hs de cumple, invitaciones virtuales, animación, ayudante de cocina, atención en mesas de adultos, piñata con caramelos, castillo inflable, metegol y mangrullo, plaza blanda, sala de baile, sala de acrobacia. MENU 25 peques: snacks, patitas de pollo, pizza + bebida",
+      "no_incluye": null
+    },
+    {
+      "id": "infantil_pack_experiencia",
+      "nombre": "Infantil – Pack Experiencia Lo de Juan",
+      "categoria": "infantil",
+      "precio_total": 790000,
+      "precio_por_persona": null,
+      "max_personas": null,
+      "min_personas": null,
+      "duracion_horas": 3,
+      "turno_recomendado": "manana o tarde",
+      "incluye": "3hs de cumple, invitaciones virtuales, animación, ayudante de cocina, atención en mesas de adultos, piñata, castillo inflable, metegol y mangrullo, plaza blanda, sala de baile, sala de acrobacia. MENU 25 peques: snacks, patitas de pollo, pizza + bebida. Y ADEMÁS: Circuito Multiaventura + Mega Inflable",
+      "no_incluye": null
+    },
+    {
+      "id": "teens_pack_fun",
+      "nombre": "Teens – Pack Fun",
+      "categoria": "teens",
+      "precio_total": 550000,
+      "precio_por_persona": null,
+      "max_personas": null,
+      "min_personas": null,
+      "duracion_horas": 4,
+      "turno_recomendado": "tarde o noche",
+      "incluye": "4hs de evento, personal de cocina, atención a las mesas, vajilla, copas, baños completos, limpieza, coordinación durante todo el evento",
+      "no_incluye": "comida, bebida, DJ y sonido"
+    },
+    {
+      "id": "teens_pack_night",
+      "nombre": "Teens – Pack Night",
+      "categoria": "teens",
+      "precio_total": null,
+      "precio_por_persona": 29000,
+      "max_personas": null,
+      "min_personas": 30,
+      "duracion_horas": 4,
+      "turno_recomendado": "tarde o noche",
+      "incluye": "4hs de evento, personal de cocina, atención a las mesas, vajilla, copas, baños, limpieza, música/luces/sonido, coordinación. MENÚ: snacks, pizza libre. BEBIDAS: gaseosas, aguas saborizadas, agua",
+      "no_incluye": null
+    },
+    {
+      "id": "teens_pack_ultimate",
+      "nombre": "Teens – Pack Ultimate (con Flúor)",
+      "categoria": "teens",
+      "precio_total": null,
+      "precio_por_persona": 39000,
+      "max_personas": null,
+      "min_personas": 30,
+      "duracion_horas": 4,
+      "turno_recomendado": "noche",
+      "incluye": "4hs de evento, personal de cocina, atención a las mesas, vajilla, copas, baños, limpieza, música/luces/sonido, coordinación. MENÚ: snacks, pizza libre. BEBIDAS: gaseosas, aguas, agua. BARRA SIN ALCOHOL: licuados o daiquiris. FIESTA FLÚOR: cotillón flúor, luz negra, máquina de humo, competencia de baile",
+      "no_incluye": null
+    },
+    {
+      "id": "egresaditos_con_menu",
+      "nombre": "Egresaditos de Jardín – Con Menú",
+      "categoria": "egresaditos",
+      "precio_total": null,
+      "precio_por_persona": 34000,
+      "max_personas": null,
+      "min_personas": null,
+      "duracion_horas": 4,
+      "turno_recomendado": "manana o tarde",
+      "incluye": "4hs (Turno Mañana 11:30-15:30 o Turno Tarde 16:30-20:30), juegos al aire libre, circuito multiaventura, bowling humano, tobogán de agua, rueda de hámster, baile, animación. MENÚ: pizza libre Caseritas + 1 bebida 500cc + helado de postre + snack y refrigerio + hidratación permanente. Sector exclusivo para adultos con atención a las mesas. Entrega de birrete y diploma simbólico.",
+      "no_incluye": null
+    },
+    {
+      "id": "egresaditos_sin_menu",
+      "nombre": "Egresaditos de Jardín – Sin Menú (llevan canasta)",
+      "categoria": "egresaditos",
+      "precio_total": null,
+      "precio_por_persona": 29000,
+      "max_personas": null,
+      "min_personas": null,
+      "duracion_horas": 4,
+      "turno_recomendado": "manana o tarde",
+      "incluye": "4hs (Turno Mañana 11:30-15:30 o Turno Tarde 16:30-20:30), juegos al aire libre, circuito multiaventura, bowling humano, tobogán de agua, rueda de hámster, baile, animación, entrega de birrete y diploma. Las familias traen su propia comida y bebida.",
+      "no_incluye": "comida y bebida (las trae la familia)"
+    },
+    {
+      "id": "egresados_6_grado",
+      "nombre": "Egresados de 6° Grado",
+      "categoria": "egresados",
+      "precio_total": null,
+      "precio_por_persona": 40000,
+      "max_personas": null,
+      "min_personas": null,
+      "duracion_horas": 4,
+      "turno_recomendado": "tarde o noche",
+      "incluye": "4hs de diversión, música/luces/sonido, baile y animación, juegos y desafíos grupales, coordinación. MENÚ: pizza libre + gaseosas y aguas saborizadas + helado de postre",
+      "no_incluye": null
+    },
+    {
+      "id": "cumple_tarde_merienda",
+      "nombre": "Cumpleaños de Tarde – Pack Merienda",
+      "categoria": "cumple_tarde",
+      "precio_total": null,
+      "precio_por_persona": 40000,
+      "max_personas": null,
+      "min_personas": 30,
+      "duracion_horas": 4,
+      "turno_recomendado": "tarde",
+      "incluye": "4hs, personal de cocina, atención a las mesas, vajilla y tazas, baños, limpieza. MENÚ MERIENDA: mini sándwiches de miga, chipá, muffins artesanales (3 variedades), shots individuales (mousse de choc/limón/cheesecake/tiramisú), petit desserts (chocotorta, brownie, lemon pie, pavlova, balcarce, selva negra). BEBIDAS: café, té, gaseosas, saborizadas, agua",
+      "no_incluye": null
+    },
+    {
+      "id": "cumple_noche_premium",
+      "nombre": "Cumple de Noche – Pack Premium (con Barra Libre)",
+      "categoria": "cumple_noche",
+      "precio_total": null,
+      "precio_por_persona": 99000,
+      "max_personas": null,
+      "min_personas": 50,
+      "duracion_horas": 6.5,
+      "turno_recomendado": "noche",
+      "incluye": "21:30 a 04:00hs, personal de cocina, atención a las mesas, vajilla, copas, baños, limpieza, DJ/luces/sonido. MENÚ: snacks, sándwiches triples de miga, tablas de fiambres, carne desmechada con panes y salcitas, helado. BEBIDAS CENA: vino blanco y tinto, gaseosas, saborizadas, agua, soda. BARRA LIBRE: cerveza, Fernet, Gin, Campari",
+      "no_incluye": null
+    },
+    {
+      "id": "cumple_noche_gold",
+      "nombre": "Cumple de Noche – Pack Gold (sin Barra Libre)",
+      "categoria": "cumple_noche",
+      "precio_total": null,
+      "precio_por_persona": 79000,
+      "max_personas": null,
+      "min_personas": 50,
+      "duracion_horas": 6.5,
+      "turno_recomendado": "noche",
+      "incluye": "21:30 a 04:00hs, personal de cocina, atención a las mesas, vajilla, copas, baños, limpieza, DJ/luces/sonido. MENÚ: snacks, sándwiches triples de miga, tablas de fiambres, carne desmechada con panes y salcitas, helado. BEBIDAS CENA: vino blanco y tinto, gaseosas, saborizadas, agua, soda",
+      "no_incluye": "barra libre de bebidas alcohólicas"
+    },
+    {
+      "id": "cumple_noche_silver",
+      "nombre": "Cumple de Noche – Pack Silver (Salón Solo)",
+      "categoria": "cumple_noche",
+      "precio_total": 1600000,
+      "precio_por_persona": null,
+      "max_personas": null,
+      "min_personas": 50,
+      "duracion_horas": 6.5,
+      "turno_recomendado": "noche",
+      "incluye": "21:30 a 04:00hs, personal de cocina, atención a las mesas, vajilla, copas, baños, limpieza, DJ/luces/sonido. Sin menú incluido.",
+      "no_incluye": "comida y bebida (las trae el cliente)"
     }
   ],
 
   "extras": [
     {
-      "id": "dj_noche",
-      "nombre": "DJ (para Cumple Noche - Salón)",
-      "precio_total": 400000,
-      "precio_por_persona": null
-    },
-    {
-      "id": "dj_teens",
-      "nombre": "DJ (para Cumple Teens Night)",
-      "precio_total": 200000,
-      "precio_por_persona": null
-    },
-    {
-      "id": "daikiris",
-      "nombre": "Barra de daikiris sin alcohol (vasos, sorbetes y 3 sabores)",
-      "precio_total": null,
-      "precio_por_persona": 7000
-    },
-    {
-      "id": "fluo",
-      "nombre": "Fiesta Flúo (cotillón, luz negra, cañón y pantalla, máquina de humo, competencia de baile)",
-      "precio_total": null,
-      "precio_por_persona": 6000
-    },
-    {
       "id": "rueda_hamster",
       "nombre": "Rueda de Hámster",
-      "precio_total": 45000,
+      "precio_total": 60000,
       "precio_por_persona": null
     },
     {
       "id": "tobogan_pelotas",
-      "nombre": "Tobogán gigante con pelotas",
-      "precio_total": 50000,
+      "nombre": "Tobogán Gigante con Pelotas",
+      "precio_total": 60000,
       "precio_por_persona": null
     },
     {
       "id": "circuito_multiaventura",
       "nombre": "Circuito Multiaventura",
-      "precio_total": 50000,
+      "precio_total": 60000,
       "precio_por_persona": null
     },
     {
       "id": "cuatris",
-      "nombre": "Cuatris Eléctricos",
-      "precio_total": 50000,
+      "nombre": "Cuatriciclos Eléctricos",
+      "precio_total": 60000,
       "precio_por_persona": null
     },
     {
       "id": "tobogan_acuatico",
-      "nombre": "Tobogán acuático (verano)",
-      "precio_total": 45000,
+      "nombre": "Tobogán Acuático",
+      "precio_total": 60000,
       "precio_por_persona": null
     },
     {
       "id": "bowling_humano",
-      "nombre": "Bowling humano (verano)",
-      "precio_total": 40000,
-      "precio_por_persona": null
-    },
-    {
-      "id": "pile_rueda",
-      "nombre": "Pile + Rueda de Hámster",
+      "nombre": "Bowling Humano",
       "precio_total": 50000,
       "precio_por_persona": null
     },
     {
       "id": "combo_tobogan_pile",
-      "nombre": "Tobogán + cilindro y Pile",
-      "precio_total": 90000,
+      "nombre": "Tobogán Acuático + Cilindro + Pileta",
+      "precio_total": 100000,
       "precio_por_persona": null
     },
     {
       "id": "super_combo_verano",
-      "nombre": "Super Combo Verano (todos los juegos acuáticos)",
-      "precio_total": 110000,
+      "nombre": "Super Combo Verano (todos los juegos de agua)",
+      "precio_total": 130000,
+      "precio_por_persona": null
+    },
+    {
+      "id": "barra_tragos",
+      "nombre": "Barra de Tragos (presupuesto según cantidad de invitados)",
+      "precio_total": null,
+      "precio_por_persona": null
+    },
+    {
+      "id": "dj_noche",
+      "nombre": "DJ, Luces y Sonido (para Pack Silver que no lo incluye)",
+      "precio_total": 400000,
       "precio_por_persona": null
     }
   ]
