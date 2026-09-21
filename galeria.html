@@ -1,1 +1,591 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta http-equiv="refresh" content="0;url=/#galeria"><title>Redirigiendo...</title></head><body><p>Redirigiendo a <a href="/#galeria">galería</a>...</p></body></html>
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Galería — Lo de Juan</title>
+  <meta name="description" content="Mirá los mejores momentos de Lo de Juan. Fiestas infantiles, egresaditos, cumpleaños y más en Bahía Blanca." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#b8524d", "primary-container": "#c96c66", "on-primary": "#ffffff",
+            "on-primary-container": "#ffffff", "primary-fixed": "#f2d3d1", "primary-fixed-dim": "#e5a8a4",
+            "on-primary-fixed": "#3a1210", "on-primary-fixed-variant": "#8a3a36",
+            "secondary": "#5680a5", "secondary-container": "#7298ba", "on-secondary": "#ffffff",
+            "on-secondary-container": "#ffffff", "secondary-fixed": "#d5e2ee",
+            "tertiary": "#c4a13a", "tertiary-container": "#d4b65a", "on-tertiary": "#ffffff",
+            "background": "#fbf8f2", "on-background": "#1f1d18", "surface": "#fbf8f2",
+            "on-surface": "#1f1d18", "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#f5f1e9", "surface-container": "#efeae0",
+            "surface-container-high": "#e8e3d8", "surface-container-highest": "#e1dccf",
+            "surface-variant": "#e8e3d8", "on-surface-variant": "#4a4639",
+            "outline": "#7a7464", "outline-variant": "#cbc4b2",
+            "inverse-surface": "#34322c", "inverse-on-surface": "#f3efe6",
+            "inverse-primary": "#e5a8a4",
+          },
+          fontFamily: {
+            "headline": ["Manrope", "sans-serif"],
+            "body": ["Manrope", "sans-serif"],
+          },
+          borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "2xl": "2rem", "full": "9999px"},
+        },
+      },
+    }
+  </script>
+  <style>
+    /* ── Story card ──────────────────────────────────────────── */
+    .story-card {
+      aspect-ratio: 9/16;
+      border-radius: 1.25rem;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+      background: #e8e3d8;
+    }
+    .story-card img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      display: block;
+    }
+    .story-card:hover img { transform: scale(1.06); }
+    .story-card .overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.1) 40%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .story-card:hover .overlay { opacity: 1; }
+    .story-card .badge {
+      position: absolute; top: 10px; left: 10px;
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: white; font-size: 10px; font-weight: 700;
+      padding: 3px 9px; border-radius: 99px;
+      letter-spacing: 0.05em; text-transform: uppercase;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .story-card:hover .badge { opacity: 1; }
+    .story-card .zoom-icon {
+      position: absolute; bottom: 12px; right: 12px;
+      width: 32px; height: 32px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .story-card:hover .zoom-icon { opacity: 1; }
+
+    /* ── Story placeholder (vacío) ──────────────────────────── */
+    .story-placeholder {
+      aspect-ratio: 9/16;
+      border-radius: 1.25rem;
+      background: linear-gradient(135deg, #f5f1e9 0%, #efeae0 100%);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 8px;
+    }
+
+    /* ── Filtros ────────────────────────────────────────────── */
+    .filter-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 16px; border-radius: 99px;
+      font-size: 13px; font-weight: 600;
+      border: 1.5px solid #cbc4b2;
+      color: #4a4639; background: white;
+      cursor: pointer; white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .filter-btn:hover { border-color: #b8524d; color: #b8524d; }
+    .filter-btn.active {
+      background: #b8524d; color: white;
+      border-color: #b8524d;
+      box-shadow: 0 2px 12px rgba(184,82,77,0.3);
+    }
+    .filter-btn .count {
+      font-size: 10px; font-weight: 800;
+      background: rgba(0,0,0,0.12);
+      padding: 1px 6px; border-radius: 99px;
+    }
+    .filter-btn.active .count { background: rgba(255,255,255,0.25); }
+
+    /* ── Lightbox ───────────────────────────────────────────── */
+    #lightbox {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(0,0,0,0.92);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    #lightbox.open { opacity: 1; pointer-events: all; }
+    #lightbox-img-wrap {
+      position: relative;
+      max-height: 92vh;
+      max-width: min(420px, 90vw);
+      width: 100%;
+    }
+    #lightbox-img {
+      width: 100%; height: 100%;
+      max-height: 92vh;
+      object-fit: contain;
+      border-radius: 1.5rem;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+    }
+    .lb-btn {
+      position: fixed;
+      top: 50%; transform: translateY(-50%);
+      width: 44px; height: 44px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 50%;
+      border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: white; transition: background 0.2s;
+      z-index: 10000;
+    }
+    .lb-btn:hover { background: rgba(255,255,255,0.25); }
+    #lb-prev { left: 16px; }
+    #lb-next { right: 16px; }
+    #lb-close {
+      position: fixed; top: 16px; right: 16px;
+      width: 40px; height: 40px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 50%; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: white; z-index: 10000; transition: background 0.2s;
+    }
+    #lb-close:hover { background: rgba(255,255,255,0.25); }
+    #lb-counter {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      color: rgba(255,255,255,0.6); font-size: 13px; font-weight: 600;
+      background: rgba(0,0,0,0.4); padding: 5px 14px; border-radius: 99px;
+      z-index: 10000;
+    }
+    #lb-cat-badge {
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+      color: rgba(255,255,255,0.8); font-size: 11px; font-weight: 700;
+      background: rgba(0,0,0,0.4); padding: 4px 12px; border-radius: 99px;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      z-index: 10000; white-space: nowrap;
+    }
+
+    /* ── Scroll filters horizontal on mobile ── */
+    .filters-scroll {
+      display: flex; gap: 8px;
+      overflow-x: auto; padding-bottom: 4px;
+      scrollbar-width: none; -ms-overflow-style: none;
+    }
+    .filters-scroll::-webkit-scrollbar { display: none; }
+  </style>
+</head>
+<body class="font-body bg-background text-on-background antialiased">
+
+  <!-- ── NAVBAR ─────────────────────────────────────────────── -->
+  <nav class="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-surface/80 border-b border-outline-variant/30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a href="/" class="text-xl font-extrabold font-headline text-primary tracking-tight">Lo de Juan</a>
+        <div class="hidden md:flex items-center gap-8">
+          <a href="/" class="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors">Inicio</a>
+          <a href="/#servicios" class="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors">Servicios</a>
+          <a href="/galeria.html" class="text-sm font-semibold text-primary border-b-2 border-primary pb-0.5">Galería</a>
+          <a href="/#disponibilidad" class="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors">Disponibilidad</a>
+          <a href="/#contacto" class="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors">Contacto</a>
+        </div>
+        <div class="hidden md:flex items-center gap-3">
+          <a href="/admin/login.html" class="inline-flex items-center gap-1.5 text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors px-3 py-2 rounded-lg hover:bg-surface-container-high">
+            <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span>Admin
+          </a>
+          <a href="/#disponibilidad" class="inline-flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-primary-container transition-colors shadow-lg shadow-primary/20">
+            <span class="material-symbols-outlined text-[18px]">calendar_month</span>Reservar
+          </a>
+        </div>
+        <button id="menuBtn" class="md:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-surface-container-high transition-colors">
+          <span class="material-symbols-outlined text-on-surface">menu</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div id="mobileMenu" class="fixed inset-0 z-[60] pointer-events-none opacity-0 transition-opacity duration-300">
+    <div class="absolute inset-0 bg-on-surface/40" id="menuOverlay"></div>
+    <div id="menuPanel" class="absolute top-0 right-0 w-72 h-full bg-surface-container-lowest shadow-2xl translate-x-full transition-transform duration-300 flex flex-col">
+      <div class="flex items-center justify-between p-4 border-b border-outline-variant/30">
+        <span class="text-lg font-bold font-headline text-primary">Lo de Juan</span>
+        <button id="menuClose" class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface-container-high transition-colors">
+          <span class="material-symbols-outlined text-on-surface">close</span>
+        </button>
+      </div>
+      <nav class="flex flex-col gap-1 p-4">
+        <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-surface-container-high text-on-surface-variant font-medium text-sm transition-colors"><span class="material-symbols-outlined text-[20px]">home</span> Inicio</a>
+        <a href="/#servicios" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-surface-container-high text-on-surface-variant font-medium text-sm transition-colors"><span class="material-symbols-outlined text-[20px]">room_service</span> Servicios</a>
+        <a href="/galeria.html" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary-fixed/30 text-primary font-semibold text-sm"><span class="material-symbols-outlined text-[20px]">photo_library</span> Galería</a>
+        <a href="/#disponibilidad" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-surface-container-high text-on-surface-variant font-medium text-sm transition-colors"><span class="material-symbols-outlined text-[20px]">event_available</span> Disponibilidad</a>
+        <a href="/#contacto" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-surface-container-high text-on-surface-variant font-medium text-sm transition-colors"><span class="material-symbols-outlined text-[20px]">mail</span> Contacto</a>
+      </nav>
+      <div class="mt-auto p-4">
+        <a href="/#disponibilidad" class="block w-full text-center bg-primary text-white py-3 rounded-full font-bold text-sm shadow-lg shadow-primary/20">Reservar fecha</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── HERO ───────────────────────────────────────────────── -->
+  <section class="pt-28 pb-10 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <span class="inline-flex items-center gap-2 bg-primary-fixed/40 text-on-primary-fixed-variant px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-4">
+        📸 Galería
+      </span>
+      <h1 class="font-headline text-4xl sm:text-5xl font-extrabold text-on-surface leading-tight mb-4">
+        Momentos que <span class="text-primary">hablan por sí solos</span>
+      </h1>
+      <p class="text-on-surface-variant text-lg leading-relaxed">
+        Mirá cómo se viven los eventos en Lo de Juan. Cada foto es una historia real.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── FILTROS ────────────────────────────────────────────── -->
+  <section class="sticky top-16 z-30 bg-background/90 backdrop-blur-lg border-b border-outline-variant/20 py-3 px-4">
+    <div class="max-w-7xl mx-auto">
+      <div class="filters-scroll" id="filters">
+        <button class="filter-btn active" data-cat="todos">
+          Todos <span class="count" id="count-todos">0</span>
+        </button>
+        <button class="filter-btn" data-cat="acuatico">
+          🌊 Acuático <span class="count" id="count-acuatico">0</span>
+        </button>
+        <button class="filter-btn" data-cat="cumple-peques">
+          🎈 Cumple Peques <span class="count" id="count-cumple-peques">0</span>
+        </button>
+        <button class="filter-btn" data-cat="cumples-noche">
+          🌙 Cumples Noche <span class="count" id="count-cumples-noche">0</span>
+        </button>
+        <button class="filter-btn" data-cat="egresaditos">
+          🎓 Egresaditos <span class="count" id="count-egresaditos">0</span>
+        </button>
+        <button class="filter-btn" data-cat="packs-peques">
+          🎁 Packs Peques <span class="count" id="count-packs-peques">0</span>
+        </button>
+        <button class="filter-btn" data-cat="promo-egresaditos">
+          📣 Promo Egresaditos <span class="count" id="count-promo-egresaditos">0</span>
+        </button>
+        <button class="filter-btn" data-cat="varios">
+          ✨ Varios <span class="count" id="count-varios">0</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── GRILLA ─────────────────────────────────────────────── -->
+  <section class="py-8 px-4">
+    <div class="max-w-7xl mx-auto">
+      <div id="gallery-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4"></div>
+
+      <!-- Empty state -->
+      <div id="empty-state" class="hidden text-center py-20">
+        <div class="w-20 h-20 rounded-full bg-surface-container mx-auto flex items-center justify-center mb-4">
+          <span class="material-symbols-outlined text-4xl text-outline">photo_library</span>
+        </div>
+        <h3 class="font-headline font-bold text-lg text-on-surface mb-2">Próximamente</h3>
+        <p class="text-on-surface-variant text-sm">Estamos cargando las fotos. ¡Volvé pronto!</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ────────────────────────────────────────────────── -->
+  <section class="py-16 px-4 bg-surface-container-low">
+    <div class="max-w-2xl mx-auto text-center">
+      <h2 class="font-headline text-2xl sm:text-3xl font-extrabold text-on-surface mb-3">¿Querés que el próximo evento sea el tuyo?</h2>
+      <p class="text-on-surface-variant mb-8">Consultá disponibilidad y armá tu evento a medida.</p>
+      <div class="flex flex-col sm:flex-row gap-3 justify-center">
+        <a href="https://wa.me/5492914162814" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 bg-primary text-white px-7 py-3.5 rounded-full font-bold text-sm shadow-lg shadow-primary/25 hover:bg-primary-container transition-colors">
+          <svg class="w-5 h-5 fill-white" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Consultar por WhatsApp
+        </a>
+        <a href="/#disponibilidad" class="inline-flex items-center justify-center gap-2 bg-surface-container-lowest border border-outline-variant text-on-surface px-7 py-3.5 rounded-full font-semibold text-sm hover:bg-surface-container transition-colors">
+          <span class="material-symbols-outlined text-[18px]">calendar_month</span>
+          Ver disponibilidad
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ─────────────────────────────────────────────── -->
+  <footer class="bg-inverse-surface py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div class="md:col-span-2">
+          <span class="text-xl font-extrabold font-headline text-inverse-primary">Lo de Juan</span>
+          <p class="text-inverse-on-surface/60 text-sm mt-3 max-w-sm leading-relaxed">El lugar donde la diversión cobra vida. Catering, salón de fiestas y atracciones para todas las edades en Bahía Blanca.</p>
+          <div class="flex items-center gap-3 mt-5">
+            <a href="https://instagram.com/lodejuaan_" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors" aria-label="Instagram">
+              <svg class="w-4 h-4 fill-white" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            </a>
+            <a href="https://wa.me/5492914162814" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors" aria-label="WhatsApp">
+              <svg class="w-4 h-4 fill-white" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div>
+          <h4 class="font-headline font-bold text-inverse-on-surface text-sm mb-4">Navegación</h4>
+          <ul class="space-y-2">
+            <li><a href="/" class="text-sm text-inverse-on-surface/60 hover:text-inverse-primary transition-colors">Inicio</a></li>
+            <li><a href="/#servicios" class="text-sm text-inverse-on-surface/60 hover:text-inverse-primary transition-colors">Servicios</a></li>
+            <li><a href="/galeria.html" class="text-sm text-inverse-on-surface/60 hover:text-inverse-primary transition-colors">Galería</a></li>
+            <li><a href="/#disponibilidad" class="text-sm text-inverse-on-surface/60 hover:text-inverse-primary transition-colors">Disponibilidad</a></li>
+            <li><a href="/#contacto" class="text-sm text-inverse-on-surface/60 hover:text-inverse-primary transition-colors">Contacto</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-headline font-bold text-inverse-on-surface text-sm mb-4">Contacto</h4>
+          <ul class="space-y-3">
+            <li class="flex items-center gap-2 text-sm text-inverse-on-surface/60">
+              <span class="material-symbols-outlined text-[16px]">location_on</span>Bahía Blanca, Buenos Aires
+            </li>
+            <li class="flex items-center gap-2 text-sm text-inverse-on-surface/60">
+              <span class="material-symbols-outlined text-[16px]">schedule</span>Lun-Vie 9-20 / Sáb-Dom 10-22
+            </li>
+            <li>
+              <a href="https://instagram.com/lodejuaan_" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-sm text-inverse-on-surface/60 hover:text-inverse-primary transition-colors">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                @lodejuaan_
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-white/10 mt-8 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-inverse-on-surface/40">&copy; 2026 Lo de Juan. Todos los derechos reservados.</p>
+        <a href="/privacidad.html" class="text-inverse-on-surface/40 hover:text-inverse-primary transition-colors text-xs">Privacidad</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ── LIGHTBOX ───────────────────────────────────────────── -->
+  <div id="lightbox">
+    <button id="lb-close" aria-label="Cerrar">
+      <span class="material-symbols-outlined text-2xl">close</span>
+    </button>
+    <button id="lb-prev" class="lb-btn" aria-label="Anterior">
+      <span class="material-symbols-outlined text-2xl">chevron_left</span>
+    </button>
+    <div id="lightbox-img-wrap">
+      <img id="lightbox-img" src="" alt="" />
+    </div>
+    <button id="lb-next" class="lb-btn" aria-label="Siguiente">
+      <span class="material-symbols-outlined text-2xl">chevron_right</span>
+    </button>
+    <div id="lb-counter"></div>
+    <div id="lb-cat-badge"></div>
+  </div>
+
+  <script>
+  // ═══════════════════════════════════════════════════════════════
+  //  FOTOS — Agregá los IDs de Google Drive acá
+  //
+  //  Cómo obtener el ID de una foto:
+  //  1. Abrí la foto en Google Drive
+  //  2. Hacé clic derecho → "Compartir" → "Cualquier persona con el enlace"
+  //  3. Copiá el enlace: https://drive.google.com/file/d/ESTE_ES_EL_ID/view
+  //  4. Pegá el ID en el campo "id" de abajo
+  //
+  //  Categorías disponibles:
+  //    acuatico | cumple-peques | cumples-noche | egresaditos
+  //    packs-peques | promo-egresaditos | varios
+  // ═══════════════════════════════════════════════════════════════
+  const FOTOS = [
+
+    // ── ACUÁTICO ─────────────────────────────────────────────
+    // { id: "PEGA_EL_ID_ACÁ", cat: "acuatico" },
+
+    // ── CUMPLE PEQUES ─────────────────────────────────────────
+    // { id: "PEGA_EL_ID_ACÁ", cat: "cumple-peques" },
+
+    // ── CUMPLES NOCHE ─────────────────────────────────────────
+    // { id: "PEGA_EL_ID_ACÁ", cat: "cumples-noche" },
+
+    // ── EGRESADITOS ───────────────────────────────────────────
+    // { id: "PEGA_EL_ID_ACÁ", cat: "egresaditos" },
+
+    // ── PACKS CUMPLES PEQUES ──────────────────────────────────
+    // { id: "PEGA_EL_ID_ACÁ", cat: "packs-peques" },
+
+    // ── PROMO EGRESADITOS ─────────────────────────────────────
+    // { id: "PEGA_EL_ID_ACÁ", cat: "promo-egresaditos" },
+
+    // ── VARIOS ────────────────────────────────────────────────
+    // { id: "PEGA_EL_ID_ACÁ", cat: "varios" },
+
+  ];
+  // ═══════════════════════════════════════════════════════════════
+
+  const CAT_LABELS = {
+    "acuatico":          "🌊 Acuático",
+    "cumple-peques":     "🎈 Cumple Peques",
+    "cumples-noche":     "🌙 Cumples Noche",
+    "egresaditos":       "🎓 Egresaditos",
+    "packs-peques":      "🎁 Packs Peques",
+    "promo-egresaditos": "📣 Promo Egresaditos",
+    "varios":            "✨ Varios",
+  };
+
+  function driveThumb(id, size) {
+    return `https://drive.google.com/thumbnail?id=${id}&sz=${size}`;
+  }
+
+  // ── Render ────────────────────────────────────────────────────
+  let currentCat = "todos";
+  let lightboxList = [];
+  let lightboxIdx = 0;
+
+  function filteredFotos() {
+    if (currentCat === "todos") return FOTOS.filter(f => f.id && f.id.trim());
+    return FOTOS.filter(f => f.cat === currentCat && f.id && f.id.trim());
+  }
+
+  function renderGallery() {
+    const grid = document.getElementById("gallery-grid");
+    const empty = document.getElementById("empty-state");
+    const list = filteredFotos();
+    lightboxList = list;
+
+    grid.innerHTML = "";
+    if (list.length === 0) {
+      empty.classList.remove("hidden");
+      return;
+    }
+    empty.classList.add("hidden");
+
+    list.forEach(function(foto, idx) {
+      const card = document.createElement("div");
+      card.className = "story-card";
+      card.setAttribute("data-idx", idx);
+      card.innerHTML = `
+        <img
+          src="${driveThumb(foto.id, 'w480')}"
+          alt="${CAT_LABELS[foto.cat] || foto.cat}"
+          loading="lazy"
+          onerror="this.closest('.story-card').classList.add('img-error')"
+        />
+        <div class="overlay"></div>
+        <span class="badge">${CAT_LABELS[foto.cat] || foto.cat}</span>
+        <div class="zoom-icon">
+          <span class="material-symbols-outlined text-[18px] text-on-surface">zoom_in</span>
+        </div>
+      `;
+      card.addEventListener("click", function() { openLightbox(idx); });
+      grid.appendChild(card);
+    });
+  }
+
+  function updateCounts() {
+    const total = FOTOS.filter(f => f.id && f.id.trim()).length;
+    document.getElementById("count-todos").textContent = total;
+    const cats = ["acuatico","cumple-peques","cumples-noche","egresaditos","packs-peques","promo-egresaditos","varios"];
+    cats.forEach(function(cat) {
+      const n = FOTOS.filter(f => f.cat === cat && f.id && f.id.trim()).length;
+      const el = document.getElementById("count-" + cat);
+      if (el) el.textContent = n;
+    });
+  }
+
+  // ── Filters ───────────────────────────────────────────────────
+  document.getElementById("filters").addEventListener("click", function(e) {
+    const btn = e.target.closest(".filter-btn");
+    if (!btn) return;
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentCat = btn.dataset.cat;
+    renderGallery();
+  });
+
+  // ── Lightbox ─────────────────────────────────────────────────
+  function openLightbox(idx) {
+    lightboxIdx = idx;
+    showLightboxItem();
+    document.getElementById("lightbox").classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeLightbox() {
+    document.getElementById("lightbox").classList.remove("open");
+    document.body.style.overflow = "";
+  }
+
+  function showLightboxItem() {
+    const foto = lightboxList[lightboxIdx];
+    if (!foto) return;
+    const img = document.getElementById("lightbox-img");
+    img.src = driveThumb(foto.id, "w1200");
+    img.alt = CAT_LABELS[foto.cat] || foto.cat;
+    document.getElementById("lb-counter").textContent = (lightboxIdx + 1) + " / " + lightboxList.length;
+    document.getElementById("lb-cat-badge").textContent = CAT_LABELS[foto.cat] || foto.cat;
+  }
+
+  document.getElementById("lb-close").addEventListener("click", closeLightbox);
+
+  document.getElementById("lb-prev").addEventListener("click", function() {
+    lightboxIdx = (lightboxIdx - 1 + lightboxList.length) % lightboxList.length;
+    showLightboxItem();
+  });
+  document.getElementById("lb-next").addEventListener("click", function() {
+    lightboxIdx = (lightboxIdx + 1) % lightboxList.length;
+    showLightboxItem();
+  });
+
+  document.getElementById("lightbox").addEventListener("click", function(e) {
+    if (e.target === this) closeLightbox();
+  });
+
+  document.addEventListener("keydown", function(e) {
+    if (!document.getElementById("lightbox").classList.contains("open")) return;
+    if (e.key === "Escape") closeLightbox();
+    if (e.key === "ArrowLeft") { lightboxIdx = (lightboxIdx - 1 + lightboxList.length) % lightboxList.length; showLightboxItem(); }
+    if (e.key === "ArrowRight") { lightboxIdx = (lightboxIdx + 1) % lightboxList.length; showLightboxItem(); }
+  });
+
+  // Touch swipe en lightbox
+  (function() {
+    var startX = 0;
+    var lb = document.getElementById("lightbox");
+    lb.addEventListener("touchstart", function(e) { startX = e.touches[0].clientX; }, { passive: true });
+    lb.addEventListener("touchend", function(e) {
+      var dx = e.changedTouches[0].clientX - startX;
+      if (Math.abs(dx) < 40) return;
+      if (dx < 0) { lightboxIdx = (lightboxIdx + 1) % lightboxList.length; }
+      else         { lightboxIdx = (lightboxIdx - 1 + lightboxList.length) % lightboxList.length; }
+      showLightboxItem();
+    }, { passive: true });
+  })();
+
+  // ── Mobile menu ───────────────────────────────────────────────
+  (function() {
+    var btn = document.getElementById("menuBtn");
+    var close = document.getElementById("menuClose");
+    var overlay = document.getElementById("menuOverlay");
+    var menu = document.getElementById("mobileMenu");
+    var panel = document.getElementById("menuPanel");
+    function openMenu() { menu.classList.remove("pointer-events-none","opacity-0"); menu.classList.add("opacity-100"); panel.classList.remove("translate-x-full"); }
+    function closeMenu() { menu.classList.add("pointer-events-none","opacity-0"); menu.classList.remove("opacity-100"); panel.classList.add("translate-x-full"); }
+    if (btn) btn.addEventListener("click", openMenu);
+    if (close) close.addEventListener("click", closeMenu);
+    if (overlay) overlay.addEventListener("click", closeMenu);
+  })();
+
+  // ── Init ─────────────────────────────────────────────────────
+  updateCounts();
+  renderGallery();
+  </script>
+</body>
+</html>
