@@ -82,6 +82,11 @@
       opacity: 0; transition: opacity 0.3s;
     }
     .photo-card:hover .zoom-icon { opacity: 1; }
+    .photo-card .play-icon {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.2);
+    }
 
     /* ── Skeleton ─────────────────────────────────────────────── */
     .photo-skeleton {
@@ -416,6 +421,7 @@
   <script>
   var BASE = "/assets/img/galeria/";
   var IMAGE_EXT = /\.(jpg|jpeg|png|gif|webp|avif)$/i;
+  var VIDEO_EXT = /\.(mp4|mov|webm|ogg)$/i;
 
   var CAT_LABELS = {
     "infantil":           "🎈 Infantil",
@@ -491,11 +497,15 @@
       var card = document.createElement("div");
       card.className = "photo-card";
       card.setAttribute("data-idx", idx);
+      var media = foto.isVideo
+        ? '<video src="' + foto.src + '" muted playsinline preload="metadata" class="w-full h-full object-cover"></video>' +
+          '<div class="play-icon"><span class="material-symbols-outlined text-4xl text-white drop-shadow-lg">play_circle</span></div>'
+        : '<img src="' + foto.src + '" alt="' + catLabel(foto.cat) + '" loading="lazy" />';
       card.innerHTML =
-        '<img src="' + foto.src + '" alt="' + catLabel(foto.cat) + '" loading="lazy" />' +
+        media +
         '<div class="overlay"></div>' +
         '<span class="cat-badge">' + catLabel(foto.cat) + '</span>' +
-        '<div class="zoom-icon"><span class="material-symbols-outlined text-[18px] text-on-surface">zoom_in</span></div>';
+        '<div class="zoom-icon"><span class="material-symbols-outlined text-[18px] text-on-surface">' + (foto.isVideo ? 'play_arrow' : 'zoom_in') + '</span></div>';
       card.addEventListener("click", function() { openLightbox(idx); });
       grid.appendChild(card);
     });
@@ -509,15 +519,32 @@
     document.body.style.overflow = "hidden";
   }
   function closeLightbox() {
+    var vid = document.querySelector("#lightbox-img-wrap video");
+    if (vid) { vid.pause(); vid.remove(); }
+    document.getElementById("lightbox-img").style.display = "";
     document.getElementById("lightbox").classList.remove("open");
     document.body.style.overflow = "";
   }
   function showLightboxItem() {
     var foto = lightboxList[lightboxIdx];
     if (!foto) return;
+    var wrap = document.getElementById("lightbox-img-wrap");
+    var existingVideo = wrap.querySelector("video");
+    if (existingVideo) { existingVideo.pause(); existingVideo.remove(); }
     var img = document.getElementById("lightbox-img");
-    img.src = foto.src;
-    img.alt = catLabel(foto.cat);
+    if (foto.isVideo) {
+      img.style.display = "none";
+      var vid = document.createElement("video");
+      vid.src = foto.src;
+      vid.controls = true;
+      vid.autoplay = true;
+      vid.style.cssText = "width:100%;max-height:88vh;border-radius:1.25rem;box-shadow:0 32px 80px rgba(0,0,0,0.6);";
+      wrap.appendChild(vid);
+    } else {
+      img.style.display = "";
+      img.src = foto.src;
+      img.alt = catLabel(foto.cat);
+    }
     document.getElementById("lb-counter").textContent = (lightboxIdx + 1) + " / " + lightboxList.length;
     document.getElementById("lb-cat-badge").textContent = catLabel(foto.cat).toUpperCase();
   }
@@ -582,7 +609,9 @@
         var dirs = [];
         listing.forEach(function(entry) {
           if (entry.type === "file" && IMAGE_EXT.test(entry.name)) {
-            files.push({ src: BASE + encodeURIComponent(entry.name), cat: "general" });
+            files.push({ src: BASE + encodeURIComponent(entry.name), cat: "general", isVideo: false });
+          } else if (entry.type === "file" && VIDEO_EXT.test(entry.name)) {
+            files.push({ src: BASE + encodeURIComponent(entry.name), cat: "general", isVideo: true });
           } else if (entry.type === "directory") {
             dirs.push(entry.name.replace(/\/$/, ""));
           }
@@ -603,7 +632,9 @@
             .then(function(subListing) {
               subListing.forEach(function(entry) {
                 if (entry.type === "file" && IMAGE_EXT.test(entry.name)) {
-                  FOTOS.push({ src: BASE + dirEnc + "/" + encodeURIComponent(entry.name), cat: dir });
+                  FOTOS.push({ src: BASE + dirEnc + "/" + encodeURIComponent(entry.name), cat: dir, isVideo: false });
+                } else if (entry.type === "file" && VIDEO_EXT.test(entry.name)) {
+                  FOTOS.push({ src: BASE + dirEnc + "/" + encodeURIComponent(entry.name), cat: dir, isVideo: true });
                 }
               });
             })
