@@ -11,7 +11,7 @@
   "sena_porcentaje": 40,
 
   "turnos": {
-    "manana": { "nombre": "Turno Mañana", "inicio": "11:30", "fin": "15:30" },
+    "manana": { "nombre": "Turno Medio día", "inicio": "11:30", "fin": "15:30" },
     "tarde":  { "nombre": "Turno Tarde",  "inicio": "16:30", "fin": "20:30" },
     "noche":  { "nombre": "Turno Noche",  "inicio": "21:30", "fin": "04:00" }
   },
@@ -109,7 +109,7 @@
       "min_personas": null,
       "duracion_horas": 4,
       "turno_recomendado": "manana o tarde",
-      "incluye": "4hs (Turno Mañana 11:30-15:30 o Turno Tarde 16:30-20:30), juegos al aire libre, circuito multiaventura, bowling humano, tobogán de agua, rueda de hámster, baile, animación. MENÚ: pizza libre Caseritas + 1 bebida 500cc + helado de postre + snack y refrigerio + hidratación permanente. Sector exclusivo para adultos con atención a las mesas. Entrega de birrete y diploma simbólico.",
+      "incluye": "4hs (Turno Medio día 11:30-15:30 o Turno Tarde 16:30-20:30), juegos al aire libre, circuito multiaventura, bowling humano, tobogán de agua, rueda de hámster, baile, animación. MENÚ: pizza libre Caseritas + 1 bebida 500cc + helado de postre + snack y refrigerio + hidratación permanente. Sector exclusivo para adultos con atención a las mesas. Entrega de birrete y diploma simbólico.",
       "no_incluye": null
     },
     {
@@ -122,7 +122,7 @@
       "min_personas": null,
       "duracion_horas": 4,
       "turno_recomendado": "manana o tarde",
-      "incluye": "4hs (Turno Mañana 11:30-15:30 o Turno Tarde 16:30-20:30), juegos al aire libre, circuito multiaventura, bowling humano, tobogán de agua, rueda de hámster, baile, animación, entrega de birrete y diploma. Las familias traen su propia comida y bebida.",
+      "incluye": "4hs (Turno Medio día 11:30-15:30 o Turno Tarde 16:30-20:30), juegos al aire libre, circuito multiaventura, bowling humano, tobogán de agua, rueda de hámster, baile, animación, entrega de birrete y diploma. Las familias traen su propia comida y bebida.",
       "no_incluye": "comida y bebida (las trae la familia)"
     },
     {

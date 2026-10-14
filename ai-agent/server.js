@@ -41,7 +41,7 @@ const RESERVAS_FILE = path.join(DATA_DIR, "reservas.json");
 const ESTADO_FILE = path.join(DATA_DIR, "estado.json");
 
 const TURNOS = {
-  manana: { nombre: "Turno Mañana", inicio: "11:30", fin: "15:30" },
+  manana: { nombre: "Turno Medio día", inicio: "11:30", fin: "15:30" },
   tarde:  { nombre: "Turno Tarde",  inicio: "16:30", fin: "20:30" },
   noche:  { nombre: "Turno Noche",  inicio: "21:30", fin: "04:00" }
 };
@@ -811,7 +811,7 @@ function construirSystemPrompt(negocio) {
 
 ## TURNOS DEL DÍA
 El local opera en 3 turnos fijos por día:
-- Turno Mañana: 11:30 a 15:30 hs
+- Turno Medio día: 11:30 a 15:30 hs
 - Turno Tarde: 16:30 a 20:30 hs
 - Turno Noche: 21:30 a 04:00 hs
 

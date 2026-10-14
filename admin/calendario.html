@@ -212,7 +212,7 @@
               <!-- Leyenda turnos -->
               <div class="flex flex-wrap items-center gap-4 mt-5 pt-4 border-t border-slate-100">
                 <span class="text-xs font-bold text-outline mr-1">Turnos:</span>
-                <div class="flex items-center gap-1"><span class="turno-dot dot-manana"></span><span class="text-xs text-outline">Mañana 11:30</span></div>
+                <div class="flex items-center gap-1"><span class="turno-dot dot-manana"></span><span class="text-xs text-outline">Medio día 11:30</span></div>
                 <div class="flex items-center gap-1"><span class="turno-dot dot-tarde"></span><span class="text-xs text-outline">Tarde 16:30</span></div>
                 <div class="flex items-center gap-1"><span class="turno-dot dot-noche"></span><span class="text-xs text-outline">Noche 21:30</span></div>
                 <span class="text-xs text-outline ml-2">(punto lleno = ocupado)</span>
@@ -257,7 +257,7 @@
                 <input type="date" id="block-date-input" class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20" />
                 <select id="block-turno-input" class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20">
                   <option value="">Todos los turnos</option>
-                  <option value="manana">Mañana (11:30-15:30)</option>
+                  <option value="manana">Medio día (11:30-15:30)</option>
                   <option value="tarde">Tarde (16:30-20:30)</option>
                   <option value="noche">Noche (21:30-04:00)</option>
                 </select>
@@ -300,7 +300,7 @@
             <label class="block text-sm font-semibold text-on-surface mb-1.5">Turno *</label>
             <select id="ev-turno" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
               <option value="">— Seleccionar —</option>
-              <option value="manana">Mañana (11:30-15:30)</option>
+              <option value="manana">Medio día (11:30-15:30)</option>
               <option value="tarde">Tarde (16:30-20:30)</option>
               <option value="noche">Noche (21:30-04:00)</option>
             </select>
@@ -553,7 +553,7 @@
         evsSinLimpieza.slice(0, 2).forEach(function(ev) {
           var chip = document.createElement('span');
           chip.className = 'event-chip ' + chipClass(ev.tipo);
-          var turnoLabel = ev.turno === 'manana' ? '🌅' : ev.turno === 'tarde' ? '🌇' : ev.turno === 'noche' ? '🌙' : '';
+          var turnoLabel = ev.turno === 'manana' ? '☀️' : ev.turno === 'tarde' ? '🌇' : ev.turno === 'noche' ? '🌙' : '';
           chip.textContent = (turnoLabel ? turnoLabel + ' ' : '') + ev.nombre;
           chip.onclick = function(e) { e.stopPropagation(); openViewModal(ev); };
           div.appendChild(chip);
@@ -640,7 +640,7 @@
     }
 
     function turnoLabel(turno) {
-      var m = { manana:'🌅 Mañana', tarde:'🌇 Tarde', noche:'🌙 Noche', limpieza:'🧹 Limpieza' };
+      var m = { manana:'☀️ Medio día', tarde:'🌇 Tarde', noche:'🌙 Noche', limpieza:'🧹 Limpieza' };
       return m[turno] || (turno || '');
     }
 
