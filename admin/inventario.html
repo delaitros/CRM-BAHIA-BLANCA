@@ -236,6 +236,42 @@
   <!-- Toast -->
   <div class="toast" id="toast"></div>
 
+  <!-- Mobile Bottom Nav -->
+  <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 flex md:hidden safe-area-pb">
+    <a href="dashboard.html" class="flex-1 flex flex-col items-center justify-center py-3 gap-1 text-slate-400" id="bnav-dashboard">
+      <span class="material-symbols-outlined text-[22px]">dashboard</span>
+      <span class="text-[10px] font-semibold">Dashboard</span>
+    </a>
+    <a href="mensajes.html" class="flex-1 flex flex-col items-center justify-center py-3 gap-1 text-slate-400" id="bnav-mensajes">
+      <span class="material-symbols-outlined text-[22px]">forum</span>
+      <span class="text-[10px] font-semibold">Mensajes</span>
+    </a>
+    <a href="calendario.html" class="flex-1 flex flex-col items-center justify-center py-3 gap-1 text-slate-400" id="bnav-calendario">
+      <span class="material-symbols-outlined text-[22px]">calendar_today</span>
+      <span class="text-[10px] font-semibold">Calendario</span>
+    </a>
+    <a href="inventario.html" class="flex-1 flex flex-col items-center justify-center py-3 gap-1 text-primary" id="bnav-inventario">
+      <span class="material-symbols-outlined text-[22px]">inventory_2</span>
+      <span class="text-[10px] font-semibold">Inventario</span>
+    </a>
+    <a href="configuracion.html" class="flex-1 flex flex-col items-center justify-center py-3 gap-1 text-slate-400" id="bnav-config">
+      <span class="material-symbols-outlined text-[22px]">settings</span>
+      <span class="text-[10px] font-semibold">Config</span>
+    </a>
+  </nav>
+  <div id="sidebarOverlay" class="fixed inset-0 bg-black/40 z-40 md:hidden hidden" onclick="closeSidebar()"></div>
+  <script>
+  function openSidebar() {
+    document.getElementById('adminSidebar').classList.remove('-translate-x-full');
+    document.getElementById('sidebarOverlay').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeSidebar() {
+    document.getElementById('adminSidebar').classList.add('-translate-x-full');
+    document.getElementById('sidebarOverlay').classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+  </script>
   <script src="auth.js"></script>
   <script>
     requireAuth();
