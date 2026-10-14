@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
   <link rel="stylesheet" href="../assets/css/styles.css" />
   <script>
@@ -15,23 +15,36 @@
       theme: {
         extend: {
           colors: {
-            "primary": "#b8524d",
-            "primary-container": "#c96c66",
-            "secondary": "#5680a5",
-            "secondary-container": "#bbd3fd",
-            "surface": "#fbf8f2",
+            "primary": "#FF5C35",
+            "primary-container": "#FF7A5A",
+            "on-primary": "#ffffff",
+            "primary-fixed": "#FFE8E0",
+            "primary-fixed-dim": "#FFB8A0",
+            "on-primary-fixed": "#3D0E02",
+            "on-primary-fixed-variant": "#CC3310",
+            "secondary": "#0099BF",
+            "secondary-container": "#CCF0FA",
+            "on-secondary-container": "#006080",
+            "on-secondary": "#ffffff",
+            "tertiary": "#E8B800",
+            "tertiary-container": "#FFF5C0",
+            "on-tertiary-container": "#2A2200",
+            "on-tertiary": "#2A2200",
+            "tertiary-fixed": "#FFF5C0",
+            "surface": "#FFFDF5",
             "surface-container-lowest": "#ffffff",
-            "surface-container": "#efeae0",
-            "surface-container-low": "#f5f1e9",
-            "on-surface": "#1f1d18",
-            "on-surface-variant": "#414755",
-            "outline": "#7a7464",
-            "outline-variant": "#c1c6d7",
-            "background": "#fbf8f2",
-            "tertiary": "#c4a13a",
-            "error": "#ba1a1a",
+            "surface-container-low": "#FFF8EC",
+            "surface-container": "#FFF0D5",
+            "surface-container-high": "#FFE8BE",
+            "background": "#FFFDF5",
+            "on-surface": "#1A1712",
+            "on-surface-variant": "#4A3A1E",
+            "outline": "#7A6848",
+            "outline-variant": "#D4C5A0",
+            "error": "#FF5C35",
+            "on-error": "#ffffff",
           },
-          fontFamily: { "headline": ["Manrope", "sans-serif"], "body": ["Manrope", "sans-serif"] },
+          fontFamily: { "headline": ["Nunito", "Manrope", "sans-serif"], "body": ["Manrope", "sans-serif"] },
           borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
         },
       },
@@ -44,9 +57,9 @@
       font-size: 0.875rem; outline: none;
       transition: border-color 0.15s, box-shadow 0.15s;
     }
-    .input:focus { border-color: #b8524d; box-shadow: 0 0 0 3px rgba(184,82,77,0.1); }
-    .btn-primary { background: #b8524d; color: white; padding: 0.625rem 1.25rem; border-radius: 0.75rem; font-size: 0.875rem; font-weight: 700; border: none; cursor: pointer; transition: background 0.15s; }
-    .btn-primary:hover { background: #9a0d22; }
+    .input:focus { border-color: #FF5C35; box-shadow: 0 0 0 3px rgba(255,92,53,0.12); }
+    .btn-primary { background: #FF5C35; color: white; padding: 0.625rem 1.25rem; border-radius: 0.75rem; font-size: 0.875rem; font-weight: 700; border: none; cursor: pointer; transition: background 0.15s; }
+    .btn-primary:hover { background: #e04520; }
     .btn-secondary { background: white; color: #414755; padding: 0.625rem 1.25rem; border-radius: 0.75rem; font-size: 0.875rem; font-weight: 600; border: 1px solid #cbc4b2; cursor: pointer; transition: background 0.15s; }
     .btn-secondary:hover { background: #f5f1e9; }
     .cat-chip { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 999px; }
@@ -59,7 +72,15 @@
 
   <!-- Sidebar -->
   <aside id="adminSidebar" class="h-screen w-64 fixed left-0 top-0 bg-slate-50 flex flex-col p-4 gap-2 z-50 -translate-x-full md:translate-x-0 transition-transform duration-300">
-    <div class="text-xl font-black text-primary mb-8 px-4">Lo de Juan</div>
+    <div class="mb-8 px-4">
+      <div class="text-lg font-black text-primary uppercase tracking-wider" style="font-family: Nunito, sans-serif;">Lo de Juan</div>
+      <div class="flex gap-1 mt-1">
+        <span class="w-2 h-2 rounded-full bg-primary"></span>
+        <span class="w-2 h-2 rounded-full bg-[#FFD60A]"></span>
+        <span class="w-2 h-2 rounded-full bg-[#0099BF]"></span>
+        <span class="w-2 h-2 rounded-full bg-[#2EAA62]"></span>
+      </div>
+    </div>
     <div class="flex items-center gap-3 px-4 py-3 mb-6">
       <div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-secondary font-bold text-sm">JP</div>
       <div class="flex flex-col">
@@ -85,7 +106,7 @@
         <span class="text-sm font-semibold">Inventario</span>
       </a>
     </nav>
-    <a href="calendario.html?new=1" class="block text-center bg-gradient-to-br from-primary to-primary-container text-white py-3 rounded-full font-bold text-sm shadow-lg mb-4 active:scale-95 transition-transform">+ Nuevo Evento</a>
+    <a href="calendario.html?new=1" class="block text-center bg-gradient-to-br from-primary to-primary-container text-white py-3 rounded-full font-black text-sm shadow-lg mb-4 active:scale-95 transition-transform uppercase tracking-wide">+ Nuevo Evento</a>
     <div class="pt-4 border-t border-slate-200 space-y-1">
       <a href="configuracion.html" class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:bg-slate-200/50 rounded-xl transition-all">
         <span class="material-symbols-outlined">settings</span>
