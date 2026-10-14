@@ -86,7 +86,7 @@
 <body class="bg-background font-body text-on-surface">
 
   <!-- Sidebar -->
-  <aside class="h-screen w-64 fixed left-0 top-0 bg-slate-50 flex flex-col p-4 gap-2 z-50" id="sidebar">
+  <aside id="adminSidebar" class="h-screen w-64 fixed left-0 top-0 bg-slate-50 flex flex-col p-4 gap-2 z-50 -translate-x-full md:translate-x-0 transition-transform duration-300">
     <div class="text-xl font-black text-primary mb-8 px-4">Lo de Juan</div>
     <div class="flex items-center gap-3 px-4 py-3 mb-6">
       <div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-secondary font-bold text-sm">JP</div>
@@ -127,10 +127,13 @@
   </aside>
 
   <!-- Main Content -->
-  <main class="ml-64 h-screen flex flex-col">
+  <main class="md:ml-64 h-screen flex flex-col pb-20 md:pb-0">
 
     <!-- Top Bar -->
-    <div class="bg-background/80 backdrop-blur-lg border-b border-outline-variant/30 px-8 py-4 flex items-center justify-between flex-shrink-0">
+    <div class="bg-background/80 backdrop-blur-lg border-b border-outline-variant/30 px-4 md:px-8 py-3 md:py-4 flex items-center justify-between flex-shrink-0">
+      <button onclick="openSidebar()" class="md:hidden p-2 rounded-xl hover:bg-slate-200/50 mr-2 flex-shrink-0">
+        <span class="material-symbols-outlined text-slate-600">menu</span>
+      </button>
       <div class="flex items-center gap-3">
         <h1 class="text-2xl font-bold font-headline text-on-surface">Mensajes</h1>
         <span id="cw-status-badge" class="flex items-center gap-1.5 bg-slate-100 text-slate-500 text-xs font-bold px-3 py-1 rounded-full">
@@ -270,6 +273,42 @@
     </div>
   </main>
 
+  <!-- Mobile Bottom Nav -->
+  <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 flex md:hidden safe-area-pb">
+    <a href="dashboard.html" class="flex-1 flex flex-col items-center justify-center py-3 gap-1 text-slate-400" id="bnav-dashboard">
+      <span class="material-symbols-outlined text-[22px]">dashboard</span>
+      <span class="text-[10px] font-semibold">Dashboard</span>
+    </a>
+    <a href="mensajes.html" class="flex-1 flex flex-col items-center justify-center py-3 gap-1 text-primary" id="bnav-mensajes">
+      <span class="material-symbols-outlined text-[22px]">forum</span>
+      <span class="text-[10px] font-semibold">Mensajes</span>
+    </a>
+    <a href="calendario.html" class="flex-1 flex flex-col items-center justify-center py-3 gap-1 text-slate-400" id="bnav-calendario">
+      <span class="material-symbols-outlined text-[22px]">calendar_today</span>
+      <span class="text-[10px] font-semibold">Calendario</span>
+    </a>
+    <a href="inventario.html" class="flex-1 flex flex-col items-center justify-center py-3 gap-1 text-slate-400" id="bnav-inventario">
+      <span class="material-symbols-outlined text-[22px]">inventory_2</span>
+      <span class="text-[10px] font-semibold">Inventario</span>
+    </a>
+    <a href="configuracion.html" class="flex-1 flex flex-col items-center justify-center py-3 gap-1 text-slate-400" id="bnav-config">
+      <span class="material-symbols-outlined text-[22px]">settings</span>
+      <span class="text-[10px] font-semibold">Config</span>
+    </a>
+  </nav>
+  <div id="sidebarOverlay" class="fixed inset-0 bg-black/40 z-40 md:hidden hidden" onclick="closeSidebar()"></div>
+  <script>
+  function openSidebar() {
+    document.getElementById('adminSidebar').classList.remove('-translate-x-full');
+    document.getElementById('sidebarOverlay').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeSidebar() {
+    document.getElementById('adminSidebar').classList.add('-translate-x-full');
+    document.getElementById('sidebarOverlay').classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+  </script>
   <script src="auth.js"></script>
   <script>requireAuth();</script>
   <script>
