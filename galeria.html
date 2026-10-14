@@ -418,17 +418,23 @@
   var IMAGE_EXT = /\.(jpg|jpeg|png|gif|webp|avif)$/i;
 
   var CAT_LABELS = {
-    "infantil":      "🎈 Infantil",
-    "teens":         "🎤 Teens",
-    "egresaditos":   "🎓 Egresaditos",
-    "egresados":     "🎓 Egresados",
-    "noche":         "🌙 Noche",
-    "acuatico":      "🌊 Acuático",
-    "verano":        "🌊 Verano",
-    "cumple":        "🎂 Cumpleaños",
-    "cumples":       "🎂 Cumpleaños",
-    "varios":        "✨ Varios",
-    "general":       "📷 General",
+    "infantil":           "🎈 Infantil",
+    "teens":              "🎤 Teens",
+    "egresaditos":        "🎓 Egresaditos",
+    "egresados":          "🎓 Egresados",
+    "noche":              "🌙 Noche",
+    "acuatico":           "🌊 Acuático",
+    "verano":             "🌊 Verano",
+    "cumple":             "🎂 Cumpleaños",
+    "cumples":            "🎂 Cumpleaños",
+    "varios":             "✨ Varios",
+    "general":            "📷 General",
+    "cumple peques":      "🎈 Cumple Peques",
+    "cumples noche":      "🌙 Cumples Noche",
+    "packs cumples peques": "🎁 Packs Peques",
+    "packs cumples":      "🎁 Packs Peques",
+    "promo egresaditos":  "📣 Promo Egresaditos",
+    "promo egresad":      "📣 Promo Egresaditos",
   };
 
   var FOTOS = [];
@@ -437,7 +443,11 @@
   var lightboxIdx = 0;
 
   function catLabel(key) {
-    return CAT_LABELS[key.toLowerCase()] || ("📁 " + key.charAt(0).toUpperCase() + key.slice(1));
+    var k = key.trim().toLowerCase();
+    if (CAT_LABELS[k]) return CAT_LABELS[k];
+    // try prefix match for truncated names
+    var match = Object.keys(CAT_LABELS).find(function(label) { return k.indexOf(label) === 0 || label.indexOf(k) === 0; });
+    return match ? CAT_LABELS[match] : ("📁 " + key.trim().replace(/\b\w/g, function(c) { return c.toUpperCase(); }));
   }
 
   function filteredFotos() {
@@ -572,7 +582,7 @@
         var dirs = [];
         listing.forEach(function(entry) {
           if (entry.type === "file" && IMAGE_EXT.test(entry.name)) {
-            files.push({ src: BASE + entry.name, cat: "general" });
+            files.push({ src: BASE + encodeURIComponent(entry.name), cat: "general" });
           } else if (entry.type === "directory") {
             dirs.push(entry.name.replace(/\/$/, ""));
           }
@@ -587,12 +597,13 @@
 
         var pending = dirs.length;
         dirs.forEach(function(dir) {
-          fetch(BASE + dir + "/")
+          var dirEnc = encodeURIComponent(dir);
+          fetch(BASE + dirEnc + "/")
             .then(function(r) { return r.ok ? r.json() : []; })
             .then(function(subListing) {
               subListing.forEach(function(entry) {
                 if (entry.type === "file" && IMAGE_EXT.test(entry.name)) {
-                  FOTOS.push({ src: BASE + dir + "/" + entry.name, cat: dir });
+                  FOTOS.push({ src: BASE + dirEnc + "/" + encodeURIComponent(entry.name), cat: dir });
                 }
               });
             })
