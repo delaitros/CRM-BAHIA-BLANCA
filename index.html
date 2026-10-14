@@ -188,24 +188,32 @@
   <section id="inicio" class="relative pt-16 overflow-hidden">
     <!-- Gradient background -->
     <div class="absolute inset-0 bg-gradient-to-br from-[#FF5C35] via-[#FF8050] to-[#FFD60A]"></div>
-    <!-- Decorative circles -->
+    <!-- Decorative blurred circles -->
     <div class="absolute top-20 right-10 w-64 h-64 rounded-full bg-white/10 blur-3xl pointer-events-none"></div>
     <div class="absolute bottom-10 left-0 w-80 h-80 rounded-full bg-[#FFD60A]/20 blur-3xl pointer-events-none"></div>
+    <!-- Decorative solid spheres (brand colors) -->
+    <div class="absolute top-24 left-6 w-5 h-5 rounded-full bg-[#FFD60A] opacity-70 pointer-events-none"></div>
+    <div class="absolute top-32 left-16 w-3 h-3 rounded-full bg-white opacity-50 pointer-events-none"></div>
+    <div class="absolute top-16 right-32 w-4 h-4 rounded-full bg-[#2EAA62] opacity-60 pointer-events-none"></div>
+    <div class="absolute bottom-24 right-12 w-6 h-6 rounded-full bg-[#0099BF] opacity-50 pointer-events-none"></div>
+    <div class="absolute bottom-32 right-40 w-3 h-3 rounded-full bg-[#FFD60A] opacity-60 pointer-events-none"></div>
 
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-24 md:pt-20 md:pb-32">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-10 items-center">
         <!-- Text Column -->
-        <div class="md:col-span-7">
-          <span class="inline-flex items-center gap-2 bg-white/25 backdrop-blur-sm text-white px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-6 border border-white/30">
-            🎉 Catering &amp; Eventos — Bahía Blanca
-          </span>
+        <div class="md:col-span-7 text-center md:text-left">
+          <div class="flex justify-center md:justify-start mb-6">
+            <span class="inline-flex items-center gap-2 bg-white/25 backdrop-blur-sm text-white px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest border border-white/30">
+              🎉 Catering &amp; Eventos — Bahía Blanca
+            </span>
+          </div>
           <h1 class="font-headline text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight mb-6 uppercase tracking-tight drop-shadow-sm">
             La fiesta que soñaste <span class="text-[#FFE566]">arranca acá.</span>
           </h1>
-          <p class="text-white/85 text-lg leading-relaxed max-w-xl mb-8 font-medium">
+          <p class="text-white/85 text-lg leading-relaxed max-w-xl mb-8 font-medium mx-auto md:mx-0">
             Salón de fiestas, catering y atracciones para chicos, teens y adultos. Peloteros, juegos acuáticos, circuito multiaventura y mucho más.
           </p>
-          <div class="flex flex-wrap gap-4">
+          <div class="flex flex-wrap gap-4 justify-center md:justify-start">
             <a href="#disponibilidad" class="inline-flex items-center gap-2 bg-white text-primary px-7 py-3.5 rounded-full font-black text-sm hover:bg-[#FFF5E0] transition-colors shadow-xl shadow-black/20 uppercase tracking-wide">
               <span class="material-symbols-outlined text-[18px]">event_available</span>
               Ver Disponibilidad
@@ -217,26 +225,26 @@
           </div>
 
           <!-- Stats bar -->
-          <div class="flex flex-wrap items-center gap-6 mt-10">
+          <div class="flex flex-wrap items-center gap-6 mt-10 justify-center md:justify-start">
             <div class="flex items-center gap-2 text-white/90">
-              <span class="text-2xl font-black">🎂</span>
+              <span class="text-2xl">🎂</span>
               <span class="text-sm font-semibold">Cumpleaños<br><span class="font-black text-white">Infantiles</span></span>
             </div>
-            <div class="w-px h-8 bg-white/30"></div>
+            <div class="w-px h-8 bg-white/30 hidden sm:block"></div>
             <div class="flex items-center gap-2 text-white/90">
-              <span class="text-2xl font-black">🎓</span>
+              <span class="text-2xl">🎓</span>
               <span class="text-sm font-semibold">Egresados<br><span class="font-black text-white">y Teens</span></span>
             </div>
-            <div class="w-px h-8 bg-white/30"></div>
+            <div class="w-px h-8 bg-white/30 hidden sm:block"></div>
             <div class="flex items-center gap-2 text-white/90">
-              <span class="text-2xl font-black">🕺</span>
+              <span class="text-2xl">🕺</span>
               <span class="text-sm font-semibold">Fiestas<br><span class="font-black text-white">de Noche</span></span>
             </div>
           </div>
         </div>
         <!-- Image Column -->
-        <div class="md:col-span-5">
-          <div class="relative">
+        <div class="md:col-span-5 flex justify-center">
+          <div class="relative w-full max-w-sm md:max-w-none">
             <div class="absolute -inset-3 bg-white/20 rounded-3xl blur-xl"></div>
             <div class="relative p-2 bg-white/25 backdrop-blur-sm rounded-3xl border border-white/40">
               <img src="/assets/img/hero-salon.jpg" alt="Salón Lo de Juan" class="w-full h-auto rounded-2xl object-cover shadow-xl" />
@@ -273,11 +281,18 @@
           🎊 Nuestros Paquetes
         </span>
         <h2 class="font-headline text-3xl sm:text-5xl font-black text-on-surface mb-4 uppercase tracking-tight">
-          ¿Qué festejás?
+          ¿Qué <span class="text-primary">festejás</span>?
         </h2>
-        <p class="text-on-surface-variant text-base max-w-2xl mx-auto font-medium">Elegí el plan ideal para tu evento. Seña del <strong>40%</strong> para confirmar la fecha. Consultanos por WhatsApp.</p>
+        <p class="text-on-surface-variant text-base max-w-2xl mx-auto font-medium">Elegí el plan ideal para tu evento. Seña del <span class="font-black text-on-surface">40%</span> para confirmar la fecha.</p>
       </div>
 
+      <!-- Decorative spheres -->
+      <div class="relative mb-0">
+        <div class="absolute -top-6 left-4 w-4 h-4 rounded-full bg-primary opacity-60 pointer-events-none"></div>
+        <div class="absolute -top-2 left-14 w-2.5 h-2.5 rounded-full bg-[#FFD60A] opacity-70 pointer-events-none"></div>
+        <div class="absolute -top-8 right-8 w-5 h-5 rounded-full bg-[#0099BF] opacity-50 pointer-events-none"></div>
+        <div class="absolute -top-3 right-24 w-3 h-3 rounded-full bg-[#2EAA62] opacity-60 pointer-events-none"></div>
+      </div>
       <!-- Service Cards — 6 real packages -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
 
@@ -288,13 +303,13 @@
               <span class="text-4xl">🎂</span>
               <span class="bg-white/30 text-white text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full">3 Packs</span>
             </div>
-            <h3 class="font-headline text-xl font-black text-white uppercase tracking-tight">Cumpleaños Infantil</h3>
+            <h3 class="font-headline text-xl font-black text-white uppercase tracking-tight">Cumpleaños <span class="text-[#2A2200]">Infantil</span></h3>
             <p class="text-white/85 text-sm mt-1 font-medium">Para los más chicos, con juegos, animación y toda la diversión.</p>
           </div>
           <div class="bg-white flex-1 px-6 py-5 flex flex-col">
-            <div class="flex items-baseline gap-1 mb-4">
-              <span class="text-2xl font-black text-[#E8B800]">Desde $450k</span>
-              <span class="text-xs text-on-surface-variant font-medium">total</span>
+            <div class="flex items-end gap-1.5 mb-4">
+              <span class="font-headline text-3xl font-black text-[#E8B800] leading-none">$450k</span>
+              <div class="text-xs text-on-surface-variant font-semibold leading-tight pb-0.5">desde<br>total</div>
             </div>
             <ul class="space-y-2 text-sm text-on-surface-variant mb-5 flex-1">
               <li class="flex items-start gap-2"><span class="text-[#E8B800] font-black mt-0.5">✦</span> Castillo inflable + metegol + mangrullo</li>
@@ -320,9 +335,9 @@
             <p class="text-white/85 text-sm mt-1 font-medium">4 horas de diversión épica con pizza libre y música.</p>
           </div>
           <div class="bg-white flex-1 px-6 py-5 flex flex-col">
-            <div class="flex items-baseline gap-1 mb-4">
-              <span class="text-2xl font-black text-[#0099BF]">Desde $29k</span>
-              <span class="text-xs text-on-surface-variant font-medium">/persona</span>
+            <div class="flex items-end gap-1.5 mb-4">
+              <span class="font-headline text-3xl font-black text-[#0099BF] leading-none">$29k</span>
+              <div class="text-xs text-on-surface-variant font-semibold leading-tight pb-0.5">desde<br>/persona</div>
             </div>
             <ul class="space-y-2 text-sm text-on-surface-variant mb-5 flex-1">
               <li class="flex items-start gap-2"><span class="text-[#0099BF] font-black mt-0.5">✦</span> 4hs de evento con DJ + luces + sonido</li>
@@ -353,9 +368,9 @@
             <p class="text-white/85 text-sm mt-1 font-medium">La fiesta más épica, de 21:30 a 04:00hs.</p>
           </div>
           <div class="bg-white flex-1 px-6 py-5 flex flex-col">
-            <div class="flex items-baseline gap-1 mb-4">
-              <span class="text-2xl font-black text-primary">Desde $79k</span>
-              <span class="text-xs text-on-surface-variant font-medium">/persona</span>
+            <div class="flex items-end gap-1.5 mb-4">
+              <span class="font-headline text-3xl font-black text-primary leading-none">$79k</span>
+              <div class="text-xs text-on-surface-variant font-semibold leading-tight pb-0.5">desde<br>/persona</div>
             </div>
             <ul class="space-y-2 text-sm text-on-surface-variant mb-5 flex-1">
               <li class="flex items-start gap-2"><span class="text-primary font-black mt-0.5">✦</span> DJ + luces + sonido incluidos</li>
@@ -381,9 +396,9 @@
             <p class="text-white/85 text-sm mt-1 font-medium">El cierre de jardín más divertido, con tobogán de agua y animación.</p>
           </div>
           <div class="bg-white flex-1 px-6 py-5 flex flex-col">
-            <div class="flex items-baseline gap-1 mb-4">
-              <span class="text-2xl font-black text-[#2EAA62]">Desde $29k</span>
-              <span class="text-xs text-on-surface-variant font-medium">/persona</span>
+            <div class="flex items-end gap-1.5 mb-4">
+              <span class="font-headline text-3xl font-black text-[#2EAA62] leading-none">$29k</span>
+              <div class="text-xs text-on-surface-variant font-semibold leading-tight pb-0.5">desde<br>/persona</div>
             </div>
             <ul class="space-y-2 text-sm text-on-surface-variant mb-5 flex-1">
               <li class="flex items-start gap-2"><span class="text-[#2EAA62] font-black mt-0.5">✦</span> Juegos al aire libre + circuito multiaventura</li>
@@ -409,9 +424,9 @@
             <p class="text-white/85 text-sm mt-1 font-medium">El broche de oro de la primaria, con música y desafíos grupales.</p>
           </div>
           <div class="bg-white flex-1 px-6 py-5 flex flex-col">
-            <div class="flex items-baseline gap-1 mb-4">
-              <span class="text-2xl font-black text-[#7B5EA7]">$40k</span>
-              <span class="text-xs text-on-surface-variant font-medium">/persona</span>
+            <div class="flex items-end gap-1.5 mb-4">
+              <span class="font-headline text-3xl font-black text-[#7B5EA7] leading-none">$40k</span>
+              <span class="text-xs text-on-surface-variant font-semibold pb-0.5">/persona</span>
             </div>
             <ul class="space-y-2 text-sm text-on-surface-variant mb-5 flex-1">
               <li class="flex items-start gap-2"><span class="text-[#7B5EA7] font-black mt-0.5">✦</span> 4hs con DJ + luces + sonido</li>
@@ -437,9 +452,9 @@
             <p class="text-white/85 text-sm mt-1 font-medium">Merienda cheta para adultos: petit fours, mousses y mucho café.</p>
           </div>
           <div class="bg-white flex-1 px-6 py-5 flex flex-col">
-            <div class="flex items-baseline gap-1 mb-4">
-              <span class="text-2xl font-black text-[#FF8C20]">$40k</span>
-              <span class="text-xs text-on-surface-variant font-medium">/persona</span>
+            <div class="flex items-end gap-1.5 mb-4">
+              <span class="font-headline text-3xl font-black text-[#FF8C20] leading-none">$40k</span>
+              <span class="text-xs text-on-surface-variant font-semibold pb-0.5">/persona</span>
             </div>
             <ul class="space-y-2 text-sm text-on-surface-variant mb-5 flex-1">
               <li class="flex items-start gap-2"><span class="text-[#FF8C20] font-black mt-0.5">✦</span> Mini sándwiches, chipá y muffins</li>
@@ -528,8 +543,10 @@
         <span class="inline-flex items-center gap-2 bg-primary-fixed text-on-primary-fixed-variant px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-4">
           📸 Galería
         </span>
-        <h2 class="font-headline text-3xl sm:text-5xl font-black text-on-surface uppercase tracking-tight">Momentos reales</h2>
-        <p class="text-on-surface-variant text-base max-w-xl mx-auto mt-3 font-medium">Así se vive una fiesta en Lo de Juan. ¡Tu evento puede ser el próximo!</p>
+        <h2 class="font-headline text-3xl sm:text-5xl font-black text-on-surface uppercase tracking-tight">
+          Momentos <span class="text-primary">reales</span>
+        </h2>
+        <p class="text-on-surface-variant text-base max-w-xl mx-auto mt-3 font-medium">Así se vive una fiesta en Lo de Juan. <span class="font-bold text-on-surface">¡Tu evento puede ser el próximo!</span></p>
       </div>
 
       <!-- Bento Grid -->
@@ -577,7 +594,7 @@
           <span class="material-symbols-outlined text-[16px]">event_available</span>
           Calendario
         </span>
-        <h2 class="font-headline text-3xl sm:text-5xl font-black text-on-surface mb-4 uppercase tracking-tight">Fechas Disponibles</h2>
+        <h2 class="font-headline text-3xl sm:text-5xl font-black text-on-surface mb-4 uppercase tracking-tight">Fechas <span class="text-secondary">Disponibles</span></h2>
         <p class="text-on-surface-variant text-base max-w-xl mx-auto font-medium">Tocá una fecha disponible para reservarla por WhatsApp. El clima se muestra para los próximos 7 días.</p>
       </div>
 
@@ -657,7 +674,7 @@
         <span class="inline-flex items-center gap-2 bg-primary-fixed text-on-primary-fixed-variant px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-4">
           💬 Contacto
         </span>
-        <h2 class="font-headline text-3xl sm:text-5xl font-black text-on-surface mb-4 uppercase tracking-tight">Hablemos de tu evento</h2>
+        <h2 class="font-headline text-3xl sm:text-5xl font-black text-on-surface mb-4 uppercase tracking-tight">Hablemos de <span class="text-[#2EAA62]">tu evento</span></h2>
         <p class="text-on-surface-variant text-base max-w-xl mx-auto font-medium">Toda la gestión la hacemos por WhatsApp. Escribinos y te asesoramos en minutos.</p>
       </div>
 
