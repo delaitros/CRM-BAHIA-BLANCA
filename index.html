@@ -588,7 +588,7 @@
       <!-- Phone Slideshow -->
       <style>
         @keyframes pshimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
-        .phone-stage{display:flex;align-items:center;justify-content:center;min-height:580px;overflow:hidden;padding:28px 0;}
+        .phone-stage{display:flex;align-items:center;justify-content:center;padding:48px 24px;}
         .phone-frame{
           position:relative;width:250px;height:500px;flex-shrink:0;
           background:#111;border-radius:50px;
@@ -596,8 +596,9 @@
           transition:transform .85s cubic-bezier(.4,0,.2,1);
         }
         .phone-frame.landscape{transform:rotate(90deg);}
-        @media(max-width:400px){.phone-frame.landscape{transform:rotate(90deg) scale(.72);}}
-        @media(min-width:401px) and (max-width:560px){.phone-frame.landscape{transform:rotate(90deg) scale(.85);}}
+        @media(max-width:320px){.phone-frame.landscape{transform:rotate(90deg) scale(.60);}}
+        @media(min-width:321px) and (max-width:420px){.phone-frame.landscape{transform:rotate(90deg) scale(.68);}}
+        @media(min-width:421px) and (max-width:560px){.phone-frame.landscape{transform:rotate(90deg) scale(.82);}}
         .phone-notch{position:absolute;top:13px;left:50%;transform:translateX(-50%);width:82px;height:24px;background:#111;border-radius:16px;z-index:10;}
         .phone-vol{position:absolute;left:-12px;top:90px;width:4px;height:28px;background:#555;border-radius:2px;box-shadow:0 40px 0 #555,0 72px 0 #555;}
         .phone-pwr{position:absolute;right:-12px;top:130px;width:4px;height:48px;background:#555;border-radius:2px;}
