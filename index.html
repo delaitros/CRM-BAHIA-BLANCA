@@ -585,135 +585,142 @@
         <p class="text-on-surface-variant text-base max-w-xl mx-auto mt-3 font-medium">Así se vive una fiesta en Lo de Juan. <span class="font-bold text-on-surface">¡Tu evento puede ser el próximo!</span></p>
       </div>
 
-      <!-- Slideshow -->
+      <!-- Phone Slideshow -->
       <style>
-        #home-slideshow { position:relative; border-radius:24px; overflow:hidden; background:#1A0F0A; aspect-ratio:16/9; max-height:520px; box-shadow:0 16px 48px rgba(0,0,0,.18); }
-        .slide { position:absolute; inset:0; opacity:0; transition:opacity 1.4s ease-in-out; }
-        .slide.active { opacity:1; }
-        .slide img { width:100%; height:100%; object-fit:cover; display:block; }
-        #home-slideshow:hover .slide-btn { opacity:1; }
-        .slide-btn { position:absolute; top:50%; transform:translateY(-50%); width:42px; height:42px; border-radius:50%; background:rgba(0,0,0,.35); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; color:white; opacity:0; transition:opacity .2s,background .2s; z-index:5; }
-        .slide-btn:hover { background:rgba(255,92,53,.7); }
-        #slide-prev { left:14px; }
-        #slide-next { right:14px; }
-        #slide-dots { position:absolute; bottom:14px; left:50%; transform:translateX(-50%); display:flex; gap:6px; z-index:5; }
-        .slide-dot { width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.4); border:none; cursor:pointer; padding:0; transition:background .3s,transform .3s; }
-        .slide-dot.active { background:#FF5C35; transform:scale(1.35); }
-        #slide-progress { position:absolute; bottom:0; left:0; height:3px; background:#FF5C35; width:0%; transition:width linear; z-index:5; }
+        @keyframes pshimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+        .phone-stage{display:flex;align-items:center;justify-content:center;min-height:580px;overflow:hidden;padding:28px 0;}
+        .phone-frame{
+          position:relative;width:250px;height:500px;flex-shrink:0;
+          background:#111;border-radius:50px;
+          box-shadow:inset 0 0 0 2px #444,0 0 0 9px #111,0 0 0 11px #555,0 32px 80px rgba(0,0,0,.5);
+          transition:transform .85s cubic-bezier(.4,0,.2,1);
+        }
+        .phone-frame.landscape{transform:rotate(90deg);}
+        @media(max-width:400px){.phone-frame.landscape{transform:rotate(90deg) scale(.72);}}
+        @media(min-width:401px) and (max-width:560px){.phone-frame.landscape{transform:rotate(90deg) scale(.85);}}
+        .phone-notch{position:absolute;top:13px;left:50%;transform:translateX(-50%);width:82px;height:24px;background:#111;border-radius:16px;z-index:10;}
+        .phone-vol{position:absolute;left:-12px;top:90px;width:4px;height:28px;background:#555;border-radius:2px;box-shadow:0 40px 0 #555,0 72px 0 #555;}
+        .phone-pwr{position:absolute;right:-12px;top:130px;width:4px;height:48px;background:#555;border-radius:2px;}
+        .phone-screen{position:absolute;inset:7px;border-radius:43px;overflow:hidden;background:#000;cursor:pointer;}
+        .pslide{position:absolute;inset:0;opacity:0;transition:opacity 1.3s ease-in-out;}
+        .pslide.active{opacity:1;}
+        .pslide img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;}
+        .pslide-skel{position:absolute;inset:0;background:linear-gradient(90deg,#1a1a1a,#2a2a2a 50%,#1a1a1a);background-size:200% 100%;animation:pshimmer 1.5s infinite;}
+        #pslide-dots{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:5;}
+        .pslide-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.3);border:none;cursor:pointer;padding:0;transition:background .3s,transform .3s;}
+        .pslide-dot.active{background:#FF5C35;transform:scale(1.5);}
+        #pslide-bar{position:absolute;bottom:0;left:0;height:3px;background:#FF5C35;width:0%;z-index:5;}
       </style>
 
-      <div id="home-slideshow">
-        <div id="slide-progress"></div>
-        <div id="slide-track"></div>
-        <button id="slide-prev" class="slide-btn" onclick="slideshowNav(-1)">
-          <span class="material-symbols-outlined text-xl">chevron_left</span>
-        </button>
-        <button id="slide-next" class="slide-btn" onclick="slideshowNav(1)">
-          <span class="material-symbols-outlined text-xl">chevron_right</span>
-        </button>
-        <div id="slide-dots"></div>
-        <!-- Skeleton -->
-        <div id="slide-skeleton" style="position:absolute;inset:0;background:linear-gradient(90deg,#FFE8DC,#FFF3EC 50%,#FFE8DC);background-size:200% 100%;animation:shimmer 1.5s infinite;"></div>
+      <div class="phone-stage">
+        <div id="phone-frame" class="phone-frame">
+          <div class="phone-notch"></div>
+          <div class="phone-vol"></div>
+          <div class="phone-pwr"></div>
+          <div class="phone-screen" onclick="psClick(event)">
+            <div class="pslide-skel" id="pslide-skel"></div>
+            <div id="pslide-track"></div>
+            <div id="pslide-dots"></div>
+            <div id="pslide-bar"></div>
+          </div>
+        </div>
       </div>
 
       <script>
-      (function() {
-        var BASE = '/assets/img/galeria/';
-        var IMG = /\.(jpg|jpeg|png|gif|webp|avif)$/i;
-        var FALLBACK = [
-          '/assets/img/galeria-01.jpg','/assets/img/galeria-02.jpg',
-          '/assets/img/galeria-03.jpg','/assets/img/galeria-04.jpg',
-          '/assets/img/galeria-05.jpg','/assets/img/galeria-06.jpg',
-          '/assets/img/galeria-07.jpg'
-        ];
-        var INTERVAL = 5000;
-        var slides = [], cur = 0, timer = null, paused = false;
+      (function(){
+        var BASE='/assets/img/galeria/',IMG=/\.(jpg|jpeg|png|gif|webp|avif)$/i;
+        var FALLBACK=['/assets/img/galeria-01.jpg','/assets/img/galeria-02.jpg','/assets/img/galeria-03.jpg','/assets/img/galeria-04.jpg','/assets/img/galeria-05.jpg','/assets/img/galeria-06.jpg','/assets/img/galeria-07.jpg'];
+        var DELAY=5500, slides=[], oris=[], cur=0, timer=null, paused=false;
 
-        function shuffle(a) { for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;} return a; }
+        function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
 
-        function buildSlideshow(srcs) {
-          if (!srcs.length) srcs = FALLBACK;
+        function getOri(src,cb){var i=new Image();i.onload=function(){cb(i.naturalWidth>i.naturalHeight?'land':'port');};i.onerror=function(){cb('port');};i.src=src;}
+
+        function applyOri(o){
+          var f=document.getElementById('phone-frame');
+          if(!f)return;
+          if(o==='land') f.classList.add('landscape');
+          else f.classList.remove('landscape');
+        }
+
+        function build(srcs){
+          if(!srcs.length)srcs=FALLBACK;
           shuffle(srcs);
-          slides = srcs.slice(0, 20); // máx 20 slides
-          var track = document.getElementById('slide-track');
-          var dots  = document.getElementById('slide-dots');
-          var skel  = document.getElementById('slide-skeleton');
-          if (skel) skel.remove();
-
-          track.innerHTML = slides.map(function(src, i) {
-            return '<div class="slide' + (i===0?' active':'') + '"><img src="' + src + '" alt="" loading="' + (i<2?'eager':'lazy') + '" /></div>';
+          slides=srcs.slice(0,16);
+          oris=new Array(slides.length).fill('port');
+          var track=document.getElementById('pslide-track');
+          var dots=document.getElementById('pslide-dots');
+          var skel=document.getElementById('pslide-skel');
+          track.innerHTML=slides.map(function(s,i){
+            return '<div class="pslide'+(i===0?' active':'')+'"><img src="'+s+'" loading="'+(i<2?'eager':'lazy')+'" /></div>';
           }).join('');
-
-          dots.innerHTML = slides.map(function(_, i) {
-            return '<button class="slide-dot' + (i===0?' active':'') + '" onclick="slideshowGo(' + i + ')"></button>';
+          dots.innerHTML=slides.map(function(_,i){
+            return '<button class="pslide-dot'+(i===0?' active':'')+'"></button>';
           }).join('');
-
+          document.querySelectorAll('.pslide-dot').forEach(function(b,i){b.addEventListener('click',function(){go(i);});});
+          if(skel)skel.remove();
+          slides.forEach(function(s,i){
+            getOri(s,function(o){
+              oris[i]=o;
+              if(i===cur)applyOri(o);
+            });
+          });
           startTimer();
         }
 
-        function goTo(idx) {
-          var els   = document.querySelectorAll('.slide');
-          var dotEls= document.querySelectorAll('.slide-dot');
-          if (!els.length) return;
+        function go(idx){
+          var els=document.querySelectorAll('.pslide'),dots=document.querySelectorAll('.pslide-dot');
+          if(!els.length)return;
           els[cur].classList.remove('active');
-          if (dotEls[cur]) dotEls[cur].classList.remove('active');
-          cur = (idx + slides.length) % slides.length;
+          if(dots[cur])dots[cur].classList.remove('active');
+          cur=((idx%slides.length)+slides.length)%slides.length;
           els[cur].classList.add('active');
-          if (dotEls[cur]) dotEls[cur].classList.add('active');
-          resetProgress();
+          if(dots[cur])dots[cur].classList.add('active');
+          applyOri(oris[cur]||'port');
+          resetBar();
         }
 
-        function resetProgress() {
-          var bar = document.getElementById('slide-progress');
-          if (!bar) return;
-          bar.style.transition = 'none';
-          bar.style.width = '0%';
-          requestAnimationFrame(function() {
-            requestAnimationFrame(function() {
-              bar.style.transition = 'width ' + INTERVAL + 'ms linear';
-              bar.style.width = '100%';
-            });
-          });
+        function resetBar(){
+          var b=document.getElementById('pslide-bar');
+          if(!b)return;
+          b.style.transition='none';b.style.width='0%';
+          requestAnimationFrame(function(){requestAnimationFrame(function(){
+            b.style.transition='width '+DELAY+'ms linear';b.style.width='100%';
+          });});
         }
 
-        function startTimer() {
-          clearInterval(timer);
-          resetProgress();
-          timer = setInterval(function() { if (!paused) goTo(cur + 1); }, INTERVAL);
+        function startTimer(){clearInterval(timer);resetBar();timer=setInterval(function(){if(!paused)go(cur+1);},DELAY);}
+
+        window.psClick=function(e){go(e.offsetX<e.currentTarget.offsetWidth/2?cur-1:cur+1);};
+
+        var pf=document.getElementById('phone-frame');
+        if(pf){
+          pf.addEventListener('mouseenter',function(){paused=true;});
+          pf.addEventListener('mouseleave',function(){paused=false;});
+        }
+        var ps=document.querySelector('.phone-screen');
+        if(ps){
+          var tx=0;
+          ps.addEventListener('touchstart',function(e){tx=e.touches[0].clientX;},{passive:true});
+          ps.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>35)go(cur+(dx<0?1:-1));},{passive:true});
         }
 
-        window.slideshowNav = function(dir) { goTo(cur + dir); };
-        window.slideshowGo  = function(idx) { goTo(idx); };
-
-        var box = document.getElementById('home-slideshow');
-        if (box) {
-          box.addEventListener('mouseenter', function() { paused = true; });
-          box.addEventListener('mouseleave', function() { paused = false; });
-          var tx = 0;
-          box.addEventListener('touchstart', function(e) { tx = e.touches[0].clientX; }, { passive:true });
-          box.addEventListener('touchend',   function(e) {
-            var dx = e.changedTouches[0].clientX - tx;
-            if (Math.abs(dx) > 40) goTo(cur + (dx < 0 ? 1 : -1));
-          }, { passive:true });
-        }
-
-        // Carga fotos reales
         fetch(BASE)
-          .then(function(r) { return r.ok ? r.json() : []; })
-          .then(function(listing) {
-            var dirs  = listing.filter(function(e){ return e.type==='directory'; }).map(function(e){ return e.name.replace(/\/$/,''); });
-            var files = listing.filter(function(e){ return e.type==='file' && IMG.test(e.name); }).map(function(e){ return BASE + encodeURIComponent(e.name); });
-            if (!dirs.length) { buildSlideshow(files); return; }
-            var all = files.slice(), pending = dirs.length;
-            dirs.forEach(function(dir) {
-              fetch(BASE + encodeURIComponent(dir) + '/')
-                .then(function(r){ return r.ok ? r.json() : []; })
-                .then(function(sub){ sub.forEach(function(e){ if(e.type==='file' && IMG.test(e.name)) all.push(BASE + encodeURIComponent(dir) + '/' + encodeURIComponent(e.name)); }); })
+          .then(function(r){return r.ok?r.json():[];})
+          .then(function(lst){
+            var dirs=lst.filter(function(e){return e.type==='directory';}).map(function(e){return e.name.replace(/\/$/,'');});
+            var files=lst.filter(function(e){return e.type==='file'&&IMG.test(e.name);}).map(function(e){return BASE+encodeURIComponent(e.name);});
+            if(!dirs.length){build(files);return;}
+            var all=files.slice(),pending=dirs.length;
+            dirs.forEach(function(dir){
+              fetch(BASE+encodeURIComponent(dir)+'/')
+                .then(function(r){return r.ok?r.json():[];})
+                .then(function(sub){sub.forEach(function(e){if(e.type==='file'&&IMG.test(e.name))all.push(BASE+encodeURIComponent(dir)+'/'+encodeURIComponent(e.name));});})
                 .catch(function(){})
-                .then(function(){ if(--pending===0) buildSlideshow(all); });
+                .then(function(){if(--pending===0)build(all);});
             });
           })
-          .catch(function() { buildSlideshow([]); });
+          .catch(function(){build([]);});
       })();
       </script>
 
