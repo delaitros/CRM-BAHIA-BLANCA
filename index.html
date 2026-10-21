@@ -100,7 +100,7 @@
   <!-- ========================================
        NAVIGATION
        ======================================== -->
-  <nav class="fixed top-0 left-0 right-0 z-50 bg-white" style="filter:drop-shadow(0 4px 14px rgba(0,0,0,.10))">
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-white" id="mainNav">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
         <!-- Logo -->
@@ -1672,19 +1672,21 @@
     }
 
     /* ── 3. Navbar shrink on scroll ── */
-    var nav = document.querySelector('nav');
+    var nav = document.getElementById('mainNav');
     if(nav){
-      window.addEventListener('scroll', function(){
+      function updateNav(){
         if(window.scrollY > 60){
-          nav.classList.add('shadow-md','backdrop-blur-xl');
+          nav.style.filter='drop-shadow(0 4px 14px rgba(0,0,0,.10))';
           nav.style.paddingTop    = '8px';
           nav.style.paddingBottom = '8px';
         } else {
-          nav.classList.remove('shadow-md','backdrop-blur-xl');
+          nav.style.filter='none';
           nav.style.paddingTop    = '';
           nav.style.paddingBottom = '';
         }
-      }, { passive:true });
+      }
+      window.addEventListener('scroll', updateNav, { passive:true });
+      updateNav();
     }
 
     /* ── 4. Smooth active nav link highlight ── */
