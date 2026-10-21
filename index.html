@@ -8,7 +8,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Manrope:wght@400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/styles.css" />
   <script>
@@ -80,6 +80,7 @@
           },
           fontFamily: {
             "headline": ["Nunito", "Manrope", "sans-serif"],
+            "display": ["Pacifico", "cursive"],
             "body": ["Manrope", "sans-serif"],
             "label": ["Manrope", "sans-serif"]
           },
@@ -232,7 +233,7 @@
             </span>
           </div>
           <h1 class="font-headline text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight mb-6 uppercase tracking-tight drop-shadow-sm">
-            La fiesta que soñaste <span class="text-[#FFE566]">arranca acá.</span>
+            La fiesta que soñaste <span class="font-display text-[#FFE566] normal-case" style="font-size:1.08em;letter-spacing:-.5px;">arranca acá.</span>
           </h1>
           <p class="text-white/85 text-lg leading-relaxed max-w-xl mb-8 font-medium mx-auto md:mx-0">
             Salón de fiestas, catering y atracciones para chicos, teens y adultos. Inflables, juegos acuáticos, circuito multiaventura y mucho más.
@@ -301,11 +302,17 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Section Header -->
       <div class="text-center mb-14">
+        <div class="dot-deco flex items-end justify-center gap-2 mb-3" aria-hidden="true">
+          <span class="w-3 h-3 rounded-full bg-primary"></span>
+          <span class="w-2 h-2 rounded-full bg-[#FFD60A] mb-1"></span>
+          <span class="w-3.5 h-3.5 rounded-full bg-[#0099BF]"></span>
+          <span class="w-2 h-2 rounded-full bg-[#2EAA62] mb-0.5"></span>
+        </div>
         <span class="inline-flex items-center gap-2 bg-primary-fixed text-on-primary-fixed-variant px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-4">
           🎊 Nuestros Paquetes
         </span>
         <h2 class="font-headline text-3xl sm:text-5xl font-black text-on-surface mb-4 uppercase tracking-tight">
-          ¿Qué <span class="text-primary">festejás</span>?
+          ¿Qué <span class="font-display text-primary normal-case" style="font-size:1.1em;letter-spacing:-.5px;">festejás</span>?
         </h2>
         <p class="text-on-surface-variant text-base max-w-2xl mx-auto font-medium">Elegí el plan ideal para tu evento. Seña del <span class="font-black text-on-surface">40%</span> para confirmar la fecha.</p>
       </div>
@@ -600,11 +607,17 @@
   <section id="galeria" class="py-16 md:py-24 bg-surface-container-low">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-12">
+        <div class="dot-deco flex items-end justify-center gap-2 mb-3" aria-hidden="true">
+          <span class="w-2 h-2 rounded-full bg-[#0099BF] mb-1"></span>
+          <span class="w-3 h-3 rounded-full bg-primary"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-[#FFD60A]"></span>
+          <span class="w-2 h-2 rounded-full bg-[#2EAA62] mb-0.5"></span>
+        </div>
         <span class="inline-flex items-center gap-2 bg-primary-fixed text-on-primary-fixed-variant px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-4">
           📸 Galería
         </span>
         <h2 class="font-headline text-3xl sm:text-5xl font-black text-on-surface uppercase tracking-tight">
-          Momentos <span class="text-primary">reales</span>
+          Momentos <span class="font-display text-primary normal-case" style="font-size:1.1em;letter-spacing:-.5px;">reales</span>
         </h2>
         <p class="text-on-surface-variant text-base max-w-xl mx-auto mt-3 font-medium">Así se vive una fiesta en Lo de Juan. <span class="font-bold text-on-surface">¡Tu evento puede ser el próximo!</span></p>
       </div>
@@ -751,11 +764,17 @@
   <section id="disponibilidad" class="py-16 md:py-24 bg-background">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-12">
+        <div class="dot-deco flex items-end justify-center gap-2 mb-3" aria-hidden="true">
+          <span class="w-2.5 h-2.5 rounded-full bg-[#2EAA62]"></span>
+          <span class="w-2 h-2 rounded-full bg-primary mb-1"></span>
+          <span class="w-3 h-3 rounded-full bg-[#0099BF]"></span>
+          <span class="w-2 h-2 rounded-full bg-[#FFD60A] mb-0.5"></span>
+        </div>
         <span class="inline-flex items-center gap-2 bg-secondary-fixed text-on-secondary-fixed-variant px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-4">
           <span class="material-symbols-outlined text-[16px]">event_available</span>
           Calendario
         </span>
-        <h2 class="font-headline text-3xl sm:text-5xl font-black text-on-surface mb-4 uppercase tracking-tight">Fechas <span class="text-secondary">Disponibles</span></h2>
+        <h2 class="font-headline text-3xl sm:text-5xl font-black text-on-surface mb-4 uppercase tracking-tight">Fechas <span class="font-display text-secondary normal-case" style="font-size:1.1em;letter-spacing:-.5px;">Disponibles</span></h2>
         <p class="text-on-surface-variant text-base max-w-xl mx-auto font-medium">Tocá una fecha disponible para reservarla por WhatsApp. El clima se muestra para los próximos 7 días.</p>
       </div>
 
@@ -832,10 +851,16 @@
   <section id="contacto" class="py-16 md:py-24 bg-surface-container-low">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-12">
+        <div class="dot-deco flex items-end justify-center gap-2 mb-3" aria-hidden="true">
+          <span class="w-3 h-3 rounded-full bg-[#2EAA62]"></span>
+          <span class="w-2 h-2 rounded-full bg-[#FFD60A] mb-1"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+          <span class="w-2 h-2 rounded-full bg-[#0099BF] mb-0.5"></span>
+        </div>
         <span class="inline-flex items-center gap-2 bg-primary-fixed text-on-primary-fixed-variant px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-4">
           💬 Contacto
         </span>
-        <h2 class="font-headline text-3xl sm:text-5xl font-black text-on-surface mb-4 uppercase tracking-tight">Hablemos de <span class="text-[#2EAA62]">tu evento</span></h2>
+        <h2 class="font-headline text-3xl sm:text-5xl font-black text-on-surface mb-4 uppercase tracking-tight">Hablemos de <span class="font-display text-[#2EAA62] normal-case" style="font-size:1.1em;letter-spacing:-.5px;">tu evento</span></h2>
         <p class="text-on-surface-variant text-base max-w-xl mx-auto font-medium">Toda la gestión la hacemos por WhatsApp. Escribinos y te asesoramos en minutos.</p>
       </div>
 
@@ -1469,6 +1494,17 @@
     }, { passive: true });
   })();
   </script>
+
+  <!-- ── DOT DECORATION ──────────────────────────────────────────── -->
+  <style>
+    @keyframes dotUp{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+    .dot-deco>span{display:inline-block;}
+    .dot-deco>span:nth-child(1){animation:dotUp 2s ease-in-out infinite 0s;}
+    .dot-deco>span:nth-child(2){animation:dotUp 2s ease-in-out infinite .3s;}
+    .dot-deco>span:nth-child(3){animation:dotUp 2s ease-in-out infinite .6s;}
+    .dot-deco>span:nth-child(4){animation:dotUp 2s ease-in-out infinite .9s;}
+    @media(prefers-reduced-motion:reduce){.dot-deco>span{animation:none;}}
+  </style>
 
   <!-- ── SCROLL ANIMATIONS ────────────────────────────────────────── -->
   <style>
