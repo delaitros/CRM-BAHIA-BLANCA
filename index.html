@@ -273,11 +273,11 @@
         <div class="md:col-span-5 flex justify-center">
           <div class="relative w-full max-w-sm md:max-w-none">
             <div class="absolute -inset-3 bg-white/20 rounded-3xl blur-xl"></div>
-            <div class="relative p-2 bg-white/25 backdrop-blur-sm rounded-3xl border border-white/40">
-              <img src="/assets/img/hero-salon.jpg" alt="Salón Lo de Juan" class="w-full h-auto rounded-2xl object-cover shadow-xl" />
+            <div class="relative p-2 bg-white/25 backdrop-blur-sm border border-white/40" style="border-radius:38px 18px 32px 22px / 22px 32px 18px 38px;">
+              <img src="/assets/img/hero-salon.jpg" alt="Salón Lo de Juan" class="w-full h-auto object-cover shadow-xl" style="border-radius:30px 12px 26px 16px / 16px 26px 12px 30px;" />
             </div>
             <!-- Floating badge -->
-            <div class="absolute -bottom-4 -left-4 bg-white rounded-2xl shadow-xl px-4 py-3 flex items-center gap-2">
+            <div class="absolute -bottom-4 -left-4 bg-white shadow-xl px-4 py-3 flex items-center gap-2" style="border-radius:28px 12px 24px 18px / 18px 24px 12px 28px;">
               <span class="text-2xl">⭐</span>
               <div>
                 <div class="text-xs font-bold text-on-surface uppercase tracking-wide">¡Muy elegido!</div>
@@ -1676,11 +1676,11 @@
     if(nav){
       function updateNav(){
         if(window.scrollY > 60){
-          nav.style.filter='drop-shadow(0 4px 14px rgba(0,0,0,.10))';
+          nav.style.boxShadow='0 4px 18px rgba(0,0,0,.10)';
           nav.style.paddingTop    = '8px';
           nav.style.paddingBottom = '8px';
         } else {
-          nav.style.filter='none';
+          nav.style.boxShadow='none';
           nav.style.paddingTop    = '';
           nav.style.paddingBottom = '';
         }
