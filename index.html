@@ -1482,6 +1482,12 @@
     .stagger-5 { transition-delay:.48s !important; }
     .stagger-6 { transition-delay:.58s !important; }
 
+    /* Service cards keep box-shadow hover transition alongside reveal */
+    .service-card.reveal,
+    .service-card.reveal.in {
+      transition: opacity .65s ease, transform .65s ease, box-shadow 0.25s ease !important;
+    }
+
     /* Honour prefers-reduced-motion */
     @media (prefers-reduced-motion: reduce) {
       .reveal,.reveal-left,.reveal-right,.reveal-scale,.reveal-fade {
@@ -1493,9 +1499,12 @@
   (function(){
     /* ── 1. Mark elements to animate ── */
 
-    /* Section headers — every section's first .text-center > h2 or standalone h2 */
-    document.querySelectorAll('#servicios .text-center, #galeria .text-center, #disponibilidad .text-center, #contacto .text-center').forEach(function(el){
-      el.classList.add('reveal');
+    /* Section headers — first .text-center inside each section's wrapper only */
+    ['#servicios','#galeria','#disponibilidad','#contacto'].forEach(function(id){
+      var wrap = document.querySelector(id+' > div');
+      if(!wrap) return;
+      var hdr = wrap.querySelector('.text-center');
+      if(hdr) hdr.classList.add('reveal');
     });
 
     /* Hero columns */
@@ -1510,27 +1519,28 @@
       if(i<6) card.classList.add('stagger-'+(i+1));
     });
 
-    /* Attractions items */
-    document.querySelectorAll('#servicios .grid-cols-2 > div, #servicios .grid-cols-3 > div').forEach(function(el, i){
+    /* Attractions items — the grid uses gap-4 (service card grid uses gap-6) */
+    document.querySelectorAll('#servicios .gap-4 > div').forEach(function(el, i){
       el.classList.add('reveal');
       if(i<6) el.classList.add('stagger-'+(i+1));
     });
 
-    /* Gallery section */
+    /* Gallery phone frame */
     var phoneStage = document.querySelector('.phone-stage');
     if(phoneStage) phoneStage.classList.add('reveal-scale');
 
-    var galCta = document.querySelector('#galeria .text-center:last-of-type');
-    if(galCta) galCta.classList.add('reveal-fade');
+    /* Gallery CTA button — the second .text-center inside galeria > div */
+    var galDivs = document.querySelectorAll('#galeria > div > .text-center');
+    if(galDivs.length > 1) galDivs[galDivs.length-1].classList.add('reveal-fade');
 
     /* Calendar card */
-    var calCard = document.querySelector('#disponibilidad .bg-surface-container-lowest, #disponibilidad .rounded-3xl');
+    var calCard = document.querySelector('#disponibilidad .bg-surface-container-lowest');
     if(calCard) calCard.classList.add('reveal-scale');
 
-    /* Contact cards */
-    document.querySelectorAll('#contacto .rounded-3xl').forEach(function(el, i){
+    /* Contact cards — two cards inside the grid */
+    document.querySelectorAll('#contacto .grid > div').forEach(function(el, i){
       el.classList.add('reveal');
-      if(i<4) el.classList.add('stagger-'+(i+1));
+      el.classList.add('stagger-'+(i+1));
     });
 
     /* Footer columns */
