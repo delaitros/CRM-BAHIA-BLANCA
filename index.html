@@ -1458,5 +1458,133 @@
     }, { passive: true });
   })();
   </script>
+
+  <!-- ── SCROLL ANIMATIONS ────────────────────────────────────────── -->
+  <style>
+    /* Base: elements start hidden/offset */
+    .reveal          { opacity:0; transform:translateY(32px);   transition:opacity .65s ease, transform .65s ease; }
+    .reveal-left     { opacity:0; transform:translateX(-40px);  transition:opacity .65s ease, transform .65s ease; }
+    .reveal-right    { opacity:0; transform:translateX(40px);   transition:opacity .65s ease, transform .65s ease; }
+    .reveal-scale    { opacity:0; transform:scale(.92);         transition:opacity .6s ease, transform .6s ease; }
+    .reveal-fade     { opacity:0;                               transition:opacity .8s ease; }
+
+    /* Visible state */
+    .reveal.in, .reveal-left.in, .reveal-right.in,
+    .reveal-scale.in, .reveal-fade.in {
+      opacity:1; transform:none;
+    }
+
+    /* Stagger delays for sibling groups */
+    .stagger-1 { transition-delay:.08s !important; }
+    .stagger-2 { transition-delay:.18s !important; }
+    .stagger-3 { transition-delay:.28s !important; }
+    .stagger-4 { transition-delay:.38s !important; }
+    .stagger-5 { transition-delay:.48s !important; }
+    .stagger-6 { transition-delay:.58s !important; }
+
+    /* Honour prefers-reduced-motion */
+    @media (prefers-reduced-motion: reduce) {
+      .reveal,.reveal-left,.reveal-right,.reveal-scale,.reveal-fade {
+        opacity:1 !important; transform:none !important; transition:none !important;
+      }
+    }
+  </style>
+  <script>
+  (function(){
+    /* ── 1. Mark elements to animate ── */
+
+    /* Section headers — every section's first .text-center > h2 or standalone h2 */
+    document.querySelectorAll('#servicios .text-center, #galeria .text-center, #disponibilidad .text-center, #contacto .text-center').forEach(function(el){
+      el.classList.add('reveal');
+    });
+
+    /* Hero columns */
+    var heroText = document.querySelector('#inicio .md\\:col-span-7');
+    if(heroText) heroText.classList.add('reveal-left');
+    var heroImg  = document.querySelector('#inicio .md\\:col-span-5');
+    if(heroImg)  heroImg.classList.add('reveal-right');
+
+    /* Service cards — stagger */
+    document.querySelectorAll('#servicios .service-card').forEach(function(card, i){
+      card.classList.add('reveal');
+      if(i<6) card.classList.add('stagger-'+(i+1));
+    });
+
+    /* Attractions items */
+    document.querySelectorAll('#servicios .grid-cols-2 > div, #servicios .grid-cols-3 > div').forEach(function(el, i){
+      el.classList.add('reveal');
+      if(i<6) el.classList.add('stagger-'+(i+1));
+    });
+
+    /* Gallery section */
+    var phoneStage = document.querySelector('.phone-stage');
+    if(phoneStage) phoneStage.classList.add('reveal-scale');
+
+    var galCta = document.querySelector('#galeria .text-center:last-of-type');
+    if(galCta) galCta.classList.add('reveal-fade');
+
+    /* Calendar card */
+    var calCard = document.querySelector('#disponibilidad .bg-surface-container-lowest, #disponibilidad .rounded-3xl');
+    if(calCard) calCard.classList.add('reveal-scale');
+
+    /* Contact cards */
+    document.querySelectorAll('#contacto .rounded-3xl').forEach(function(el, i){
+      el.classList.add('reveal');
+      if(i<4) el.classList.add('stagger-'+(i+1));
+    });
+
+    /* Footer columns */
+    document.querySelectorAll('footer .grid > div').forEach(function(el, i){
+      el.classList.add('reveal');
+      if(i<4) el.classList.add('stagger-'+(i+1));
+    });
+
+    /* ── 2. IntersectionObserver ── */
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in');
+          io.unobserve(entry.target); // fire once
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -48px 0px' });
+
+    document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale,.reveal-fade').forEach(function(el){
+      io.observe(el);
+    });
+
+    /* ── 3. Navbar shrink on scroll ── */
+    var nav = document.querySelector('nav');
+    if(nav){
+      window.addEventListener('scroll', function(){
+        if(window.scrollY > 60){
+          nav.classList.add('shadow-md','backdrop-blur-xl');
+          nav.style.paddingTop    = '8px';
+          nav.style.paddingBottom = '8px';
+        } else {
+          nav.classList.remove('shadow-md','backdrop-blur-xl');
+          nav.style.paddingTop    = '';
+          nav.style.paddingBottom = '';
+        }
+      }, { passive:true });
+    }
+
+    /* ── 4. Smooth active nav link highlight ── */
+    var sections = document.querySelectorAll('section[id]');
+    var navLinks = document.querySelectorAll('nav a[href^="#"]');
+    if(navLinks.length){
+      var sio = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if(entry.isIntersecting){
+            navLinks.forEach(function(a){
+              a.classList.toggle('text-primary', a.getAttribute('href')==='#'+entry.target.id);
+            });
+          }
+        });
+      }, { threshold:0.4 });
+      sections.forEach(function(s){ sio.observe(s); });
+    }
+  })();
+  </script>
 </body>
 </html>
