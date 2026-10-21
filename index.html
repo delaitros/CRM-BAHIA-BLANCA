@@ -585,26 +585,35 @@
         <p class="text-on-surface-variant text-base max-w-xl mx-auto mt-3 font-medium">Así se vive una fiesta en Lo de Juan. <span class="font-bold text-on-surface">¡Tu evento puede ser el próximo!</span></p>
       </div>
 
-      <!-- Auto-scroll strips -->
+      <!-- Slideshow -->
       <style>
-        .photo-strip { overflow: hidden; width: 100%; -webkit-mask-image: linear-gradient(to right,transparent,black 8%,black 92%,transparent); mask-image: linear-gradient(to right,transparent,black 8%,black 92%,transparent); }
-        .photo-strip-track { display:flex; gap:12px; width:max-content; }
-        .photo-strip-track.go-left  { animation: stripLeft  var(--dur,40s) linear infinite; }
-        .photo-strip-track.go-right { animation: stripRight var(--dur,45s) linear infinite; }
-        .photo-strip:hover .photo-strip-track { animation-play-state:paused; }
-        @keyframes stripLeft  { from{transform:translateX(0)} to{transform:translateX(-50%)} }
-        @keyframes stripRight { from{transform:translateX(-50%)} to{transform:translateX(0)} }
-        .strip-photo { height:190px; width:auto; min-width:160px; border-radius:18px; object-fit:cover; flex-shrink:0; box-shadow:0 4px 16px rgba(0,0,0,.12); }
-        .strip-video-thumb { height:190px; min-width:160px; border-radius:18px; object-fit:cover; flex-shrink:0; box-shadow:0 4px 16px rgba(0,0,0,.12); position:relative; display:inline-flex; align-items:center; justify-content:center; background:#1a0f0a; }
+        #home-slideshow { position:relative; border-radius:24px; overflow:hidden; background:#1A0F0A; aspect-ratio:16/9; max-height:520px; box-shadow:0 16px 48px rgba(0,0,0,.18); }
+        .slide { position:absolute; inset:0; opacity:0; transition:opacity 1.4s ease-in-out; }
+        .slide.active { opacity:1; }
+        .slide img { width:100%; height:100%; object-fit:cover; display:block; }
+        #home-slideshow:hover .slide-btn { opacity:1; }
+        .slide-btn { position:absolute; top:50%; transform:translateY(-50%); width:42px; height:42px; border-radius:50%; background:rgba(0,0,0,.35); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; color:white; opacity:0; transition:opacity .2s,background .2s; z-index:5; }
+        .slide-btn:hover { background:rgba(255,92,53,.7); }
+        #slide-prev { left:14px; }
+        #slide-next { right:14px; }
+        #slide-dots { position:absolute; bottom:14px; left:50%; transform:translateX(-50%); display:flex; gap:6px; z-index:5; }
+        .slide-dot { width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.4); border:none; cursor:pointer; padding:0; transition:background .3s,transform .3s; }
+        .slide-dot.active { background:#FF5C35; transform:scale(1.35); }
+        #slide-progress { position:absolute; bottom:0; left:0; height:3px; background:#FF5C35; width:0%; transition:width linear; z-index:5; }
       </style>
 
-      <div class="flex flex-col gap-3 -mx-4 sm:-mx-6 lg:-mx-8">
-        <div class="photo-strip">
-          <div id="strip-1" class="photo-strip-track go-left" style="--dur:38s"></div>
-        </div>
-        <div class="photo-strip">
-          <div id="strip-2" class="photo-strip-track go-right" style="--dur:44s"></div>
-        </div>
+      <div id="home-slideshow">
+        <div id="slide-progress"></div>
+        <div id="slide-track"></div>
+        <button id="slide-prev" class="slide-btn" onclick="slideshowNav(-1)">
+          <span class="material-symbols-outlined text-xl">chevron_left</span>
+        </button>
+        <button id="slide-next" class="slide-btn" onclick="slideshowNav(1)">
+          <span class="material-symbols-outlined text-xl">chevron_right</span>
+        </button>
+        <div id="slide-dots"></div>
+        <!-- Skeleton -->
+        <div id="slide-skeleton" style="position:absolute;inset:0;background:linear-gradient(90deg,#FFE8DC,#FFF3EC 50%,#FFE8DC);background-size:200% 100%;animation:shimmer 1.5s infinite;"></div>
       </div>
 
       <script>
@@ -617,53 +626,94 @@
           '/assets/img/galeria-05.jpg','/assets/img/galeria-06.jpg',
           '/assets/img/galeria-07.jpg'
         ];
+        var INTERVAL = 5000;
+        var slides = [], cur = 0, timer = null, paused = false;
 
         function shuffle(a) { for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;} return a; }
 
-        function buildStrips(srcs) {
+        function buildSlideshow(srcs) {
           if (!srcs.length) srcs = FALLBACK;
           shuffle(srcs);
-          var half = Math.ceil(srcs.length / 2);
-          var row1 = srcs.slice(0, half);
-          var row2 = srcs.slice(half);
-          if (row2.length < 3) row2 = srcs.slice();
-          fillStrip('strip-1', row1);
-          fillStrip('strip-2', row2);
-        }
+          slides = srcs.slice(0, 20); // máx 20 slides
+          var track = document.getElementById('slide-track');
+          var dots  = document.getElementById('slide-dots');
+          var skel  = document.getElementById('slide-skeleton');
+          if (skel) skel.remove();
 
-        function fillStrip(id, srcs) {
-          var track = document.getElementById(id);
-          if (!track) return;
-          var needed = Math.max(12, srcs.length);
-          var repeated = [];
-          while (repeated.length < needed) repeated = repeated.concat(srcs);
-          repeated = repeated.slice(0, needed);
-          var html = repeated.map(function(src) {
-            return '<img src="' + src + '" class="strip-photo" loading="lazy" alt="" onerror="this.style.display=\'none\'" />';
+          track.innerHTML = slides.map(function(src, i) {
+            return '<div class="slide' + (i===0?' active':'') + '"><img src="' + src + '" alt="" loading="' + (i<2?'eager':'lazy') + '" /></div>';
           }).join('');
-          track.innerHTML = html + html; // duplicate for infinite loop
+
+          dots.innerHTML = slides.map(function(_, i) {
+            return '<button class="slide-dot' + (i===0?' active':'') + '" onclick="slideshowGo(' + i + ')"></button>';
+          }).join('');
+
+          startTimer();
         }
 
-        // Try loading from galeria folders
+        function goTo(idx) {
+          var els   = document.querySelectorAll('.slide');
+          var dotEls= document.querySelectorAll('.slide-dot');
+          if (!els.length) return;
+          els[cur].classList.remove('active');
+          if (dotEls[cur]) dotEls[cur].classList.remove('active');
+          cur = (idx + slides.length) % slides.length;
+          els[cur].classList.add('active');
+          if (dotEls[cur]) dotEls[cur].classList.add('active');
+          resetProgress();
+        }
+
+        function resetProgress() {
+          var bar = document.getElementById('slide-progress');
+          if (!bar) return;
+          bar.style.transition = 'none';
+          bar.style.width = '0%';
+          requestAnimationFrame(function() {
+            requestAnimationFrame(function() {
+              bar.style.transition = 'width ' + INTERVAL + 'ms linear';
+              bar.style.width = '100%';
+            });
+          });
+        }
+
+        function startTimer() {
+          clearInterval(timer);
+          resetProgress();
+          timer = setInterval(function() { if (!paused) goTo(cur + 1); }, INTERVAL);
+        }
+
+        window.slideshowNav = function(dir) { goTo(cur + dir); };
+        window.slideshowGo  = function(idx) { goTo(idx); };
+
+        var box = document.getElementById('home-slideshow');
+        if (box) {
+          box.addEventListener('mouseenter', function() { paused = true; });
+          box.addEventListener('mouseleave', function() { paused = false; });
+          var tx = 0;
+          box.addEventListener('touchstart', function(e) { tx = e.touches[0].clientX; }, { passive:true });
+          box.addEventListener('touchend',   function(e) {
+            var dx = e.changedTouches[0].clientX - tx;
+            if (Math.abs(dx) > 40) goTo(cur + (dx < 0 ? 1 : -1));
+          }, { passive:true });
+        }
+
+        // Carga fotos reales
         fetch(BASE)
           .then(function(r) { return r.ok ? r.json() : []; })
           .then(function(listing) {
-            var dirs = listing.filter(function(e){ return e.type==='directory'; }).map(function(e){ return e.name.replace(/\/$/,''); });
+            var dirs  = listing.filter(function(e){ return e.type==='directory'; }).map(function(e){ return e.name.replace(/\/$/,''); });
             var files = listing.filter(function(e){ return e.type==='file' && IMG.test(e.name); }).map(function(e){ return BASE + encodeURIComponent(e.name); });
-            if (dirs.length === 0) { buildStrips(files); return; }
-            var all = files.slice();
-            var pending = dirs.length;
+            if (!dirs.length) { buildSlideshow(files); return; }
+            var all = files.slice(), pending = dirs.length;
             dirs.forEach(function(dir) {
               fetch(BASE + encodeURIComponent(dir) + '/')
                 .then(function(r){ return r.ok ? r.json() : []; })
-                .then(function(sub){
-                  sub.forEach(function(e){ if(e.type==='file' && IMG.test(e.name)) all.push(BASE + encodeURIComponent(dir) + '/' + encodeURIComponent(e.name)); });
-                })
+                .then(function(sub){ sub.forEach(function(e){ if(e.type==='file' && IMG.test(e.name)) all.push(BASE + encodeURIComponent(dir) + '/' + encodeURIComponent(e.name)); }); })
                 .catch(function(){})
-                .finally(function(){ if(--pending===0) buildStrips(all); });
+                .then(function(){ if(--pending===0) buildSlideshow(all); });
             });
           })
-          .catch(function() { buildStrips([]); });
+          .catch(function() { buildSlideshow([]); });
       })();
       </script>
 
