@@ -322,10 +322,10 @@
                 class="flex-1 text-center bg-[#FFD60A] text-[#2A2200] py-3 rounded-full text-sm font-black hover:bg-[#FFC800] transition-colors uppercase tracking-wide shadow-md shadow-[#FFD60A]/30">
                 Consultar
               </a>
-              <a href="/galeria.html"
-                class="flex-1 text-center bg-[#FFF5C2] text-[#6A5600] py-3 rounded-full text-sm font-bold hover:bg-[#FFE566] transition-colors uppercase tracking-wide border border-[#FFD60A]/40">
+              <button onclick="openFotoDrawer('CUMPLE PEQUES','Cumpleaños Infantil')"
+                class="flex-1 text-center bg-[#FFF5C2] text-[#6A5600] py-3 rounded-full text-sm font-bold hover:bg-[#FFE566] transition-colors uppercase tracking-wide border border-[#FFD60A]/40 cursor-pointer">
                 📸 Fotos
-              </a>
+              </button>
             </div>
           </div>
         </div>
@@ -356,10 +356,10 @@
                 class="flex-1 text-center bg-[#0099BF] text-white py-3 rounded-full text-sm font-black hover:bg-[#0075A0] transition-colors uppercase tracking-wide shadow-md shadow-[#0099BF]/30">
                 Consultar
               </a>
-              <a href="/galeria.html"
-                class="flex-1 text-center bg-[#CCF0FA] text-[#005F80] py-3 rounded-full text-sm font-bold hover:bg-[#7AD4EE] transition-colors uppercase tracking-wide border border-[#0099BF]/30">
+              <button onclick="openFotoDrawer('VARIOS','Fiesta Teens')"
+                class="flex-1 text-center bg-[#CCF0FA] text-[#005F80] py-3 rounded-full text-sm font-bold hover:bg-[#7AD4EE] transition-colors uppercase tracking-wide border border-[#0099BF]/30 cursor-pointer">
                 📸 Fotos
-              </a>
+              </button>
             </div>
           </div>
         </div>
@@ -395,10 +395,10 @@
                 class="flex-1 text-center bg-primary text-white py-3 rounded-full text-sm font-black hover:bg-primary-container transition-colors uppercase tracking-wide shadow-md shadow-primary/30">
                 Consultar
               </a>
-              <a href="/galeria.html"
-                class="flex-1 text-center bg-primary-fixed text-on-primary-fixed-variant py-3 rounded-full text-sm font-bold hover:bg-primary-fixed-dim transition-colors uppercase tracking-wide border border-primary/20">
+              <button onclick="openFotoDrawer('CUMPLES NOCHE','Cumpleaños de Noche')"
+                class="flex-1 text-center bg-primary-fixed text-on-primary-fixed-variant py-3 rounded-full text-sm font-bold hover:bg-primary-fixed-dim transition-colors uppercase tracking-wide border border-primary/20 cursor-pointer">
                 📸 Fotos
-              </a>
+              </button>
             </div>
           </div>
         </div>
@@ -429,10 +429,10 @@
                 class="flex-1 text-center bg-[#2EAA62] text-white py-3 rounded-full text-sm font-black hover:bg-[#1A8840] transition-colors uppercase tracking-wide shadow-md shadow-[#2EAA62]/30">
                 Consultar
               </a>
-              <a href="/galeria.html"
-                class="flex-1 text-center bg-[#C8F0DC] text-[#0A2D18] py-3 rounded-full text-sm font-bold hover:bg-[#80D4A8] transition-colors uppercase tracking-wide border border-[#2EAA62]/30">
+              <button onclick="openFotoDrawer('EGRESADITOS','Egresaditos')"
+                class="flex-1 text-center bg-[#C8F0DC] text-[#0A2D18] py-3 rounded-full text-sm font-bold hover:bg-[#80D4A8] transition-colors uppercase tracking-wide border border-[#2EAA62]/30 cursor-pointer">
                 📸 Fotos
-              </a>
+              </button>
             </div>
           </div>
         </div>
@@ -463,10 +463,10 @@
                 class="flex-1 text-center bg-[#7B5EA7] text-white py-3 rounded-full text-sm font-black hover:bg-[#5A3E88] transition-colors uppercase tracking-wide shadow-md shadow-[#7B5EA7]/30">
                 Consultar
               </a>
-              <a href="/galeria.html"
-                class="flex-1 text-center bg-[#EDE8F5] text-[#3A2070] py-3 rounded-full text-sm font-bold hover:bg-[#D4C8EC] transition-colors uppercase tracking-wide border border-[#7B5EA7]/30">
+              <button onclick="openFotoDrawer('EGRESADITOS','Egresados')"
+                class="flex-1 text-center bg-[#EDE8F5] text-[#3A2070] py-3 rounded-full text-sm font-bold hover:bg-[#D4C8EC] transition-colors uppercase tracking-wide border border-[#7B5EA7]/30 cursor-pointer">
                 📸 Fotos
-              </a>
+              </button>
             </div>
           </div>
         </div>
@@ -497,10 +497,10 @@
                 class="flex-1 text-center bg-[#FF8C20] text-white py-3 rounded-full text-sm font-black hover:bg-[#E06800] transition-colors uppercase tracking-wide shadow-md shadow-[#FF8C20]/30">
                 Consultar
               </a>
-              <a href="/galeria.html"
-                class="flex-1 text-center bg-[#FFEBD0] text-[#6A3A00] py-3 rounded-full text-sm font-bold hover:bg-[#FFD4A0] transition-colors uppercase tracking-wide border border-[#FF8C20]/30">
+              <button onclick="openFotoDrawer('CUMPLE PEQUES','Cumple de Tarde')"
+                class="flex-1 text-center bg-[#FFEBD0] text-[#6A3A00] py-3 rounded-full text-sm font-bold hover:bg-[#FFD4A0] transition-colors uppercase tracking-wide border border-[#FF8C20]/30 cursor-pointer">
                 📸 Fotos
-              </a>
+              </button>
             </div>
           </div>
         </div>
@@ -1147,6 +1147,201 @@
     fetchAvailability();
     fetchWeather();
 
+  })();
+  </script>
+
+  <!-- ── FOTO DRAWER ──────────────────────────────────────────────── -->
+  <div id="foto-drawer" class="fixed inset-0 z-[80] pointer-events-none">
+    <!-- Overlay -->
+    <div id="foto-drawer-overlay"
+         class="absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-300 cursor-pointer"
+         onclick="closeFotoDrawer()"></div>
+    <!-- Panel -->
+    <div id="foto-drawer-panel"
+         class="absolute top-0 right-0 w-full sm:w-[460px] h-full bg-white shadow-2xl translate-x-full transition-transform duration-300 flex flex-col">
+
+      <!-- Header -->
+      <div class="flex items-center justify-between px-5 py-4 border-b border-[#FFDACB]">
+        <div>
+          <p class="text-xs font-bold text-[#FF5C35] uppercase tracking-widest">Galería</p>
+          <h2 id="drawer-title" class="font-display font-black text-lg text-[#1A0F0A] uppercase leading-tight"></h2>
+        </div>
+        <button onclick="closeFotoDrawer()"
+                class="w-9 h-9 flex items-center justify-center rounded-xl bg-[#FFE8DC] hover:bg-[#FFDACB] transition-colors">
+          <span class="material-symbols-outlined text-[#FF5C35] text-xl">close</span>
+        </button>
+      </div>
+
+      <!-- Carousel area -->
+      <div class="relative flex-1 bg-[#1A0F0A] overflow-hidden">
+        <!-- Loading -->
+        <div id="drawer-loading" class="absolute inset-0 flex flex-col items-center justify-center gap-3">
+          <div class="w-10 h-10 border-4 border-[#FF5C35]/30 border-t-[#FF5C35] rounded-full animate-spin"></div>
+          <p class="text-white/50 text-sm font-semibold">Cargando fotos…</p>
+        </div>
+        <!-- Empty -->
+        <div id="drawer-empty" class="hidden absolute inset-0 flex flex-col items-center justify-center gap-3 px-8 text-center">
+          <span class="text-5xl">📸</span>
+          <p class="font-display font-black text-white uppercase text-lg">¡Fotos muy pronto!</p>
+          <p class="text-white/50 text-sm">Estamos cargando esta categoría.</p>
+        </div>
+        <!-- Media -->
+        <div id="drawer-media" class="hidden absolute inset-0 flex items-center justify-center">
+          <img id="drawer-img" src="" alt="" class="max-w-full max-h-full object-contain" />
+          <video id="drawer-vid" src="" controls playsinline class="hidden max-w-full max-h-full"></video>
+        </div>
+        <!-- Nav buttons -->
+        <button id="drawer-prev"
+                onclick="drawerNav(-1)"
+                class="hidden absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 hover:bg-[#FF5C35]/70 flex items-center justify-center transition-colors z-10">
+          <span class="material-symbols-outlined text-white text-2xl">chevron_left</span>
+        </button>
+        <button id="drawer-next"
+                onclick="drawerNav(1)"
+                class="hidden absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 hover:bg-[#FF5C35]/70 flex items-center justify-center transition-colors z-10">
+          <span class="material-symbols-outlined text-white text-2xl">chevron_right</span>
+        </button>
+        <!-- Counter -->
+        <div id="drawer-counter"
+             class="hidden absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/50 text-white/80 text-xs font-bold px-3 py-1 rounded-full font-display">
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="px-5 py-4 border-t border-[#FFDACB] flex items-center justify-between gap-3">
+        <p id="drawer-filename" class="text-xs text-[#5C3D2E]/60 truncate flex-1"></p>
+        <a href="/galeria.html"
+           class="flex-shrink-0 inline-flex items-center gap-1.5 bg-[#FF5C35] text-white px-4 py-2 rounded-full text-xs font-black uppercase hover:bg-[#e04a25] transition-colors font-display">
+          <span class="material-symbols-outlined text-[14px]">photo_library</span>
+          Ver todo
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function() {
+    var BASE_GAL = '/assets/img/galeria/';
+    var IMG_EXT = /\.(jpg|jpeg|png|gif|webp|avif)$/i;
+    var VID_EXT = /\.(mp4|mov|webm|ogg)$/i;
+    var drawerItems = [];
+    var drawerIdx = 0;
+
+    window.openFotoDrawer = function(folder, title) {
+      document.getElementById('drawer-title').textContent = title;
+      document.getElementById('drawer-loading').classList.remove('hidden');
+      document.getElementById('drawer-empty').classList.add('hidden');
+      document.getElementById('drawer-media').classList.add('hidden');
+      document.getElementById('drawer-prev').classList.add('hidden');
+      document.getElementById('drawer-next').classList.add('hidden');
+      document.getElementById('drawer-counter').classList.add('hidden');
+      document.getElementById('drawer-filename').textContent = '';
+
+      // Open panel
+      var drawer = document.getElementById('foto-drawer');
+      drawer.classList.remove('pointer-events-none');
+      document.getElementById('foto-drawer-overlay').style.opacity = '1';
+      document.getElementById('foto-drawer-panel').style.transform = 'translateX(0)';
+      document.body.style.overflow = 'hidden';
+
+      // Load photos from folder
+      var dirEnc = encodeURIComponent(folder);
+      fetch(BASE_GAL + dirEnc + '/')
+        .then(function(r) { return r.ok ? r.json() : []; })
+        .then(function(listing) {
+          drawerItems = [];
+          listing.forEach(function(entry) {
+            if (entry.type !== 'file') return;
+            var src = BASE_GAL + dirEnc + '/' + encodeURIComponent(entry.name);
+            if (IMG_EXT.test(entry.name)) drawerItems.push({ src: src, name: entry.name, isVideo: false });
+            else if (VID_EXT.test(entry.name)) drawerItems.push({ src: src, name: entry.name, isVideo: true });
+          });
+          document.getElementById('drawer-loading').classList.add('hidden');
+          if (drawerItems.length === 0) {
+            document.getElementById('drawer-empty').classList.remove('hidden');
+            return;
+          }
+          drawerIdx = 0;
+          showDrawerItem();
+        })
+        .catch(function() {
+          document.getElementById('drawer-loading').classList.add('hidden');
+          document.getElementById('drawer-empty').classList.remove('hidden');
+        });
+    };
+
+    window.closeFotoDrawer = function() {
+      stopDrawerVideo();
+      document.getElementById('foto-drawer-overlay').style.opacity = '0';
+      document.getElementById('foto-drawer-panel').style.transform = 'translateX(100%)';
+      setTimeout(function() {
+        document.getElementById('foto-drawer').classList.add('pointer-events-none');
+      }, 300);
+      document.body.style.overflow = '';
+    };
+
+    window.drawerNav = function(dir) {
+      stopDrawerVideo();
+      drawerIdx = (drawerIdx + dir + drawerItems.length) % drawerItems.length;
+      showDrawerItem();
+    };
+
+    function stopDrawerVideo() {
+      var vid = document.getElementById('drawer-vid');
+      vid.pause();
+      vid.src = '';
+    }
+
+    function showDrawerItem() {
+      var item = drawerItems[drawerIdx];
+      if (!item) return;
+
+      var img = document.getElementById('drawer-img');
+      var vid = document.getElementById('drawer-vid');
+
+      if (item.isVideo) {
+        img.classList.add('hidden');
+        vid.classList.remove('hidden');
+        vid.src = item.src;
+        vid.play().catch(function(){});
+      } else {
+        vid.classList.add('hidden');
+        vid.pause(); vid.src = '';
+        img.classList.remove('hidden');
+        img.src = item.src;
+        img.alt = item.name;
+      }
+
+      document.getElementById('drawer-media').classList.remove('hidden');
+      document.getElementById('drawer-filename').textContent = item.name;
+
+      var counter = document.getElementById('drawer-counter');
+      counter.textContent = (drawerIdx + 1) + ' / ' + drawerItems.length;
+      counter.classList.remove('hidden');
+
+      if (drawerItems.length > 1) {
+        document.getElementById('drawer-prev').classList.remove('hidden');
+        document.getElementById('drawer-next').classList.remove('hidden');
+      }
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', function(e) {
+      if (document.getElementById('foto-drawer').classList.contains('pointer-events-none')) return;
+      if (e.key === 'Escape') closeFotoDrawer();
+      if (e.key === 'ArrowLeft')  drawerNav(-1);
+      if (e.key === 'ArrowRight') drawerNav(1);
+    });
+
+    // Touch swipe
+    var swipeStartX = 0;
+    var panel = document.getElementById('foto-drawer-panel');
+    panel.addEventListener('touchstart', function(e) { swipeStartX = e.touches[0].clientX; }, { passive: true });
+    panel.addEventListener('touchend', function(e) {
+      var dx = e.changedTouches[0].clientX - swipeStartX;
+      if (Math.abs(dx) < 50) return;
+      drawerNav(dx < 0 ? 1 : -1);
+    }, { passive: true });
   })();
   </script>
 </body>
