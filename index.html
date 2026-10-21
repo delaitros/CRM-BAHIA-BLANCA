@@ -144,9 +144,10 @@
     <!-- Organic bottom edge -->
     <svg aria-hidden="true" focusable="false"
          class="absolute left-0 w-full pointer-events-none"
-         style="top:100%;height:22px;z-index:50;"
-         viewBox="0 0 1440 22" preserveAspectRatio="none">
-      <path d="M0,0 C180,22 360,4 540,16 C720,28 900,6 1080,14 C1260,22 1380,8 1440,12 L1440,0 Z"
+         style="top:calc(100% - 2px);height:26px;z-index:50;"
+         viewBox="0 0 1440 26" preserveAspectRatio="none">
+      <rect x="0" y="0" width="1440" height="4" fill="rgba(255,255,255,0.92)"/>
+      <path d="M0,4 C180,26 360,6 540,18 C720,30 900,8 1080,16 C1260,24 1380,10 1440,14 L1440,4 Z"
             fill="rgba(255,255,255,0.92)"/>
     </svg>
   </nav>
@@ -1512,10 +1513,13 @@
     .dot-deco>span:nth-child(3){animation:dotUp 2s ease-in-out infinite .6s;}
     .dot-deco>span:nth-child(4){animation:dotUp 2s ease-in-out infinite .9s;}
 
-    /* Organic fixed button shapes — asymmetric corners, no animation */
+    /* Organic shapes — buttons, badges, chips */
     .btn-blob  { border-radius: 32px 12px 28px 16px / 16px 28px 12px 32px !important; }
     .btn-blob-b{ border-radius: 12px 32px 16px 28px / 28px 16px 32px 12px !important; }
     .btn-blob-c{ border-radius: 28px 16px 32px 12px / 12px 32px 16px 28px !important; }
+    .btn-blob-d{ border-radius: 20px 36px 14px 30px / 30px 14px 36px 20px !important; }
+    .btn-blob-e{ border-radius: 36px 14px 30px 20px / 14px 30px 20px 36px !important; }
+    .btn-blob-f{ border-radius: 14px 28px 20px 36px / 36px 20px 28px 14px !important; }
     @media(prefers-reduced-motion:reduce){
       .dot-deco>span{animation:none!important;}
     }
@@ -1625,10 +1629,15 @@
       io.observe(el);
     });
 
-    /* ── Blob button shapes ── */
-    var blobVars=['btn-blob','btn-blob-b','btn-blob-c'];
-    document.querySelectorAll('a.rounded-full, button.rounded-full').forEach(function(btn,i){
-      btn.classList.add(blobVars[i%3]);
+    /* ── Blob shapes on all meaningful rounded elements ── */
+    var blobVars=['btn-blob','btn-blob-b','btn-blob-c','btn-blob-d','btn-blob-e','btn-blob-f'];
+    var blobIdx=0;
+    document.querySelectorAll('.rounded-full').forEach(function(el){
+      // skip tiny decorative dots (width < 40px) and blur overlays
+      if(el.offsetWidth < 40) return;
+      if(el.classList.contains('blur-3xl') || el.classList.contains('blur-xl')) return;
+      el.classList.add(blobVars[blobIdx%blobVars.length]);
+      blobIdx++;
     });
 
     /* ── Party interactions ── */
