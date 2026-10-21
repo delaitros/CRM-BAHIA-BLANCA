@@ -585,30 +585,87 @@
         <p class="text-on-surface-variant text-base max-w-xl mx-auto mt-3 font-medium">Así se vive una fiesta en Lo de Juan. <span class="font-bold text-on-surface">¡Tu evento puede ser el próximo!</span></p>
       </div>
 
-      <!-- Bento Grid -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 auto-rows-[180px] md:auto-rows-[220px]">
-        <div class="col-span-2 row-span-2 rounded-2xl overflow-hidden shadow-lg">
-          <img src="/assets/img/galeria-04.jpg" alt="Fiesta Infantil" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+      <!-- Auto-scroll strips -->
+      <style>
+        .photo-strip { overflow: hidden; width: 100%; -webkit-mask-image: linear-gradient(to right,transparent,black 8%,black 92%,transparent); mask-image: linear-gradient(to right,transparent,black 8%,black 92%,transparent); }
+        .photo-strip-track { display:flex; gap:12px; width:max-content; }
+        .photo-strip-track.go-left  { animation: stripLeft  var(--dur,40s) linear infinite; }
+        .photo-strip-track.go-right { animation: stripRight var(--dur,45s) linear infinite; }
+        .photo-strip:hover .photo-strip-track { animation-play-state:paused; }
+        @keyframes stripLeft  { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+        @keyframes stripRight { from{transform:translateX(-50%)} to{transform:translateX(0)} }
+        .strip-photo { height:190px; width:auto; min-width:160px; border-radius:18px; object-fit:cover; flex-shrink:0; box-shadow:0 4px 16px rgba(0,0,0,.12); }
+        .strip-video-thumb { height:190px; min-width:160px; border-radius:18px; object-fit:cover; flex-shrink:0; box-shadow:0 4px 16px rgba(0,0,0,.12); position:relative; display:inline-flex; align-items:center; justify-content:center; background:#1a0f0a; }
+      </style>
+
+      <div class="flex flex-col gap-3 -mx-4 sm:-mx-6 lg:-mx-8">
+        <div class="photo-strip">
+          <div id="strip-1" class="photo-strip-track go-left" style="--dur:38s"></div>
         </div>
-        <div class="rounded-2xl overflow-hidden shadow-lg">
-          <img src="/assets/img/galeria-06.jpg" alt="Salón" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
-        </div>
-        <div class="rounded-2xl overflow-hidden shadow-lg">
-          <img src="/assets/img/galeria-03.jpg" alt="Catering" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
-        </div>
-        <div class="col-span-2 rounded-2xl overflow-hidden shadow-lg">
-          <img src="/assets/img/galeria-01.jpg" alt="Juegos y Actividades" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
-        </div>
-        <div class="rounded-2xl overflow-hidden shadow-lg">
-          <img src="/assets/img/galeria-02.jpg" alt="Decoración" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
-        </div>
-        <div class="rounded-2xl overflow-hidden shadow-lg">
-          <img src="/assets/img/galeria-05.jpg" alt="Eventos" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
-        </div>
-        <div class="col-span-2 rounded-2xl overflow-hidden shadow-lg">
-          <img src="/assets/img/galeria-07.jpg" alt="Cumpleaños Temáticos" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+        <div class="photo-strip">
+          <div id="strip-2" class="photo-strip-track go-right" style="--dur:44s"></div>
         </div>
       </div>
+
+      <script>
+      (function() {
+        var BASE = '/assets/img/galeria/';
+        var IMG = /\.(jpg|jpeg|png|gif|webp|avif)$/i;
+        var FALLBACK = [
+          '/assets/img/galeria-01.jpg','/assets/img/galeria-02.jpg',
+          '/assets/img/galeria-03.jpg','/assets/img/galeria-04.jpg',
+          '/assets/img/galeria-05.jpg','/assets/img/galeria-06.jpg',
+          '/assets/img/galeria-07.jpg'
+        ];
+
+        function shuffle(a) { for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;} return a; }
+
+        function buildStrips(srcs) {
+          if (!srcs.length) srcs = FALLBACK;
+          shuffle(srcs);
+          var half = Math.ceil(srcs.length / 2);
+          var row1 = srcs.slice(0, half);
+          var row2 = srcs.slice(half);
+          if (row2.length < 3) row2 = srcs.slice();
+          fillStrip('strip-1', row1);
+          fillStrip('strip-2', row2);
+        }
+
+        function fillStrip(id, srcs) {
+          var track = document.getElementById(id);
+          if (!track) return;
+          var needed = Math.max(12, srcs.length);
+          var repeated = [];
+          while (repeated.length < needed) repeated = repeated.concat(srcs);
+          repeated = repeated.slice(0, needed);
+          var html = repeated.map(function(src) {
+            return '<img src="' + src + '" class="strip-photo" loading="lazy" alt="" onerror="this.style.display=\'none\'" />';
+          }).join('');
+          track.innerHTML = html + html; // duplicate for infinite loop
+        }
+
+        // Try loading from galeria folders
+        fetch(BASE)
+          .then(function(r) { return r.ok ? r.json() : []; })
+          .then(function(listing) {
+            var dirs = listing.filter(function(e){ return e.type==='directory'; }).map(function(e){ return e.name.replace(/\/$/,''); });
+            var files = listing.filter(function(e){ return e.type==='file' && IMG.test(e.name); }).map(function(e){ return BASE + encodeURIComponent(e.name); });
+            if (dirs.length === 0) { buildStrips(files); return; }
+            var all = files.slice();
+            var pending = dirs.length;
+            dirs.forEach(function(dir) {
+              fetch(BASE + encodeURIComponent(dir) + '/')
+                .then(function(r){ return r.ok ? r.json() : []; })
+                .then(function(sub){
+                  sub.forEach(function(e){ if(e.type==='file' && IMG.test(e.name)) all.push(BASE + encodeURIComponent(dir) + '/' + encodeURIComponent(e.name)); });
+                })
+                .catch(function(){})
+                .finally(function(){ if(--pending===0) buildStrips(all); });
+            });
+          })
+          .catch(function() { buildStrips([]); });
+      })();
+      </script>
 
       <!-- Gallery CTA -->
       <div class="text-center mt-10">
