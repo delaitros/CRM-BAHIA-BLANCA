@@ -1495,7 +1495,7 @@
   })();
   </script>
 
-  <!-- ── DOT DECORATION ──────────────────────────────────────────── -->
+  <!-- ── DOT DECORATION + BLOB BUTTONS ───────────────────────────── -->
   <style>
     @keyframes dotUp{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
     .dot-deco>span{display:inline-block;}
@@ -1503,7 +1503,30 @@
     .dot-deco>span:nth-child(2){animation:dotUp 2s ease-in-out infinite .3s;}
     .dot-deco>span:nth-child(3){animation:dotUp 2s ease-in-out infinite .6s;}
     .dot-deco>span:nth-child(4){animation:dotUp 2s ease-in-out infinite .9s;}
-    @media(prefers-reduced-motion:reduce){.dot-deco>span{animation:none;}}
+
+    /* Organic blob button shapes */
+    @keyframes blobA{
+      0%,100%{border-radius:44% 56% 62% 38%/55% 45% 55% 45%}
+      33%{border-radius:62% 38% 46% 54%/60% 44% 56% 40%}
+      66%{border-radius:38% 62% 55% 45%/45% 55% 48% 52%}
+    }
+    @keyframes blobB{
+      0%,100%{border-radius:60% 40% 55% 45%/48% 52% 60% 40%}
+      33%{border-radius:45% 55% 40% 60%/55% 45% 52% 48%}
+      66%{border-radius:52% 48% 62% 38%/40% 60% 45% 55%}
+    }
+    @keyframes blobC{
+      0%,100%{border-radius:38% 62% 45% 55%/52% 48% 55% 45%}
+      33%{border-radius:55% 45% 62% 38%/45% 55% 40% 60%}
+      66%{border-radius:48% 52% 38% 62%/60% 40% 52% 48%}
+    }
+    .btn-blob  {border-radius:44% 56% 62% 38%/55% 45% 55% 45% !important;animation:blobA 7s ease-in-out infinite;}
+    .btn-blob-b{border-radius:60% 40% 55% 45%/48% 52% 60% 40% !important;animation:blobB 8s ease-in-out infinite .8s;}
+    .btn-blob-c{border-radius:38% 62% 45% 55%/52% 48% 55% 45% !important;animation:blobC 6s ease-in-out infinite 1.4s;}
+    @media(prefers-reduced-motion:reduce){
+      .dot-deco>span,.btn-blob,.btn-blob-b,.btn-blob-c{animation:none!important;}
+      .btn-blob,.btn-blob-b,.btn-blob-c{border-radius:16px!important;}
+    }
   </style>
 
   <!-- ── SCROLL ANIMATIONS ────────────────────────────────────────── -->
@@ -1608,6 +1631,12 @@
 
     document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale,.reveal-fade').forEach(function(el){
       io.observe(el);
+    });
+
+    /* ── Blob button shapes ── */
+    var blobVars=['btn-blob','btn-blob-b','btn-blob-c'];
+    document.querySelectorAll('a.rounded-full, button.rounded-full').forEach(function(btn,i){
+      btn.classList.add(blobVars[i%3]);
     });
 
     /* ── Party interactions ── */
