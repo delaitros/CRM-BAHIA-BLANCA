@@ -802,7 +802,15 @@ function construirSystemPrompt(negocio) {
     })
     .join("\n");
 
+  const hoy = new Date().toLocaleDateString("es-AR", {
+    weekday: "long", year: "numeric", month: "long", day: "numeric",
+    timeZone: "America/Argentina/Buenos_Aires"
+  });
+
   return `Sos el asistente virtual de "${negocio.nombre}", ${negocio.rubro} en ${negocio.ubicacion}.
+
+## HOY
+Fecha actual: ${hoy}. Usala para calcular disponibilidad y fechas relativas (mañana, el próximo sábado, etc).
 
 ## NEGOCIO
 - Horario de atención: ${negocio.horario_atencion}
