@@ -192,6 +192,15 @@
     }
   ],
 
+  "datos_pago": {
+    "metodo": "transferencia",
+    "alias": "LODEJUAN.ALIAS",
+    "cbu": "",
+    "titular": "Lo de Juan",
+    "banco": "",
+    "telefono_comprobantes": "+54 9 2914 16-2814"
+  },
+
   "extras": [
     {
       "id": "rueda_hamster",
@@ -251,6 +260,12 @@
       "id": "dj_noche",
       "nombre": "DJ, Luces y Sonido (para Pack Silver que no lo incluye)",
       "precio_total": 400000,
+      "precio_por_persona": null
+    },
+    {
+      "id": "combo_3_adicionales",
+      "nombre": "COMBO 3 Adicionales a elección (Rueda Hámster, Tobogán Gigante, Circuito Multiaventura, Cuatris, Tobogán Acuático o Bowling Humano)",
+      "precio_total": 130000,
       "precio_por_persona": null
     }
   ]

@@ -531,9 +531,9 @@ const TOOLS = [
     }
   },
   {
-    name: "generar_link_pago",
+    name: "informar_datos_pago",
     description:
-      "Genera un link de pago de MercadoPago para cobrar la SENA y reservar la fecha. Usala SOLO cuando el cliente confirmo que quiere reservar. Devolve el link al cliente y explicale que al pagar la sena queda reservada la fecha y lo contacta una persona del equipo.",
+      "Informa al cliente los datos bancarios para transferir la SENA y reservar la fecha. Usala SOLO cuando el cliente confirmo que quiere reservar. Le das el monto de la sena, el alias/CBU para transferir y el numero de WhatsApp al que debe mandar el comprobante.",
     input_schema: {
       type: "object",
       properties: {
@@ -608,29 +608,25 @@ async function ejecutarVerificarDisponibilidad(input) {
     : `El ${fecha} está completo (todos los turnos ocupados).\n`) + lineas.join("\n");
 }
 
-async function ejecutarGenerarLinkPago(input, negocio) {
-  if (!MP_ACCESS_TOKEN)
-    return "MercadoPago no esta configurado. Deriva al cliente con un humano para coordinar el pago.";
+function ejecutarInformarDatosPago(input, negocio) {
   const p = calcularPresupuesto(input, negocio);
   if (!p) return "Error: servicio no encontrado.";
   const turnoInfo = input.turno && TURNOS[input.turno] ? ` ${TURNOS[input.turno].nombre}` : "";
-  const titulo = `Sena ${p.servicio.nombre} - ${input.fecha}${turnoInfo} (${p.personas} personas)`;
-  const link = await mpCrearPreferencia(
-    input._conversation_id,
-    titulo,
-    p.sena,
-    negocio
-  );
-  if (!link)
-    return "No se pudo generar el link de pago. Deriva al cliente con un humano.";
+  const dp = negocio.datos_pago || {};
+  const alias = dp.alias || "(alias pendiente)";
+  const cbu = dp.cbu || "";
+  const titular = dp.titular || negocio.nombre;
+  const telComprobantes = dp.telefono_comprobantes || "";
+  const cbuLinea = cbu ? `\nCBU: ${cbu}` : "";
   return (
-    `LINK DE PAGO GENERADO. Envialo al cliente con este texto:\n\n` +
-    `Para reservar${turnoInfo ? " el" + turnoInfo : " la fecha"} ${input.fecha} aboná la seña de ` +
+    `DATOS DE TRANSFERENCIA. Enviá al cliente este mensaje:\n\n` +
+    `Para reservar${turnoInfo ? " el" + turnoInfo : " la fecha"} ${input.fecha} transferí la seña de ` +
     `$${p.sena.toLocaleString("es-AR")} (${negocio.sena_porcentaje}% del total ` +
-    `$${p.total.toLocaleString("es-AR")}) desde este link seguro de MercadoPago:\n` +
-    `${link}\n\n` +
-    `Apenas se acredite el pago te contacta una persona del equipo para coordinar todos los detalles. ` +
-    `El link es valido y podes pagar con tarjeta, debito o dinero en cuenta.`
+    `$${p.total.toLocaleString("es-AR")}):\n\n` +
+    `🏦 Alias: ${alias}${cbuLinea}\n` +
+    `👤 Titular: ${titular}\n\n` +
+    `Una vez que hagas la transferencia, mandá el comprobante por WhatsApp al ${telComprobantes} ` +
+    `y en breve te confirma una persona del equipo que la fecha quedó reservada 🎉`
   );
 }
 
@@ -829,12 +825,17 @@ ${extras}
 - No inventes precios: usá las herramientas.
 - SOLO respondés sobre nuestro negocio: servicios, precios, disponibilidad, eventos y reservas. Si te preguntan sobre código, matemáticas, política, u otro tema que no sea del negocio, respondé amablemente que solo podés ayudar con consultas sobre nuestros servicios y eventos.
 
+## ADICIONALES (para infantil y egresaditos)
+Cuando cotizás eventos infantiles o egresaditos, ofrecé los ADICIONALES:
+- Individuales: $60.000 cada uno (Rueda de Hámster, Tobogán Gigante con Pelotas, Circuito Multiaventura, Cuatriciclos Eléctricos, Tobogán Acuático, Bowling Humano)
+- COMBO 3 adicionales a elección: $130.000 (conviene si quieren 3 o más)
+
 ## FLUJO DE VENTA (seguilo)
 1. Entendé qué evento quiere: tipo, cantidad de personas, fecha y turno.
 2. Si pregunta por una fecha: verificar_disponibilidad (con o sin turno específico). Mostrá qué turnos están disponibles.
-3. Mostrá el presupuesto con generar_presupuesto (incluye la seña).
-4. Si el cliente CONFIRMA que quiere reservar: usá generar_link_pago (con turno) y mandale el link de la seña. Explicále que al pagar queda reservado el turno y que después lo contacta una persona del equipo.
-5. NO digas que el pago está confirmado vos: la confirmación es automática. Después de mandar el link, seguí respondiendo dudas pero no presiones.
+3. Mostrá el presupuesto con generar_presupuesto (incluye la seña). Para infantil y egresaditos, ofrecé los ADICIONALES y el COMBO 3 x $130.000.
+4. Si el cliente CONFIRMA que quiere reservar: usá informar_datos_pago (con turno). Le das los datos para transferir la seña y le pedís que mande el comprobante al WhatsApp de comprobantes. Explicale que al confirmar el pago la fecha queda reservada y lo contacta una persona del equipo.
+5. NO digas que el pago está confirmado vos: lo confirma el equipo al recibir el comprobante. Después de dar los datos, seguí respondiendo dudas.
 6. Reclamos, casos raros o si pide una persona: derivar_humano.`;
 }
 
@@ -876,11 +877,8 @@ async function responderConClaude(historial, convId) {
           result = ejecutarGenerarPresupuesto(block.input, negocio);
         } else if (block.name === "verificar_disponibilidad") {
           result = await ejecutarVerificarDisponibilidad(block.input);
-        } else if (block.name === "generar_link_pago") {
-          result = await ejecutarGenerarLinkPago(
-            { ...block.input, _conversation_id: convId },
-            negocio
-          );
+        } else if (block.name === "informar_datos_pago") {
+          result = ejecutarInformarDatosPago(block.input, negocio);
         } else if (block.name === "derivar_humano") {
           result = await ejecutarDerivarHumano(block.input, convId);
         } else {
