@@ -795,7 +795,9 @@ function construirSystemPrompt(negocio) {
     .map((e) => {
       const precio = e.precio_total
         ? `$${e.precio_total.toLocaleString("es-AR")} (total)`
-        : `$${e.precio_por_persona.toLocaleString("es-AR")} por persona`;
+        : e.precio_por_persona
+          ? `$${e.precio_por_persona.toLocaleString("es-AR")} por persona`
+          : "a consultar";
       return `- ${e.nombre}: ${precio}`;
     })
     .join("\n");
