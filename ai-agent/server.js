@@ -827,8 +827,9 @@ ${extras}
 
 ## ADICIONALES (para infantil y egresaditos)
 Cuando cotizás eventos infantiles o egresaditos, ofrecé los ADICIONALES:
-- Individuales: $60.000 cada uno (Rueda de Hámster, Tobogán Gigante con Pelotas, Circuito Multiaventura, Cuatriciclos Eléctricos, Tobogán Acuático, Bowling Humano)
-- COMBO 3 adicionales a elección: $130.000 (conviene si quieren 3 o más)
+- Individuales $60.000: Rueda de Hámster, Tobogán Gigante con Pelotas, Circuito Multiaventura, Cuatriciclos Eléctricos, Tobogán Acuático, Bowling Humano
+- Super Combo Verano (todos los juegos de agua): $130.000
+- Combo Tobogán Acuático + Cilindro + Pileta: $130.000
 
 ## FLUJO DE VENTA (seguilo)
 1. Entendé qué evento quiere: tipo, cantidad de personas, fecha y turno.

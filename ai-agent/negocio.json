@@ -194,7 +194,7 @@
 
   "datos_pago": {
     "metodo": "transferencia",
-    "alias": "LODEJUAN.ALIAS",
+    "alias": "parquesinlimites",
     "cbu": "",
     "titular": "Lo de Juan",
     "banco": "",
@@ -241,7 +241,7 @@
     {
       "id": "combo_tobogan_pile",
       "nombre": "Tobogán Acuático + Cilindro + Pileta",
-      "precio_total": 100000,
+      "precio_total": 130000,
       "precio_por_persona": null
     },
     {
@@ -262,11 +262,5 @@
       "precio_total": 400000,
       "precio_por_persona": null
     },
-    {
-      "id": "combo_3_adicionales",
-      "nombre": "COMBO 3 Adicionales a elección (Rueda Hámster, Tobogán Gigante, Circuito Multiaventura, Cuatris, Tobogán Acuático o Bowling Humano)",
-      "precio_total": 130000,
-      "precio_por_persona": null
-    }
   ]
 }
