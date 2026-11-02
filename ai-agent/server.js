@@ -999,6 +999,16 @@ app.post("/webhook/chatwoot", (req, res) => {
       body.conversation && body.conversation.id ? body.conversation.id : null;
     if (!convId) return;
 
+    // Nota privada con /bot → resetear conversación a modo bot
+    if (body.private && body.content && body.content.trim() === "/bot") {
+      const est = leerEstado();
+      delete est.conversaciones[String(convId)];
+      guardarEstado(est);
+      chatwootNotaPrivada(convId, "✅ Conversación devuelta al bot.");
+      console.log(`[modo] Conv ${convId}: /bot → modo bot`);
+      return;
+    }
+
     // Mensaje saliente no privado: detectar si es de un agente humano (no del bot)
     const isOutgoing = body.message_type === "outgoing" || body.message_type === 1;
     if (isOutgoing && !body.private) {
