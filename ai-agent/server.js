@@ -549,7 +549,7 @@ const TOOLS = [
   {
     name: "derivar_humano",
     description:
-      "Deriva la conversacion a un agente humano y el bot deja de responder. Usala para reclamos, casos complejos o cuando el cliente lo pide explicitamente.",
+      "Deriva la conversacion a un agente humano y el bot deja de responder. Usala SOLO en estos casos: 1) El cliente pide EXPLICITAMENTE hablar con una persona. 2) El cliente tiene un reclamo o queja concreta. 3) El cliente ya confirmó que quiere reservar y pagó la seña. NO la uses si no entendés algo o si la consulta es inusual: en ese caso pedí más info al cliente.",
     input_schema: {
       type: "object",
       properties: { motivo: { type: "string" } },
@@ -839,7 +839,7 @@ Cuando cotizás eventos infantiles o egresaditos, ofrecé los ADICIONALES:
 3. Mostrá el presupuesto con generar_presupuesto (incluye la seña). Para infantil y egresaditos, ofrecé los ADICIONALES y el COMBO 3 x $130.000.
 4. Si el cliente CONFIRMA que quiere reservar: usá informar_datos_pago (con turno). Le das los datos para transferir la seña y le pedís que mande el comprobante al WhatsApp de comprobantes. Explicale que al confirmar el pago la fecha queda reservada y lo contacta una persona del equipo.
 5. NO digas que el pago está confirmado vos: lo confirma el equipo al recibir el comprobante. Después de dar los datos, seguí respondiendo dudas.
-6. Reclamos, casos raros o si pide una persona: derivar_humano.`;
+6. derivar_humano SOLO si: el cliente pide explícitamente una persona, tiene un reclamo concreto, o ya confirmó la reserva y pagó la seña. Si no entendés algo o la consulta es rara, pedí más información — nunca derives por incertidumbre.`;
 }
 
 // ── Loop de Claude ─────────────────────────────────────────────────────────
