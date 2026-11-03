@@ -348,12 +348,12 @@
 <script>
 // ---- DATA ----
 const TIPOS = [
-  {id:"infantil",     lbl:"Cumpleaños Infantil",    icon:"🎂", sub:"Para los más chicos, con juegos, animación y toda la diversión", grad:"from-[#FFD60A] to-[#FFA800]", acc:"#E8B800", light:"bg-[#FFF5C2]", badge:"3 Packs"},
-  {id:"teens",        lbl:"Fiesta Teens",            icon:"🕺", sub:"4 horas de diversión épica con pizza libre y música",           grad:"from-[#0099BF] to-[#0075A0]", acc:"#0099BF", light:"bg-[#CCF0FA]", badge:"Mín. 30"},
-  {id:"egresaditos",  lbl:"Egresaditos de Jardín",   icon:"🎓", sub:"El primer gran festejo con juegos, animación y diploma",        grad:"from-[#2EAA62] to-[#1A8A48]", acc:"#2EAA62", light:"bg-[#C8F0DC]", badge:"2 Packs"},
-  {id:"egresados",    lbl:"Egresados de 6° Grado",   icon:"🏆", sub:"4hs de diversión con DJ, menú y desafíos grupales",            grad:"from-[#FF5C35] to-[#CC3310]", acc:"#FF5C35", light:"bg-[#FFE8E0]", badge:"1 Pack"},
-  {id:"cumple_tarde", lbl:"Cumpleaños de Tarde",     icon:"☕", sub:"Merienda artesanal, petit desserts y mucha alegría",            grad:"from-[#9C54D4] to-[#7A3AB0]", acc:"#9C54D4", light:"bg-[#EDE0FF]", badge:"Mín. 30"},
-  {id:"cumple_noche", lbl:"Fiesta de Noche",         icon:"🌙", sub:"La noche es tuya — DJ, menú completo y opción barra libre",     grad:"from-[#1A1A2E] to-[#16213E]", acc:"#0099BF", light:"bg-[#CCF0FA]", badge:"Mín. 50"},
+  {id:"infantil",     lbl:"Cumpleaños Infantil",    icon:"🎂", sub:"Para los más chicos, con juegos, animación y toda la diversión", grad:"from-[#FFD60A] to-[#FFA800]", acc:"#E8B800", light:"#FFF5C2", badge:"3 Packs"},
+  {id:"teens",        lbl:"Fiesta Teens",            icon:"🕺", sub:"4 horas de diversión épica con pizza libre y música",           grad:"from-[#0099BF] to-[#0075A0]", acc:"#0099BF", light:"#CCF0FA", badge:"Mín. 30"},
+  {id:"egresaditos",  lbl:"Egresaditos de Jardín",   icon:"🎓", sub:"El primer gran festejo con juegos, animación y diploma",        grad:"from-[#2EAA62] to-[#1A8A48]", acc:"#2EAA62", light:"#C8F0DC", badge:"2 Packs"},
+  {id:"egresados",    lbl:"Egresados de 6° Grado",   icon:"🏆", sub:"4hs de diversión con DJ, menú y desafíos grupales",            grad:"from-[#FF5C35] to-[#CC3310]", acc:"#FF5C35", light:"#FFE8E0", badge:"1 Pack"},
+  {id:"cumple_tarde", lbl:"Cumpleaños de Tarde",     icon:"☕", sub:"Merienda artesanal, petit desserts y mucha alegría",            grad:"from-[#FF8C20] to-[#E06800]",  acc:"#FF8C20", light:"#FFF0DC", badge:"Mín. 30"},
+  {id:"cumple_noche", lbl:"Fiesta de Noche",         icon:"🌙", sub:"La noche es tuya — DJ, menú completo y opción barra libre",     grad:"from-[#1A1A2E] to-[#16213E]", acc:"#0099BF", light:"#CCF0FA", badge:"Mín. 50"},
 ];
 
 const SERVICIOS = [
@@ -592,27 +592,35 @@ function step1(c){
     const packs=SERVICIOS.filter(s=>s.cat===t.id);
     const fromPrice=packs.reduce((min,s)=>{const p=s.pt||(s.pp*(s.min||30));return p<min?p:min;},Infinity);
     const tile=document.createElement('div');
-    tile.className=`service-card ctile rounded-3xl overflow-hidden shadow-md border-2 ${S.tipo===t.id?'border-primary on':'border-transparent'}`;
+    tile.className=`service-card ctile rounded-3xl overflow-hidden shadow-md border-2 ${S.tipo===t.id?'on':'border-transparent'} flex flex-col`;
+    tile.style.borderColor = S.tipo===t.id ? t.acc : 'transparent';
     tile.innerHTML=`
       <div class="bg-gradient-to-br ${t.grad} px-6 pt-7 pb-5">
         <div class="flex items-center justify-between mb-3">
           <span class="text-4xl">${t.icon}</span>
           <div class="flex items-center gap-2">
-            <span class="bg-white/25 text-white text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full">${t.badge}</span>
-            <div class="ck w-6 h-6 bg-white rounded-full flex items-center justify-center">
+            <span class="bg-white/30 text-white text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full">${t.badge}</span>
+            <div class="ck w-6 h-6 bg-white rounded-full flex items-center justify-center flex-shrink-0">
               <span class="material-symbols-outlined text-primary text-[14px]">check</span>
             </div>
           </div>
         </div>
         <h3 class="font-headline text-xl font-black text-white uppercase tracking-tight">${t.lbl}</h3>
-        <p class="text-white/80 text-sm mt-1 font-medium">${t.sub}</p>
+        <p class="text-white/85 text-sm mt-1 font-medium">${t.sub}</p>
       </div>
-      <div class="bg-white flex-1 px-6 py-4 flex items-center justify-between">
-        <div>
-          <div class="text-xs text-on-surface-variant font-semibold">Desde</div>
-          <div class="font-headline font-black text-lg leading-none" style="color:${t.acc}">$${fmt(fromPrice)}</div>
+      <div class="bg-white flex-1 px-6 py-5 flex flex-col">
+        <div class="flex items-end gap-1.5 mb-4">
+          <span class="font-headline text-3xl font-black leading-none" style="color:${t.acc}">$${fmt(fromPrice)}</span>
+          <div class="text-xs text-on-surface-variant font-semibold leading-tight pb-0.5">desde<br>total</div>
         </div>
-        <span class="text-xs font-bold text-on-surface-variant flex items-center gap-1 hover:text-primary transition-colors">Ver packs <span class="material-symbols-outlined text-[14px]">arrow_forward</span></span>
+        <ul class="space-y-2 text-sm text-on-surface-variant mb-5 flex-1">
+          ${packs.slice(0,4).map(p=>`<li class="flex items-start gap-2"><span class="font-black mt-0.5" style="color:${t.acc}">✦</span> ${p.nom}</li>`).join('')}
+        </ul>
+        <div class="flex gap-2">
+          <button class="flex-1 text-center text-white py-3 rounded-full text-sm font-black hover:opacity-90 transition-all uppercase tracking-wide shadow-md" style="background:${t.acc};box-shadow:0 4px 12px -2px ${t.acc}66">
+            Ver packs →
+          </button>
+        </div>
       </div>
     `;
     tile.addEventListener('click',()=>{S.tipo=t.id;S.serv=null;S.extras=[];goTo(2);});
@@ -630,32 +638,42 @@ function step2(c){
   wrap.appendChild(backBtn(1));
   const grid=document.createElement('div');grid.className='grid grid-cols-1 sm:grid-cols-2 gap-6';
   packs.forEach(s=>{
-    const pl=s.pt?{main:'$'+fmt(s.pt),sub:'total'}:s.pp?{main:'$'+fmt(s.pp),sub:'/persona'}:{main:'A consultar',sub:''};
+    const pl=s.pt?{main:'$'+fmt(s.pt),sub:'desde<br>total'}:s.pp?{main:'$'+fmt(s.pp),sub:'desde<br>/persona'}:{main:'A consultar',sub:''};
     const tile=document.createElement('div');
-    tile.className=`service-card ctile rounded-3xl overflow-hidden shadow-md border-2 ${S.serv===s.id?'border-primary on':'border-[rgba(0,0,0,.06)]'}`;
+    tile.className=`service-card ctile relative rounded-3xl overflow-hidden shadow-md border-2 flex flex-col`;
+    tile.style.borderColor = S.serv===s.id ? t.acc : s.dest ? t.acc+'66' : 'rgba(0,0,0,.06)';
+    if(s.dest) tile.style.boxShadow='0 8px 30px -6px '+t.acc+'44';
     tile.innerHTML=`
-      <div class="bg-gradient-to-br ${t.grad} px-6 pt-6 pb-5">
-        <div class="flex items-start justify-between mb-2">
-          <div>
-            ${s.dest?`<span class="inline-block bg-white/25 text-white text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full mb-2">⭐ Más elegido</span><br/>`:''}
-            <h3 class="font-headline text-lg font-black text-white uppercase tracking-tight">${s.nom}</h3>
-          </div>
-          <div class="ck w-7 h-7 bg-white rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-            <span class="material-symbols-outlined text-primary text-[16px]">check</span>
+      ${s.dest?`<div class="absolute top-0 right-0"><div class="text-white text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-bl-2xl" style="background:${t.acc}">⭐ Más elegido</div></div>`:''}
+      <div class="bg-gradient-to-br ${t.grad} px-6 pt-7 pb-5">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-4xl">${t.icon}</span>
+          <div class="flex items-center gap-2">
+            ${s.min?`<span class="bg-white/25 text-white text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full">Mín. ${s.min}</span>`:''}
+            <div class="ck w-7 h-7 bg-white rounded-full flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-primary text-[16px]">check</span>
+            </div>
           </div>
         </div>
+        <h3 class="font-headline text-xl font-black text-white uppercase tracking-tight">${s.nom}</h3>
       </div>
-      <div class="bg-white px-6 py-5 flex-1">
+      <div class="bg-white flex-1 px-6 py-5 flex flex-col">
         <div class="flex items-end gap-1.5 mb-4">
           <span class="font-headline text-3xl font-black leading-none" style="color:${t.acc}">${pl.main}</span>
-          <span class="text-xs text-on-surface-variant font-semibold pb-0.5">${pl.sub}</span>
+          <div class="text-xs text-on-surface-variant font-semibold leading-tight pb-0.5">${pl.sub}</div>
         </div>
-        ${s.min?`<div class="text-xs text-on-surface-variant mb-3 font-semibold">Mínimo ${s.min} personas</div>`:''}
-        <ul class="space-y-2 mb-4">
-          ${s.inc.map(i=>`<li class="flex items-start gap-2 text-sm text-on-surface-variant"><span class="font-black mt-0.5" style="color:${t.acc}">✦</span>${i}</li>`).join('')}
-          ${s.ni?`<li class="flex items-start gap-2 text-sm text-on-surface-variant/60"><span class="font-black mt-0.5 text-primary">✗</span>${s.ni}</li>`:''}
+        <ul class="space-y-2 text-sm text-on-surface-variant mb-5 flex-1">
+          ${s.inc.map(i=>`<li class="flex items-start gap-2"><span class="font-black mt-0.5" style="color:${t.acc}">✦</span>${i}</li>`).join('')}
+          ${s.ni?`<li class="flex items-start gap-2 text-on-surface-variant/60"><span class="font-black mt-0.5 text-primary">✗</span>${s.ni}</li>`:''}
         </ul>
-        <div class="w-full py-2.5 rounded-full text-center text-sm font-black uppercase tracking-wide text-white transition-all" style="background:${t.acc}">Elegir este pack →</div>
+        <div class="flex gap-2">
+          <button class="flex-1 text-center text-white py-3 rounded-full text-sm font-black hover:opacity-90 transition-colors uppercase tracking-wide shadow-md" style="background:${t.acc};box-shadow:0 4px 12px -2px ${t.acc}55">
+            Elegir pack
+          </button>
+          <button class="flex-1 text-center py-3 rounded-full text-sm font-bold transition-colors uppercase tracking-wide border" style="background:${t.light||'#f5f5f5'};color:${t.acc};border-color:${t.acc}40">
+            📋 Incluye
+          </button>
+        </div>
       </div>
     `;
     tile.addEventListener('click',()=>{S.serv=s.id;S.pax=Math.max(S.pax,s.min||1);goTo(3);});
