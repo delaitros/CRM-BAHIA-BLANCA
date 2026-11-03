@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cotizador — Lo de Juan</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Manrope:wght@400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#FF5C35",
+            "primary-container": "#FF7A5A",
+            "on-primary": "#ffffff",
+            "primary-fixed": "#FFE8E0",
+            "primary-fixed-dim": "#FFB8A0",
+            "secondary": "#0099BF",
+            "secondary-container": "#00B4DC",
+            "on-secondary": "#ffffff",
+            "secondary-fixed": "#CCF0FA",
+            "tertiary": "#E8B800",
+            "tertiary-container": "#FFD60A",
+            "on-tertiary": "#2A2200",
+            "success": "#2EAA62",
+            "success-container": "#52C882",
+            "on-success": "#ffffff",
+            "success-fixed": "#C8F0DC",
+            "background": "#FFFDF5",
+            "on-background": "#1A1712",
+            "surface": "#FFFDF5",
+            "on-surface": "#1A1712",
+            "surface-bright": "#FFFFFF",
+            "surface-container-lowest": "#FFFFFF",
+            "surface-container-low": "#FFF8EC",
+            "surface-container": "#FFF0D5",
+            "surface-container-high": "#FFE8BE",
+            "surface-container-highest": "#FFDFAA",
+            "surface-variant": "#FFE8BE",
+            "on-surface-variant": "#4A3A1E",
+            "outline": "#7A6848",
+            "outline-variant": "#D4C5A0",
+          },
+          fontFamily: {
+            "headline": ["Nunito", "Manrope", "sans-serif"],
+            "display": ["Pacifico", "cursive"],
+            "body": ["Manrope", "sans-serif"],
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: 'Manrope', sans-serif; background: #FFFDF5; }
+
+    /* ---- Password screen ---- */
+    #lockScreen {
+      position: fixed; inset: 0; z-index: 9999;
+      background: linear-gradient(135deg, #FF5C35 0%, #FF8C5A 40%, #FFD60A 100%);
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    #lockScreen.out { opacity: 0; transform: scale(1.04); pointer-events: none; }
+
+    /* ---- Blob bg ---- */
+    .blob-bg { position: absolute; border-radius: 60% 40% 70% 30% / 50% 60% 40% 50%; filter: blur(60px); opacity: 0.25; pointer-events: none; }
+
+    /* ---- Step card ---- */
+    .step-card { animation: slideUp 0.45s cubic-bezier(.22,1,.36,1) both; }
+    @keyframes slideUp { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:translateY(0); } }
+
+    /* ---- Choice tile ---- */
+    .choice-tile {
+      cursor: pointer; border: 2px solid transparent;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+      background: #fff;
+    }
+    .choice-tile:hover { transform: translateY(-3px); box-shadow: 0 8px 24px -6px rgba(255,92,53,.25); }
+    .choice-tile.selected { border-color: #FF5C35; box-shadow: 0 0 0 4px rgba(255,92,53,.12); }
+    .choice-tile.selected .tile-check { opacity: 1; transform: scale(1); }
+    .tile-check { opacity: 0; transform: scale(0.6); transition: opacity .2s, transform .2s; }
+
+    /* ---- Extra toggle ---- */
+    .extra-card {
+      cursor: pointer; border: 2px solid #D4C5A0;
+      transition: border-color .2s, background .2s, transform .2s;
+    }
+    .extra-card:hover { transform: translateY(-2px); }
+    .extra-card.selected { border-color: #2EAA62; background: #f0fbf5; }
+    .extra-card .extra-check { opacity: 0; transform: scale(.7); transition: opacity .2s, transform .2s; }
+    .extra-card.selected .extra-check { opacity: 1; transform: scale(1); }
+
+    /* ---- Progress bar ---- */
+    .progress-fill { transition: width .5s cubic-bezier(.22,1,.36,1); }
+
+    /* ---- Quantity btn ---- */
+    .qty-btn { width: 40px; height: 40px; border-radius: 50%; display:flex;align-items:center;justify-content:center; font-size:1.3rem; font-weight:800; cursor:pointer; transition: background .2s, transform .1s; }
+    .qty-btn:hover { transform: scale(1.1); }
+    .qty-btn:active { transform: scale(.95); }
+
+    /* ---- Confetti ---- */
+    .confetti-piece { position: fixed; width: 10px; height: 10px; border-radius: 2px; animation: confettiFall linear forwards; pointer-events: none; }
+    @keyframes confettiFall {
+      0%   { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* ---- Summary price tag ---- */
+    .price-tag { background: linear-gradient(135deg, #FF5C35, #FF8C5A); color:#fff; border-radius: 16px 4px 16px 4px; }
+
+    /* ---- WA Button pulse ---- */
+    .wa-btn { animation: waPulse 2.5s ease-in-out infinite; }
+    @keyframes waPulse {
+      0%,100% { box-shadow: 0 6px 30px -4px rgba(37,211,102,.5); }
+      50% { box-shadow: 0 10px 40px -4px rgba(37,211,102,.8); }
+    }
+
+    /* ---- Avail badge ---- */
+    .avail-badge { transition: all .3s; }
+
+    /* ---- Input focus ---- */
+    input[type="date"]:focus, input[type="text"]:focus, input[type="password"]:focus { outline: 2px solid #FF5C35; outline-offset: 2px; }
+
+    /* ---- Mobile safe area ---- */
+    .safe-bottom { padding-bottom: max(1.5rem, env(safe-area-inset-bottom)); }
+  </style>
+</head>
+<body class="font-body bg-background text-on-background antialiased min-h-screen">
+
+<!-- ===== LOCK SCREEN ===== -->
+<div id="lockScreen">
+  <!-- Blobs -->
+  <div class="blob-bg w-80 h-80 bg-white" style="top:-10%;left:-10%;"></div>
+  <div class="blob-bg w-96 h-96 bg-yellow-300" style="bottom:-15%;right:-10%;"></div>
+
+  <div class="relative z-10 w-full max-w-sm mx-auto px-6 text-center">
+    <img src="/assets/img/LogoLoDeJuan.png" alt="Lo de Juan" class="h-24 w-auto mx-auto mb-6 drop-shadow-xl" />
+    <h1 class="font-display text-white text-3xl mb-1" style="text-shadow:0 2px 8px rgba(0,0,0,.18)">Cotizador</h1>
+    <p class="text-white/80 text-sm mb-8 font-medium">Acceso privado — ingresá la contraseña</p>
+
+    <div class="bg-white/20 backdrop-blur-md rounded-2xl p-6 shadow-2xl border border-white/30">
+      <input id="pwInput" type="password" placeholder="Contraseña" autocomplete="current-password"
+        class="w-full px-4 py-3.5 rounded-xl bg-white/90 text-on-surface font-semibold text-base placeholder-on-surface-variant/60 focus:outline-none border-2 border-transparent focus:border-primary transition-all mb-3" />
+      <div id="pwError" class="text-white font-semibold text-sm mb-3 hidden">❌ Contraseña incorrecta</div>
+      <button id="pwBtn" onclick="checkPassword()"
+        class="w-full py-3.5 bg-white text-primary font-bold text-base rounded-xl hover:bg-primary-fixed transition-all shadow-lg active:scale-95">
+        Ingresar →
+      </button>
+    </div>
+    <p class="text-white/50 text-xs mt-6">© Lo de Juan · Bahía Blanca</p>
+  </div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div id="app" class="hidden min-h-screen">
+
+  <!-- Nav bar -->
+  <nav class="bg-white shadow-sm sticky top-0 z-40">
+    <div class="max-w-2xl mx-auto px-4 h-16 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2">
+        <img src="/assets/img/LogoLoDeJuan.png" alt="Lo de Juan" class="h-10 w-auto" />
+      </a>
+      <span class="font-headline font-bold text-primary text-sm uppercase tracking-wide">Cotizador</span>
+      <button onclick="resetWizard()" class="text-xs text-on-surface-variant hover:text-primary flex items-center gap-1 transition-colors">
+        <span class="material-symbols-outlined text-[16px]">refresh</span>
+        Reiniciar
+      </button>
+    </div>
+  </nav>
+
+  <!-- Progress bar -->
+  <div class="bg-surface-container-low">
+    <div class="max-w-2xl mx-auto px-4 pt-4 pb-3">
+      <div class="flex items-center justify-between mb-2">
+        <span id="stepLabel" class="text-xs font-bold text-primary uppercase tracking-widest"></span>
+        <span id="stepCounter" class="text-xs text-on-surface-variant font-medium"></span>
+      </div>
+      <div class="h-2 bg-outline-variant/30 rounded-full overflow-hidden">
+        <div id="progressBar" class="progress-fill h-full bg-gradient-to-r from-primary to-tertiary-container rounded-full" style="width:0%"></div>
+      </div>
+      <!-- Step dots -->
+      <div class="flex items-center justify-between mt-2">
+        <div id="stepDots" class="flex gap-1.5 w-full justify-between px-1"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wizard container -->
+  <div class="max-w-2xl mx-auto px-4 py-6 safe-bottom" id="wizardContainer"></div>
+
+</div>
+
+<!-- ===== CONFETTI CONTAINER ===== -->
+<div id="confettiContainer" class="pointer-events-none fixed inset-0 z-[9000] overflow-hidden"></div>
+
+<script>
+// ============================================================
+// DATA (from negocio.json)
+// ============================================================
+const NEGOCIO = {
+  sena_porcentaje: 40,
+  alias: "parquesinlimites",
+  titular: "Lo de Juan",
+  telefono_comprobantes: "+54 9 2914 16-2814",
+  wa_bot: "5492915773859"
+};
+
+const TIPOS = [
+  { id:"infantil",      label:"Cumple Infantil",       icon:"🎈", desc:"Para los más chiquitos" },
+  { id:"teens",         label:"Teens Party",            icon:"🎉", desc:"De 12 a 17 años" },
+  { id:"egresaditos",   label:"Egresaditos de Jardín",  icon:"🎓", desc:"El primer gran festejo" },
+  { id:"egresados",     label:"Egresados 6° Grado",     icon:"🏆", desc:"El fin de una etapa" },
+  { id:"cumple_tarde",  label:"Cumpleaños de Tarde",    icon:"☕", desc:"Merienda y celebración" },
+  { id:"cumple_noche",  label:"Fiesta de Noche",        icon:"🌙", desc:"La noche es tuya" },
+];
+
+const SERVICIOS = [
+  { id:"infantil_pack_aventura",    cat:"infantil",     nombre:"Pack Aventura",                 precio_total:450000, precio_pp:null,  min:null, incluye:"3hs de cumple, invitaciones virtuales, animación, ayudante, piñata, castillo inflable, metegol, mangrullo, plaza blanda, sala de baile y acrobacia", no_incluye:"Comida (la trae el cliente)" },
+  { id:"infantil_pack_full",        cat:"infantil",     nombre:"Pack Full",                     precio_total:690000, precio_pp:null,  min:null, incluye:"Todo del Pack Aventura + MENÚ 25 peques: snacks, patitas, pizza y bebida", no_incluye:null },
+  { id:"infantil_pack_experiencia", cat:"infantil",     nombre:"Pack Experiencia Lo de Juan",   precio_total:790000, precio_pp:null,  min:null, incluye:"Todo del Pack Full + Circuito Multiaventura + Mega Inflable", no_incluye:null, destacado:true },
+  { id:"teens_pack_fun",            cat:"teens",        nombre:"Pack Fun",                      precio_total:550000, precio_pp:null,  min:null, incluye:"4hs, personal, vajilla, baños, coordinación", no_incluye:"Comida, bebida, DJ y sonido" },
+  { id:"teens_pack_night",          cat:"teens",        nombre:"Pack Night",                    precio_total:null,   precio_pp:29000, min:30,   incluye:"4hs, DJ, sonido, menú pizza libre, gaseosas y aguas", no_incluye:null },
+  { id:"teens_pack_ultimate",       cat:"teens",        nombre:"Pack Ultimate (con Flúor)",     precio_total:null,   precio_pp:39000, min:30,   incluye:"Todo del Night + Barra sin alcohol + Fiesta Flúor", no_incluye:null, destacado:true },
+  { id:"egresaditos_con_menu",      cat:"egresaditos",  nombre:"Con Menú Incluido",             precio_total:null,   precio_pp:34000, min:null, incluye:"4hs, juegos al aire libre, multiaventura, tobogán, bowling, animación. MENÚ: pizza, bebida, helado", no_incluye:null, destacado:true },
+  { id:"egresaditos_sin_menu",      cat:"egresaditos",  nombre:"Sin Menú (canasta propia)",     precio_total:null,   precio_pp:29000, min:null, incluye:"4hs, juegos al aire libre, multiaventura, tobogán, bowling, animación, diploma", no_incluye:"Comida (la trae la familia)" },
+  { id:"egresados_6_grado",         cat:"egresados",    nombre:"Egresados de 6° Grado",         precio_total:null,   precio_pp:40000, min:null, incluye:"4hs, DJ, baile, desafíos, menú pizza libre, gaseosas y helado", no_incluye:null },
+  { id:"cumple_tarde_merienda",     cat:"cumple_tarde", nombre:"Pack Merienda",                  precio_total:null,   precio_pp:40000, min:30,   incluye:"4hs, personal, vajilla, baños. MENÚ: mini sándwiches, chipá, muffins, shots, petit desserts, café, té, gaseosas", no_incluye:null },
+  { id:"cumple_noche_premium",      cat:"cumple_noche", nombre:"Pack Premium (con Barra Libre)", precio_total:null,   precio_pp:99000, min:50,   incluye:"21:30–04:00, DJ, menú completo, vinos en cena + BARRA LIBRE: cerveza, Fernet, Gin, Campari", no_incluye:null, destacado:true },
+  { id:"cumple_noche_gold",         cat:"cumple_noche", nombre:"Pack Gold (sin Barra Libre)",    precio_total:null,   precio_pp:79000, min:50,   incluye:"21:30–04:00, DJ, menú completo, vinos en cena", no_incluye:"Barra libre de alcohólicos" },
+  { id:"cumple_noche_silver",       cat:"cumple_noche", nombre:"Pack Silver (Salón Solo)",       precio_total:1600000, precio_pp:null, min:50,  incluye:"21:30–04:00, personal, vajilla, DJ/luces/sonido. Sin menú.", no_incluye:"Comida y bebida (la trae el cliente)" },
+];
+
+const EXTRAS_POR_TIPO = {
+  infantil:    ["rueda_hamster","tobogan_pelotas","circuito_multiaventura","cuatris","tobogan_acuatico","bowling_humano","combo_tobogan_pile","super_combo_verano"],
+  egresaditos: ["rueda_hamster","tobogan_pelotas","circuito_multiaventura","cuatris","tobogan_acuatico","bowling_humano","combo_tobogan_pile","super_combo_verano"],
+  teens:       ["barra_tragos","dj_noche"],
+  egresados:   ["barra_tragos"],
+  cumple_tarde:["barra_tragos"],
+  cumple_noche:["barra_tragos","dj_noche"],
+};
+
+const EXTRAS = [
+  { id:"rueda_hamster",         nombre:"Rueda de Hámster",                icon:"🐹", precio_total:60000,  precio_pp:null },
+  { id:"tobogan_pelotas",       nombre:"Tobogán Gigante con Pelotas",     icon:"🎿", precio_total:60000,  precio_pp:null },
+  { id:"circuito_multiaventura",nombre:"Circuito Multiaventura",          icon:"🧗", precio_total:60000,  precio_pp:null },
+  { id:"cuatris",               nombre:"Cuatriciclos Eléctricos",         icon:"⚡", precio_total:60000,  precio_pp:null },
+  { id:"tobogan_acuatico",      nombre:"Tobogán Acuático",                icon:"💧", precio_total:60000,  precio_pp:null },
+  { id:"bowling_humano",        nombre:"Bowling Humano",                  icon:"🎳", precio_total:50000,  precio_pp:null },
+  { id:"combo_tobogan_pile",    nombre:"Tobogán + Cilindro + Pileta",     icon:"🌊", precio_total:130000, precio_pp:null, combo:true },
+  { id:"super_combo_verano",    nombre:"Super Combo Verano (todos los juegos de agua)", icon:"☀️", precio_total:130000, precio_pp:null, combo:true },
+  { id:"barra_tragos",          nombre:"Barra de Tragos",                 icon:"🍹", precio_total:null,   precio_pp:null, aConsultar:true },
+  { id:"dj_noche",              nombre:"DJ, Luces y Sonido (Pack Silver)", icon:"🎧", precio_total:400000, precio_pp:null },
+];
+
+const TURNOS = {
+  manana: { label:"Turno Medio Día", hora:"11:30 – 15:30" },
+  tarde:  { label:"Turno Tarde",     hora:"16:30 – 20:30" },
+  noche:  { label:"Turno Noche",     hora:"21:30 – 04:00" },
+};
+
+// ============================================================
+// STATE
+// ============================================================
+let state = {
+  step: 1,
+  tipo: null,
+  servicio: null,
+  personas: 30,
+  fecha: "",
+  turno: null,
+  extras: [],
+  disponibilidad: null,
+  checkingDisp: false,
+};
+
+const TOTAL_STEPS = 5;
+const STEP_LABELS = ["Tipo de Evento","Elegí tu Pack","Fecha y Personas","Adicionales","Resumen"];
+
+// ============================================================
+// PASSWORD
+// ============================================================
+function checkPassword() {
+  const val = document.getElementById('pwInput').value;
+  if (val === 'lodejuan2025') {
+    const lock = document.getElementById('lockScreen');
+    lock.classList.add('out');
+    setTimeout(() => {
+      lock.style.display = 'none';
+      document.getElementById('app').classList.remove('hidden');
+      renderStep();
+    }, 600);
+  } else {
+    document.getElementById('pwError').classList.remove('hidden');
+    document.getElementById('pwInput').classList.add('border-primary');
+    document.getElementById('pwInput').value = '';
+    document.getElementById('pwInput').focus();
+  }
+}
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('pwInput').addEventListener('keydown', e => { if(e.key==='Enter') checkPassword(); });
+  // Check session
+  if(sessionStorage.getItem('cot_auth') === '1') {
+    document.getElementById('lockScreen').style.display = 'none';
+    document.getElementById('app').classList.remove('hidden');
+    renderStep();
+  }
+});
+
+// ============================================================
+// UTILS
+// ============================================================
+function fmt(n) { return n != null ? n.toLocaleString('es-AR') : null; }
+function pct(n, p) { return Math.round(n * p / 100); }
+
+function calcTotal() {
+  if (!state.servicio) return 0;
+  const s = SERVICIOS.find(x => x.id === state.servicio);
+  let base = 0;
+  if (s.precio_total) base = s.precio_total;
+  else if (s.precio_pp) base = s.precio_pp * Math.max(state.personas, s.min || 0);
+  let extTotal = 0;
+  state.extras.forEach(eid => {
+    const e = EXTRAS.find(x => x.id === eid);
+    if (e && e.precio_total) extTotal += e.precio_total;
+  });
+  return base + extTotal;
+}
+
+function calcSena() { return pct(calcTotal(), NEGOCIO.sena_porcentaje); }
+
+function precioServicio(s) {
+  if (s.precio_total) return `$${fmt(s.precio_total)} total`;
+  if (s.precio_pp) return `$${fmt(s.precio_pp)}/persona`;
+  return 'A consultar';
+}
+
+function minPersonas(s) {
+  return s.min ? `Mín. ${s.min} personas` : null;
+}
+
+// ============================================================
+// PROGRESS
+// ============================================================
+function renderProgress() {
+  const pct = ((state.step - 1) / (TOTAL_STEPS - 1)) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('stepLabel').textContent = STEP_LABELS[state.step - 1];
+  document.getElementById('stepCounter').textContent = `Paso ${state.step} de ${TOTAL_STEPS}`;
+  const dots = document.getElementById('stepDots');
+  dots.innerHTML = '';
+  for (let i = 1; i <= TOTAL_STEPS; i++) {
+    const d = document.createElement('div');
+    d.className = 'flex-1 h-1.5 rounded-full transition-all duration-500 ' + (i < state.step ? 'bg-primary' : i === state.step ? 'bg-tertiary-container' : 'bg-outline-variant/30');
+    dots.appendChild(d);
+  }
+}
+
+// ============================================================
+// RENDER STEP
+// ============================================================
+function renderStep() {
+  renderProgress();
+  const c = document.getElementById('wizardContainer');
+  c.innerHTML = '';
+  if (state.step === 1) renderTipo(c);
+  else if (state.step === 2) renderPack(c);
+  else if (state.step === 3) renderFecha(c);
+  else if (state.step === 4) renderExtras(c);
+  else if (state.step === 5) renderResumen(c);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function card(content, extraClass='') {
+  const d = document.createElement('div');
+  d.className = `step-card bg-white rounded-2xl shadow-sm border border-outline-variant/20 overflow-hidden ${extraClass}`;
+  d.innerHTML = content;
+  return d;
+}
+
+// ---- STEP 1: Tipo ----
+function renderTipo(c) {
+  const header = card(`
+    <div class="bg-gradient-to-br from-primary to-primary-container px-6 py-5 text-white">
+      <div class="text-3xl mb-1">🎊</div>
+      <h2 class="font-headline font-black text-xl">¿Qué tipo de evento querés celebrar?</h2>
+      <p class="text-white/75 text-sm mt-1">Elegí y te mostramos los packs disponibles</p>
+    </div>
+  `);
+  c.appendChild(header);
+
+  const grid = document.createElement('div');
+  grid.className = 'mt-4 grid grid-cols-2 gap-3';
+
+  TIPOS.forEach(t => {
+    const tile = document.createElement('div');
+    tile.className = `choice-tile rounded-2xl p-4 relative ${state.tipo === t.id ? 'selected' : ''}`;
+    tile.innerHTML = `
+      <div class="text-3xl mb-2">${t.icon}</div>
+      <div class="font-headline font-bold text-sm text-on-surface leading-snug">${t.label}</div>
+      <div class="text-xs text-on-surface-variant mt-0.5">${t.desc}</div>
+      <div class="tile-check absolute top-2.5 right-2.5 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+        <span class="material-symbols-outlined text-white text-[14px]">check</span>
+      </div>
+    `;
+    tile.addEventListener('click', () => {
+      state.tipo = t.id;
+      state.servicio = null;
+      state.extras = [];
+      goTo(2);
+    });
+    grid.appendChild(tile);
+  });
+
+  c.appendChild(grid);
+}
+
+// ---- STEP 2: Pack ----
+function renderPack(c) {
+  const packs = SERVICIOS.filter(s => s.cat === state.tipo);
+  const tipo = TIPOS.find(t => t.id === state.tipo);
+
+  const header = card(`
+    <div class="bg-gradient-to-br from-secondary to-secondary-container px-6 py-5 text-white">
+      <div class="text-3xl mb-1">${tipo.icon}</div>
+      <h2 class="font-headline font-black text-xl">${tipo.label}</h2>
+      <p class="text-white/75 text-sm mt-1">Elegí el pack que más se adapta</p>
+    </div>
+  `);
+  c.appendChild(header);
+
+  const btn = backBtn(); c.appendChild(btn);
+
+  packs.forEach(s => {
+    const isSelected = state.servicio === s.id;
+    const p = card(`
+      <div class="p-4 relative">
+        ${s.destacado ? `<div class="absolute top-3 right-3 bg-tertiary-container text-on-tertiary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">Recomendado ⭐</div>` : ''}
+        <div class="flex items-start justify-between gap-2 pr-8">
+          <div>
+            <div class="font-headline font-bold text-base text-on-surface">${s.nombre}</div>
+            <div class="text-primary font-black text-lg mt-0.5">${precioServicio(s)}</div>
+            ${minPersonas(s) ? `<div class="text-xs text-on-surface-variant mt-0.5">${minPersonas(s)}</div>` : ''}
+          </div>
+          <div class="tile-check w-7 h-7 bg-primary rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+            <span class="material-symbols-outlined text-white text-[16px]">check</span>
+          </div>
+        </div>
+        <div class="mt-3 text-xs text-on-surface-variant leading-relaxed">
+          <span class="font-bold text-success">✓ Incluye:</span> ${s.incluye}
+          ${s.no_incluye ? `<br/><span class="font-bold text-primary">✗ No incluye:</span> ${s.no_incluye}` : ''}
+        </div>
+      </div>
+    `, `choice-tile mt-3 ${isSelected ? 'selected' : ''}`);
+    p.addEventListener('click', () => {
+      state.servicio = s.id;
+      goTo(3);
+    });
+    c.appendChild(p);
+  });
+}
+
+// ---- STEP 3: Fecha & Personas ----
+function renderFecha(c) {
+  const s = SERVICIOS.find(x => x.id === state.servicio);
+  const turnosDisp = getTurnosForCat(state.tipo);
+
+  const header = card(`
+    <div class="bg-gradient-to-br from-tertiary to-tertiary-container px-6 py-5 text-on-tertiary">
+      <div class="text-3xl mb-1">📅</div>
+      <h2 class="font-headline font-black text-xl">Fecha y personas</h2>
+      <p class="text-on-tertiary/70 text-sm mt-1">Elegí cuándo y con cuántos</p>
+    </div>
+  `);
+  c.appendChild(header);
+  c.appendChild(backBtn());
+
+  // Personas
+  const minP = s.min || 1;
+  if (state.personas < minP) state.personas = minP;
+
+  const perCard = card(`
+    <div class="p-5">
+      <div class="font-headline font-bold text-sm text-on-surface-variant uppercase tracking-wider mb-3">Cantidad de personas</div>
+      <div class="flex items-center gap-4 justify-center">
+        <button class="qty-btn bg-surface-container-high text-primary" onclick="changePersonas(-5)">−</button>
+        <div class="text-center">
+          <div id="personasNum" class="font-headline font-black text-4xl text-primary transition-all">${state.personas}</div>
+          <div class="text-xs text-on-surface-variant">personas</div>
+        </div>
+        <button class="qty-btn bg-surface-container-high text-primary" onclick="changePersonas(5)">+</button>
+      </div>
+      ${minP > 1 ? `<div class="text-center text-xs text-on-surface-variant mt-2">Mínimo: ${minP} personas</div>` : ''}
+    </div>
+  `, 'mt-3');
+  c.appendChild(perCard);
+
+  // Fecha
+  const today = new Date().toISOString().split('T')[0];
+  const fechaCard = card(`
+    <div class="p-5">
+      <div class="font-headline font-bold text-sm text-on-surface-variant uppercase tracking-wider mb-3">Fecha del evento</div>
+      <input type="date" id="fechaInput" min="${today}" value="${state.fecha}"
+        class="w-full px-4 py-3 rounded-xl border-2 border-outline-variant/50 bg-surface-container-low text-on-surface font-semibold text-base transition-all"
+        oninput="onFechaChange(this.value)" />
+    </div>
+  `, 'mt-3');
+  c.appendChild(fechaCard);
+
+  // Turno
+  const turnoCard = card(`
+    <div class="p-5">
+      <div class="font-headline font-bold text-sm text-on-surface-variant uppercase tracking-wider mb-3">Turno</div>
+      <div class="grid grid-cols-1 gap-2" id="turnosGrid">
+        ${turnosDisp.map(tid => {
+          const t = TURNOS[tid];
+          const isSelected = state.turno === tid;
+          return `<div class="choice-tile rounded-xl p-3 flex items-center justify-between ${isSelected?'selected':''}" onclick="selectTurno('${tid}')">
+            <div>
+              <div class="font-bold text-sm text-on-surface">${t.label}</div>
+              <div class="text-xs text-on-surface-variant">${t.hora}</div>
+            </div>
+            <div class="tile-check w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+              <span class="material-symbols-outlined text-white text-[13px]">check</span>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+  `, 'mt-3');
+  c.appendChild(turnoCard);
+
+  // Availability
+  const availCard = document.createElement('div');
+  availCard.className = 'mt-3';
+  availCard.id = 'availSection';
+  c.appendChild(availCard);
+  renderAvailability();
+
+  // Next btn
+  const nextArea = document.createElement('div');
+  nextArea.className = 'mt-4';
+  nextArea.id = 'fechaNextBtn';
+  c.appendChild(nextArea);
+  renderFechaNext();
+}
+
+function getTurnosForCat(cat) {
+  const map = {
+    infantil: ['manana','tarde'],
+    teens: ['tarde','noche'],
+    egresaditos: ['manana','tarde'],
+    egresados: ['tarde','noche'],
+    cumple_tarde: ['tarde'],
+    cumple_noche: ['noche'],
+  };
+  return map[cat] || ['manana','tarde','noche'];
+}
+
+function changePersonas(delta) {
+  const s = SERVICIOS.find(x => x.id === state.servicio);
+  const min = s.min || 1;
+  state.personas = Math.max(min, state.personas + delta);
+  const el = document.getElementById('personasNum');
+  if (el) { el.textContent = state.personas; el.style.transform='scale(1.2)'; setTimeout(()=>el.style.transform='',150); }
+  renderFechaNext();
+}
+
+function onFechaChange(val) {
+  state.fecha = val;
+  state.disponibilidad = null;
+  renderAvailability();
+  renderFechaNext();
+  if (val && state.turno) checkDisponibilidad();
+}
+
+function selectTurno(tid) {
+  state.turno = tid;
+  document.querySelectorAll('#turnosGrid .choice-tile').forEach(el => {
+    el.classList.toggle('selected', el.getAttribute('onclick').includes(`'${tid}'`));
+    el.querySelector('.tile-check').style.opacity = el.classList.contains('selected') ? '1' : '0';
+    el.querySelector('.tile-check').style.transform = el.classList.contains('selected') ? 'scale(1)' : 'scale(.6)';
+  });
+  renderFechaNext();
+  if (state.fecha) checkDisponibilidad();
+}
+
+async function checkDisponibilidad() {
+  if (!state.fecha || !state.turno) return;
+  state.checkingDisp = true;
+  state.disponibilidad = null;
+  renderAvailability();
+  try {
+    const r = await fetch(`https://chat.complejolodejuan.com/api/disponibilidad?fecha=${state.fecha}&turno=${state.turno}`);
+    if (r.ok) {
+      const data = await r.json();
+      state.disponibilidad = data.disponible !== false;
+    } else {
+      state.disponibilidad = true; // assume available on error
+    }
+  } catch(e) {
+    state.disponibilidad = true;
+  }
+  state.checkingDisp = false;
+  renderAvailability();
+  renderFechaNext();
+}
+
+function renderAvailability() {
+  const sec = document.getElementById('availSection');
+  if (!sec) return;
+  if (!state.fecha || !state.turno) { sec.innerHTML = ''; return; }
+  if (state.checkingDisp) {
+    sec.innerHTML = `<div class="avail-badge bg-surface-container-high rounded-xl p-3 flex items-center gap-2 text-sm text-on-surface-variant">
+      <div class="w-4 h-4 border-2 border-primary/40 border-t-primary rounded-full animate-spin"></div>
+      Verificando disponibilidad...
+    </div>`;
+    return;
+  }
+  if (state.disponibilidad === null) { sec.innerHTML = ''; return; }
+  if (state.disponibilidad) {
+    sec.innerHTML = `<div class="avail-badge bg-success-fixed rounded-xl p-3 flex items-center gap-2 text-sm font-bold text-success">
+      <span class="material-symbols-outlined text-[18px]">check_circle</span>
+      ¡Fecha disponible! 🎉
+    </div>`;
+  } else {
+    sec.innerHTML = `<div class="avail-badge bg-primary-fixed rounded-xl p-3 flex items-center gap-2 text-sm font-bold text-primary">
+      <span class="material-symbols-outlined text-[18px]">event_busy</span>
+      Esa fecha ya está reservada. Elegí otra.
+    </div>`;
+  }
+}
+
+function renderFechaNext() {
+  const btn = document.getElementById('fechaNextBtn');
+  if (!btn) return;
+  const canContinue = state.fecha && state.turno && state.disponibilidad !== false;
+  btn.innerHTML = `<button onclick="goTo(4)" ${canContinue?'':'disabled'}
+    class="w-full py-4 rounded-2xl font-headline font-black text-base transition-all shadow-md ${canContinue ? 'bg-primary text-white hover:bg-primary-container active:scale-95 shadow-primary/30' : 'bg-outline-variant/40 text-on-surface-variant/50 cursor-not-allowed'}">
+    Continuar → Adicionales
+  </button>`;
+}
+
+// ---- STEP 4: Extras ----
+function renderExtras(c) {
+  const extrasIds = EXTRAS_POR_TIPO[state.tipo] || [];
+  const extrasDisp = EXTRAS.filter(e => extrasIds.includes(e.id));
+
+  const header = card(`
+    <div class="bg-gradient-to-br from-success to-success-container px-6 py-5 text-white">
+      <div class="text-3xl mb-1">✨</div>
+      <h2 class="font-headline font-black text-xl">Adicionales opcionales</h2>
+      <p class="text-white/80 text-sm mt-1">Sumá más diversión a tu evento</p>
+    </div>
+  `);
+  c.appendChild(header);
+  c.appendChild(backBtn());
+
+  if (extrasDisp.length === 0) {
+    c.appendChild(card(`<div class="p-6 text-center text-on-surface-variant text-sm">No hay adicionales para este tipo de evento.</div>`, 'mt-3'));
+  } else {
+    const grid = document.createElement('div');
+    grid.className = 'mt-3 grid grid-cols-1 gap-2';
+
+    extrasDisp.forEach(e => {
+      const isSelected = state.extras.includes(e.id);
+      const priceLabel = e.aConsultar ? 'A consultar' : (e.precio_total ? `+$${fmt(e.precio_total)}` : `+$${fmt(e.precio_pp)}/persona`);
+      const card_ = document.createElement('div');
+      card_.className = `extra-card rounded-xl p-4 flex items-center justify-between ${isSelected?'selected':''}`;
+      card_.innerHTML = `
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">${e.icon}</span>
+          <div>
+            <div class="font-bold text-sm text-on-surface">${e.nombre}</div>
+            <div class="text-xs ${e.aConsultar ? 'text-on-surface-variant' : 'text-success font-bold'}">${priceLabel}</div>
+          </div>
+        </div>
+        <div class="extra-check w-7 h-7 bg-success rounded-full flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined text-white text-[15px]">check</span>
+        </div>
+      `;
+      card_.addEventListener('click', () => {
+        if (state.extras.includes(e.id)) state.extras = state.extras.filter(x=>x!==e.id);
+        else state.extras.push(e.id);
+        card_.classList.toggle('selected', state.extras.includes(e.id));
+        const chk = card_.querySelector('.extra-check');
+        chk.style.opacity = state.extras.includes(e.id) ? '1' : '0';
+        chk.style.transform = state.extras.includes(e.id) ? 'scale(1)' : 'scale(.7)';
+        // update mini total
+        const mt = document.getElementById('miniTotal');
+        if (mt) mt.textContent = `$${fmt(calcTotal())}`;
+      });
+      grid.appendChild(card_);
+    });
+    c.appendChild(grid);
+
+    // Mini total
+    const mt = card(`
+      <div class="p-4 flex items-center justify-between">
+        <span class="text-sm font-bold text-on-surface-variant">Total estimado:</span>
+        <span id="miniTotal" class="font-headline font-black text-lg text-primary">$${fmt(calcTotal())}</span>
+      </div>
+    `, 'mt-3 border-primary/20');
+    c.appendChild(mt);
+  }
+
+  const skipLabel = extrasDisp.length ? 'Sin adicionales' : 'Continuar';
+  const nextBtns = document.createElement('div');
+  nextBtns.className = 'mt-4 flex flex-col gap-2';
+  nextBtns.innerHTML = `
+    <button onclick="goTo(5)" class="w-full py-4 rounded-2xl bg-primary text-white font-headline font-black text-base hover:bg-primary-container active:scale-95 transition-all shadow-md shadow-primary/30">
+      Ver resumen →
+    </button>
+    ${extrasDisp.length ? `<button onclick="state.extras=[];goTo(5)" class="text-center text-sm text-on-surface-variant hover:text-primary transition-colors py-1">${skipLabel}</button>` : ''}
+  `;
+  c.appendChild(nextBtns);
+}
+
+// ---- STEP 5: Resumen ----
+function renderResumen(c) {
+  const tipo = TIPOS.find(t => t.id === state.tipo);
+  const serv = SERVICIOS.find(s => s.id === state.servicio);
+  const turno = TURNOS[state.turno];
+  const total = calcTotal();
+  const sena = calcSena();
+  const extrasSelec = state.extras.map(eid => EXTRAS.find(e=>e.id===eid)).filter(Boolean);
+  const hayExtraConsultar = extrasSelec.some(e=>e.aConsultar);
+
+  // Confetti!
+  setTimeout(() => launchConfetti(), 300);
+
+  const header = card(`
+    <div class="bg-gradient-to-135 from-primary via-primary-container to-tertiary-container px-6 py-6 text-white" style="background: linear-gradient(135deg, #FF5C35, #FFD60A)">
+      <div class="text-4xl mb-2">🎊</div>
+      <h2 class="font-headline font-black text-2xl">¡Tu cotización lista!</h2>
+      <p class="text-white/80 text-sm mt-1">Revisá el resumen y mandalo por WhatsApp</p>
+    </div>
+  `);
+  c.appendChild(header);
+  c.appendChild(backBtn());
+
+  // Summary card
+  const sumCard = card(`
+    <div class="p-5 space-y-3">
+      <div class="flex items-center gap-3 pb-3 border-b border-outline-variant/20">
+        <span class="text-2xl">${tipo.icon}</span>
+        <div>
+          <div class="font-headline font-black text-base text-on-surface">${tipo.label}</div>
+          <div class="text-sm text-primary font-bold">${serv.nombre}</div>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-2 text-sm">
+        <div class="bg-surface-container-low rounded-lg p-3">
+          <div class="text-xs text-on-surface-variant font-bold uppercase mb-1">Fecha</div>
+          <div class="font-bold text-on-surface">${formatFecha(state.fecha)}</div>
+        </div>
+        <div class="bg-surface-container-low rounded-lg p-3">
+          <div class="text-xs text-on-surface-variant font-bold uppercase mb-1">Turno</div>
+          <div class="font-bold text-on-surface">${turno.label}</div>
+          <div class="text-xs text-on-surface-variant">${turno.hora}</div>
+        </div>
+        <div class="bg-surface-container-low rounded-lg p-3 col-span-2">
+          <div class="text-xs text-on-surface-variant font-bold uppercase mb-1">Personas</div>
+          <div class="font-bold text-on-surface">${state.personas} personas</div>
+        </div>
+      </div>
+      ${extrasSelec.length ? `
+        <div class="border-t border-outline-variant/20 pt-3">
+          <div class="text-xs text-on-surface-variant font-bold uppercase mb-2">Adicionales</div>
+          ${extrasSelec.map(e=>`<div class="flex justify-between text-sm py-1">
+            <span>${e.icon} ${e.nombre}</span>
+            <span class="font-bold ${e.aConsultar ? 'text-on-surface-variant' : 'text-success'}">${e.aConsultar?'A consultar':'+$'+fmt(e.precio_total)}</span>
+          </div>`).join('')}
+        </div>
+      ` : ''}
+      <div class="border-t border-outline-variant/20 pt-3 space-y-2">
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-on-surface-variant">Total estimado</span>
+          <span class="font-headline font-black text-xl text-on-surface">${hayExtraConsultar ? '~' : ''}$${fmt(total)}</span>
+        </div>
+        <div class="price-tag px-4 py-3 flex justify-between items-center">
+          <div>
+            <div class="text-white/80 text-xs font-bold uppercase">Seña para reservar</div>
+            <div class="text-white text-xs">${NEGOCIO.sena_porcentaje}% del total</div>
+          </div>
+          <div class="text-white font-headline font-black text-2xl">${hayExtraConsultar ? '~' : ''}$${fmt(sena)}</div>
+        </div>
+      </div>
+      <div class="bg-secondary-fixed rounded-xl p-4 text-sm">
+        <div class="font-bold text-on-secondary-fixed mb-1">📲 Cómo reservar:</div>
+        <div class="text-secondary/80 text-xs leading-relaxed">
+          1. Tocá el botón de WhatsApp abajo<br/>
+          2. El bot te confirma y te envía los datos de pago<br/>
+          3. Transferís la seña al alias <strong>${NEGOCIO.alias}</strong><br/>
+          4. Mandás el comprobante al ${NEGOCIO.telefono_comprobantes}<br/>
+          5. ¡Fecha reservada! 🎉
+        </div>
+      </div>
+    </div>
+  `, 'mt-3');
+  c.appendChild(sumCard);
+
+  // WA Button
+  const waMsg = buildWAMessage();
+  const waArea = document.createElement('div');
+  waArea.className = 'mt-4';
+  waArea.innerHTML = `
+    <a href="https://wa.me/${NEGOCIO.wa_bot}?text=${encodeURIComponent(waMsg)}" target="_blank"
+      class="wa-btn w-full flex items-center justify-center gap-3 py-4 px-6 rounded-2xl text-white font-headline font-black text-base bg-[#25D366] hover:bg-[#1DAA55] active:scale-95 transition-all shadow-lg">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Enviar al Bot y Reservar
+    </a>
+    <p class="text-center text-xs text-on-surface-variant mt-3">Te va a atender nuestro asistente virtual y un coordinador confirmará todo 🎉</p>
+  `;
+  c.appendChild(waArea);
+
+  // Restart
+  const restart = document.createElement('div');
+  restart.className = 'mt-2 text-center';
+  restart.innerHTML = `<button onclick="resetWizard()" class="text-sm text-on-surface-variant hover:text-primary transition-colors">Cotizar otro evento →</button>`;
+  c.appendChild(restart);
+}
+
+function formatFecha(dateStr) {
+  if (!dateStr) return 'Sin fecha';
+  const [y,m,d] = dateStr.split('-').map(Number);
+  const date = new Date(y,m-1,d);
+  return date.toLocaleDateString('es-AR', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+}
+
+function buildWAMessage() {
+  const tipo = TIPOS.find(t=>t.id===state.tipo);
+  const serv = SERVICIOS.find(s=>s.id===state.servicio);
+  const turno = TURNOS[state.turno];
+  const total = calcTotal();
+  const sena = calcSena();
+  const extrasSelec = state.extras.map(eid=>EXTRAS.find(e=>e.id===eid)).filter(Boolean);
+
+  let msg = `¡Hola! Me armé una cotización desde el cotizador web 🎉\n\n`;
+  msg += `📋 *COTIZACIÓN LO DE JUAN*\n`;
+  msg += `━━━━━━━━━━━━━━━━━━\n`;
+  msg += `🎊 *Tipo:* ${tipo.label}\n`;
+  msg += `📦 *Pack:* ${serv.nombre}\n`;
+  msg += `📅 *Fecha:* ${formatFecha(state.fecha)}\n`;
+  msg += `🕐 *Turno:* ${turno.label} (${turno.hora})\n`;
+  msg += `👥 *Personas:* ${state.personas}\n`;
+  if (extrasSelec.length) {
+    msg += `\n✨ *Adicionales:*\n`;
+    extrasSelec.forEach(e => {
+      const p = e.aConsultar ? 'a consultar' : `$${fmt(e.precio_total)}`;
+      msg += `  • ${e.nombre} (${p})\n`;
+    });
+  }
+  msg += `\n💰 *Total estimado:* $${fmt(total)}\n`;
+  msg += `💳 *Seña (${NEGOCIO.sena_porcentaje}%):* $${fmt(sena)}\n`;
+  msg += `━━━━━━━━━━━━━━━━━━\n`;
+  msg += `¿Me podés confirmar la disponibilidad y los datos para transferir la seña? 🙏`;
+  return msg;
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function goTo(step) {
+  state.step = step;
+  renderStep();
+}
+
+function backBtn() {
+  const d = document.createElement('div');
+  d.className = 'mt-3';
+  d.innerHTML = `<button onclick="goTo(${state.step-1})" class="flex items-center gap-1.5 text-sm text-on-surface-variant hover:text-primary transition-colors py-1">
+    <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+    Volver
+  </button>`;
+  return d;
+}
+
+function resetWizard() {
+  state = { step:1, tipo:null, servicio:null, personas:30, fecha:"", turno:null, extras:[], disponibilidad:null, checkingDisp:false };
+  renderStep();
+}
+
+// ============================================================
+// CONFETTI
+// ============================================================
+function launchConfetti() {
+  const colors = ['#FF5C35','#FFD60A','#0099BF','#2EAA62','#FF8C5A','#fff'];
+  const container = document.getElementById('confettiContainer');
+  for (let i = 0; i < 80; i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const left = Math.random() * 100;
+    const size = 6 + Math.random() * 8;
+    const dur = 2.5 + Math.random() * 2;
+    const delay = Math.random() * 1.5;
+    p.style.cssText = `left:${left}vw;background:${color};width:${size}px;height:${size}px;animation-duration:${dur}s;animation-delay:${delay}s;border-radius:${Math.random()>0.5?'50%':'2px'};`;
+    container.appendChild(p);
+    setTimeout(() => p.remove(), (dur + delay) * 1000 + 200);
+  }
+}
+</script>
+</body>
+</html>
