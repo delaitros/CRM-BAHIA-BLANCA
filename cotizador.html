@@ -111,6 +111,20 @@
     .btn-blob-d{ border-radius: 20px 36px 14px 30px / 30px 14px 36px 20px !important; }
     .btn-blob-e{ border-radius: 36px 14px 30px 20px / 14px 30px 20px 36px !important; }
     .btn-blob-f{ border-radius: 14px 28px 20px 36px / 36px 20px 28px 14px !important; }
+
+    /* Dot bounce animation — igual que index.html */
+    @keyframes dotUp{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+    .dot-deco>span{display:inline-block;}
+    .dot-deco>span:nth-child(1){animation:dotUp 2s ease-in-out infinite 0s;}
+    .dot-deco>span:nth-child(2){animation:dotUp 2s ease-in-out infinite .3s;}
+    .dot-deco>span:nth-child(3){animation:dotUp 2s ease-in-out infinite .6s;}
+    .dot-deco>span:nth-child(4){animation:dotUp 2s ease-in-out infinite .9s;}
+    @media(prefers-reduced-motion:reduce){.dot-deco>span{animation:none!important;}}
+
+    /* Typewriter cursor */
+    @keyframes twBlink{0%,100%{opacity:1}50%{opacity:0}}
+    #twCursor{display:inline-block;width:3px;height:.85em;background:#FF5C35;margin-left:1px;vertical-align:middle;animation:twBlink .75s step-end infinite;border-radius:2px;}
+    #twCursor.done{display:none;}
   </style>
 </head>
 <body class="font-body bg-background text-on-background antialiased">
@@ -134,7 +148,7 @@
       <input id="pwInput" type="password" placeholder="Contraseña" autocomplete="current-password"
         class="w-full px-4 py-3.5 rounded-2xl bg-white text-on-surface font-semibold text-base placeholder-on-surface-variant/50 border-2 border-transparent focus:border-primary focus:outline-none transition-all mb-3" />
       <div id="pwErr" class="text-white font-bold text-sm mb-3 hidden">❌ Contraseña incorrecta</div>
-      <button onclick="unlock()" class="w-full py-3.5 bg-white text-primary font-black text-base rounded-full hover:bg-primary-fixed transition-all shadow-xl uppercase tracking-wide active:scale-95">
+      <button onclick="unlock()" class="w-full py-3.5 bg-white text-primary font-black text-base hover:bg-primary-fixed transition-all shadow-xl uppercase tracking-wide active:scale-95" style="border-radius:32px 12px 28px 16px / 16px 28px 12px 32px">
         Ingresar →
       </button>
     </div>
@@ -257,17 +271,17 @@
 
     <!-- Section header (same style as servicios) -->
     <div class="text-center mb-14">
-      <div class="flex items-end justify-center gap-2 mb-3" aria-hidden="true">
-        <span class="w-3 h-3 rounded-full bg-primary inline-block"></span>
-        <span class="w-2 h-2 rounded-full bg-[#FFD60A] mb-1 inline-block"></span>
-        <span class="w-3.5 h-3.5 rounded-full bg-[#0099BF] inline-block"></span>
-        <span class="w-2 h-2 rounded-full bg-[#2EAA62] mb-0.5 inline-block"></span>
+      <div class="dot-deco flex items-end justify-center gap-2 mb-3" aria-hidden="true">
+        <span class="w-3 h-3 rounded-full bg-primary"></span>
+        <span class="w-2 h-2 rounded-full bg-[#FFD60A] mb-1"></span>
+        <span class="w-3.5 h-3.5 rounded-full bg-[#0099BF]"></span>
+        <span class="w-2 h-2 rounded-full bg-[#2EAA62] mb-0.5"></span>
       </div>
       <span class="inline-flex items-center gap-2 bg-primary-fixed text-on-primary-fixed-variant px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-4">
         🧮 Armá tu presupuesto
       </span>
       <h2 class="font-headline text-3xl sm:text-5xl font-black text-on-surface mb-4 uppercase tracking-tight">
-        ¿Qué <span class="font-display text-primary normal-case" style="font-size:1.1em;letter-spacing:-.5px;">celebrás</span>?
+        ¿Qué <span id="celebras" class="font-display text-primary normal-case" style="font-size:1.1em;letter-spacing:-.5px;"></span><span id="twCursor"></span>?
       </h2>
       <p class="text-on-surface-variant text-base max-w-2xl mx-auto font-medium">
         Seguí los pasos y armá tu cotización. Con la seña del <span class="font-black text-on-surface">40%</span> reservás la fecha.
@@ -406,13 +420,20 @@ const SERVICIOS = [
    ni:"Comida y bebida (la trae el cliente)"},
 ];
 
-const EXTRAS_MAP = {
-  infantil:    ["rueda_hamster","tobogan_pelotas","circuito_multiaventura","cuatris","tobogan_acuatico","bowling_humano","combo_tobogan_pile","super_combo_verano"],
-  egresaditos: ["rueda_hamster","tobogan_pelotas","circuito_multiaventura","cuatris","tobogan_acuatico","bowling_humano","combo_tobogan_pile","super_combo_verano"],
-  teens:       ["barra_tragos","dj_noche"],
-  egresados:   ["barra_tragos"],
-  cumple_tarde:["barra_tragos"],
-  cumple_noche:["barra_tragos","dj_noche"],
+const EXTRAS_BY_SERVICE = {
+  infantil_pack_aventura:    ["rueda_hamster","tobogan_pelotas","circuito_multiaventura","cuatris","tobogan_acuatico","bowling_humano","combo_tobogan_pile","super_combo_verano"],
+  infantil_pack_full:        ["rueda_hamster","tobogan_pelotas","circuito_multiaventura","cuatris","tobogan_acuatico","bowling_humano","combo_tobogan_pile","super_combo_verano"],
+  infantil_pack_experiencia: ["rueda_hamster","tobogan_pelotas","cuatris","tobogan_acuatico","bowling_humano","combo_tobogan_pile","super_combo_verano"],
+  teens_pack_fun:            ["barra_tragos","dj_noche"],
+  teens_pack_night:          ["barra_tragos"],
+  teens_pack_ultimate:       ["barra_tragos"],
+  egresaditos_con_menu:      [],
+  egresaditos_sin_menu:      [],
+  egresados_6_grado:         ["barra_tragos"],
+  cumple_tarde_merienda:     ["barra_tragos"],
+  cumple_noche_premium:      [],
+  cumple_noche_gold:         ["barra_tragos"],
+  cumple_noche_silver:       ["barra_tragos"],
 };
 
 const EXTRAS = [
@@ -454,6 +475,15 @@ function calcSena(){return Math.round(calcTotal()*SENA/100);}
 function tipo(){return TIPOS.find(t=>t.id===S.tipo)||{};}
 function serv(){return SERVICIOS.find(x=>x.id===S.serv)||{};}
 
+// ---- TYPEWRITER ----
+function typeWriter(){
+  const el=document.getElementById('celebras');
+  const cur=document.getElementById('twCursor');
+  if(!el||el.textContent.length>0)return;
+  const txt='celebrás';let i=0;
+  const t=setInterval(()=>{el.textContent+=txt[i++];if(i>=txt.length){clearInterval(t);setTimeout(()=>{if(cur)cur.classList.add('done');},900);}},90);
+}
+
 // ---- BLOB SHAPES (igual que index.html) ----
 const BLOBS=['btn-blob','btn-blob-b','btn-blob-c','btn-blob-d','btn-blob-e','btn-blob-f'];
 let blobN=0;
@@ -471,7 +501,7 @@ function applyBlobs(root){
 function unlock(){
   if($('pwInput').value==='lodejuan2025'){
     $('lockScreen').classList.add('out');
-    setTimeout(()=>{$('lockScreen').style.display='none';$('app').classList.remove('hidden');renderStep();setTimeout(()=>applyBlobs(),50);},600);
+    setTimeout(()=>{$('lockScreen').style.display='none';$('app').classList.remove('hidden');renderStep();setTimeout(()=>{applyBlobs();typeWriter();},80);},600);
   }else{$('pwErr').classList.remove('hidden');$('pwInput').value='';$('pwInput').focus();}
 }
 
@@ -570,7 +600,7 @@ function updateCart(){
     const wb=$('cartWABtn');
     if(S.fecha&&S.turno){
       wb.innerHTML=`<a href="https://wa.me/${WA}?text=${encodeURIComponent(buildMsg())}" target="_blank"
-        class="wa-pulse w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-full text-white font-black text-xs bg-[#25D366] hover:bg-[#1DAA55] active:scale-95 transition-all uppercase tracking-wide">
+        class="wa-pulse w-full flex items-center justify-center gap-2 py-2.5 px-4 text-white font-black text-xs bg-[#25D366] hover:bg-[#1DAA55] active:scale-95 transition-all uppercase tracking-wide" style="border-radius:14px 28px 20px 36px / 36px 20px 28px 14px"
         <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
         Reservar por WhatsApp
       </a>`;
@@ -608,16 +638,33 @@ function backBtn(target){
 }
 
 // ---- STEP 1: Tipo ----
+const CARD_SHAPES=[
+  "32px 12px 28px 20px / 20px 28px 12px 32px",
+  "12px 32px 20px 28px / 28px 20px 32px 12px",
+  "28px 20px 32px 12px / 12px 32px 20px 28px",
+  "20px 32px 12px 28px / 28px 12px 32px 20px",
+  "32px 16px 24px 20px / 20px 24px 16px 32px",
+  "16px 32px 20px 24px / 24px 20px 32px 16px",
+];
+const BTN_SHAPES=[
+  "32px 12px 28px 16px / 16px 28px 12px 32px",
+  "12px 32px 16px 28px / 28px 16px 32px 12px",
+  "28px 16px 32px 12px / 12px 32px 16px 28px",
+  "20px 36px 14px 30px / 30px 14px 36px 20px",
+  "36px 14px 30px 20px / 14px 30px 20px 36px",
+  "14px 28px 20px 36px / 36px 20px 28px 14px",
+];
 function step1(c){
   const wrap=document.createElement('div');wrap.className='slide-up';
   const grid=document.createElement('div');
   grid.className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6';
-  TIPOS.forEach(t=>{
+  TIPOS.forEach((t,idx)=>{
     const packs=SERVICIOS.filter(s=>s.cat===t.id);
     const fromPrice=packs.reduce((min,s)=>{const p=s.pt||(s.pp*(s.min||30));return p<min?p:min;},Infinity);
     const tile=document.createElement('div');
-    tile.className=`service-card ctile rounded-3xl overflow-hidden shadow-md border-2 ${S.tipo===t.id?'on':'border-transparent'} flex flex-col`;
+    tile.className=`service-card ctile overflow-hidden shadow-md border-2 ${S.tipo===t.id?'on':'border-transparent'} flex flex-col`;
     tile.style.borderColor = S.tipo===t.id ? t.acc : 'transparent';
+    tile.style.borderRadius = CARD_SHAPES[idx%CARD_SHAPES.length];
     tile.innerHTML=`
       <div class="bg-gradient-to-br ${t.grad} px-6 pt-7 pb-5">
         <div class="flex items-center justify-between mb-3">
@@ -641,7 +688,7 @@ function step1(c){
           ${packs.slice(0,4).map(p=>`<li class="flex items-start gap-2"><span class="font-black mt-0.5" style="color:${t.acc}">✦</span> ${p.nom}</li>`).join('')}
         </ul>
         <div class="flex gap-2">
-          <button class="flex-1 text-center text-white py-3 rounded-full text-sm font-black hover:opacity-90 transition-all uppercase tracking-wide shadow-md" style="background:${t.acc};box-shadow:0 4px 12px -2px ${t.acc}66">
+          <button class="flex-1 text-center text-white py-3 text-sm font-black hover:opacity-90 transition-all uppercase tracking-wide shadow-md" style="background:${t.acc};box-shadow:0 4px 12px -2px ${t.acc}66;border-radius:${BTN_SHAPES[idx%BTN_SHAPES.length]}">
             Ver packs →
           </button>
         </div>
@@ -691,10 +738,10 @@ function step2(c){
           ${s.ni?`<li class="flex items-start gap-2 text-on-surface-variant/60"><span class="font-black mt-0.5 text-primary">✗</span>${s.ni}</li>`:''}
         </ul>
         <div class="flex gap-2">
-          <button class="flex-1 text-center text-white py-3 rounded-full text-sm font-black hover:opacity-90 transition-colors uppercase tracking-wide shadow-md" style="background:${t.acc};box-shadow:0 4px 12px -2px ${t.acc}55">
+          <button class="flex-1 text-center text-white py-3 text-sm font-black hover:opacity-90 transition-colors uppercase tracking-wide shadow-md" style="background:${t.acc};box-shadow:0 4px 12px -2px ${t.acc}55;border-radius:12px 32px 16px 28px / 28px 16px 32px 12px">
             Elegir pack
           </button>
-          <button class="flex-1 text-center py-3 rounded-full text-sm font-bold transition-colors uppercase tracking-wide border" style="background:${t.light||'#f5f5f5'};color:${t.acc};border-color:${t.acc}40">
+          <button class="flex-1 text-center py-3 text-sm font-bold transition-colors uppercase tracking-wide border" style="background:${t.light||'#f5f5f5'};color:${t.acc};border-color:${t.acc}40;border-radius:28px 16px 32px 12px / 12px 32px 16px 28px">
             📋 Incluye
           </button>
         </div>
@@ -830,7 +877,8 @@ function renderS3btn(){
   const d=$('step3nxt');if(!d)return;
   const ok=S.fecha&&S.turno&&S.dispon!==false;
   d.innerHTML=`<button onclick="goTo(4)" ${ok?'':'disabled'}
-    class="w-full py-4 rounded-full font-headline font-black text-base uppercase tracking-wide transition-all shadow-lg ${ok?'bg-primary text-white hover:bg-primary-container shadow-primary/30 active:scale-95':'bg-outline-variant/40 text-on-surface-variant/40 cursor-not-allowed'}">
+    class="w-full py-4 font-headline font-black text-base uppercase tracking-wide transition-all shadow-lg ${ok?'bg-primary text-white hover:bg-primary-container shadow-primary/30 active:scale-95':'bg-outline-variant/40 text-on-surface-variant/40 cursor-not-allowed'}"
+    style="border-radius:20px 36px 14px 30px / 30px 14px 36px 20px">
     Continuar — Adicionales →
   </button>`;
 }
@@ -838,7 +886,7 @@ function renderS3btn(){
 // ---- STEP 4: Extras ----
 function step4(c){
   const t=tipo();
-  const extIds=EXTRAS_MAP[S.tipo]||[];
+  const extIds=EXTRAS_BY_SERVICE[S.serv]||[];
   const extDisp=EXTRAS.filter(e=>extIds.includes(e.id));
   const wrap=document.createElement('div');wrap.className='slide-up';
   wrap.appendChild(backBtn(3));
@@ -888,7 +936,7 @@ function step4(c){
   }
 
   const btns=document.createElement('div');btns.className='mt-4 flex flex-col gap-2';
-  btns.innerHTML=`<button onclick="goTo(5)" class="w-full py-4 rounded-full bg-primary text-white font-headline font-black text-base uppercase tracking-wide hover:bg-primary-container active:scale-95 transition-all shadow-lg shadow-primary/30">Ver mi cotización →</button>
+  btns.innerHTML=`<button onclick="goTo(5)" class="w-full py-4 bg-primary text-white font-headline font-black text-base uppercase tracking-wide hover:bg-primary-container active:scale-95 transition-all shadow-lg shadow-primary/30" style="border-radius:36px 14px 30px 20px / 14px 30px 20px 36px">Ver mi cotización →</button>
     ${extDisp.length?`<button onclick="S.extras=[];goTo(5)" class="text-center text-sm text-on-surface-variant hover:text-primary transition-colors font-semibold py-1">Continuar sin adicionales →</button>`:''}`;
   wrap.appendChild(btns);
   c.appendChild(wrap);
@@ -985,7 +1033,7 @@ function step5(c){
   wa.className='mt-6';
   wa.innerHTML=`
     <a href="https://wa.me/${WA}?text=${encodeURIComponent(buildMsg())}" target="_blank"
-      class="wa-pulse w-full flex items-center justify-center gap-3 py-5 px-6 rounded-full text-white font-headline font-black text-lg bg-[#25D366] hover:bg-[#1DAA55] active:scale-95 transition-all shadow-xl uppercase tracking-wide">
+      class="wa-pulse w-full flex items-center justify-center gap-3 py-5 px-6 text-white font-headline font-black text-lg bg-[#25D366] hover:bg-[#1DAA55] active:scale-95 transition-all shadow-xl uppercase tracking-wide" style="border-radius:20px 36px 14px 30px / 30px 14px 36px 20px"
       <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
       Enviar al bot y reservar
     </a>
