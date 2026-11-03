@@ -103,6 +103,14 @@
 
     /* Step header consistent look */
     .step-hdr{border-radius:1.5rem 1.5rem 0 0;}
+
+    /* Organic blob shapes — igual que index.html */
+    .btn-blob  { border-radius: 32px 12px 28px 16px / 16px 28px 12px 32px !important; }
+    .btn-blob-b{ border-radius: 12px 32px 16px 28px / 28px 16px 32px 12px !important; }
+    .btn-blob-c{ border-radius: 28px 16px 32px 12px / 12px 32px 16px 28px !important; }
+    .btn-blob-d{ border-radius: 20px 36px 14px 30px / 30px 14px 36px 20px !important; }
+    .btn-blob-e{ border-radius: 36px 14px 30px 20px / 14px 30px 20px 36px !important; }
+    .btn-blob-f{ border-radius: 14px 28px 20px 36px / 36px 20px 28px 14px !important; }
   </style>
 </head>
 <body class="font-body bg-background text-on-background antialiased">
@@ -446,11 +454,24 @@ function calcSena(){return Math.round(calcTotal()*SENA/100);}
 function tipo(){return TIPOS.find(t=>t.id===S.tipo)||{};}
 function serv(){return SERVICIOS.find(x=>x.id===S.serv)||{};}
 
+// ---- BLOB SHAPES (igual que index.html) ----
+const BLOBS=['btn-blob','btn-blob-b','btn-blob-c','btn-blob-d','btn-blob-e','btn-blob-f'];
+let blobN=0;
+function applyBlobs(root){
+  (root||document).querySelectorAll('.rounded-full').forEach(el=>{
+    if(el.classList.contains('blob-ok'))return;
+    if(el.offsetWidth<40)return;
+    if(el.classList.contains('blur-3xl')||el.classList.contains('blur-xl'))return;
+    el.classList.add(BLOBS[blobN%BLOBS.length],'blob-ok');
+    blobN++;
+  });
+}
+
 // ---- LOCK ----
 function unlock(){
   if($('pwInput').value==='lodejuan2025'){
     $('lockScreen').classList.add('out');
-    setTimeout(()=>{$('lockScreen').style.display='none';$('app').classList.remove('hidden');renderStep();},600);
+    setTimeout(()=>{$('lockScreen').style.display='none';$('app').classList.remove('hidden');renderStep();setTimeout(()=>applyBlobs(),50);},600);
   }else{$('pwErr').classList.remove('hidden');$('pwInput').value='';$('pwInput').focus();}
 }
 
@@ -473,6 +494,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(slides.length>1) setInterval(()=>{slides[cur].style.opacity='0';cur=(cur+1)%slides.length;slides[cur].style.opacity='1';},3500);
   // Password enter key
   $('pwInput').addEventListener('keydown',e=>{if(e.key==='Enter')unlock();});
+  // Organic blobs on lock screen
+  applyBlobs(document.getElementById('lockScreen'));
 });
 
 // ---- PROGRESS ----
@@ -571,6 +594,7 @@ function renderStep(){
   else if(S.step===4) step4(c);
   else if(S.step===5) step5(c);
   updateCart();
+  setTimeout(()=>applyBlobs($('wizardContainer')),10);
   window.scrollTo({top:$('wizard').offsetTop-90,behavior:'smooth'});
 }
 
