@@ -14,147 +14,119 @@
       theme: {
         extend: {
           colors: {
-            "primary": "#FF5C35",
-            "primary-container": "#FF7A5A",
-            "on-primary": "#ffffff",
-            "primary-fixed": "#FFE8E0",
-            "primary-fixed-dim": "#FFB8A0",
-            "on-primary-fixed-variant": "#CC3310",
-            "secondary": "#0099BF",
-            "secondary-container": "#00B4DC",
-            "on-secondary": "#ffffff",
-            "secondary-fixed": "#CCF0FA",
-            "secondary-fixed-dim": "#7AD4EE",
-            "tertiary": "#E8B800",
-            "tertiary-container": "#FFD60A",
-            "on-tertiary": "#2A2200",
-            "success": "#2EAA62",
-            "success-container": "#52C882",
-            "on-success": "#ffffff",
-            "success-fixed": "#C8F0DC",
-            "background": "#FFFDF5",
-            "on-background": "#1A1712",
-            "surface": "#FFFDF5",
-            "on-surface": "#1A1712",
-            "surface-bright": "#FFFFFF",
-            "surface-container-lowest": "#FFFFFF",
-            "surface-container-low": "#FFF8EC",
-            "surface-container": "#FFF0D5",
-            "surface-container-high": "#FFE8BE",
-            "surface-container-highest": "#FFDFAA",
-            "surface-variant": "#FFE8BE",
-            "on-surface-variant": "#4A3A1E",
-            "outline": "#7A6848",
-            "outline-variant": "#D4C5A0",
+            "primary":"#FF5C35","primary-container":"#FF7A5A","on-primary":"#ffffff",
+            "primary-fixed":"#FFE8E0","primary-fixed-dim":"#FFB8A0","on-primary-fixed-variant":"#CC3310",
+            "secondary":"#0099BF","secondary-container":"#00B4DC","on-secondary":"#ffffff",
+            "secondary-fixed":"#CCF0FA","secondary-fixed-dim":"#7AD4EE","on-secondary-fixed":"#00263A",
+            "tertiary":"#E8B800","tertiary-container":"#FFD60A","on-tertiary":"#2A2200",
+            "success":"#2EAA62","success-container":"#52C882","on-success":"#ffffff","success-fixed":"#C8F0DC",
+            "background":"#FFFDF5","on-background":"#1A1712","surface":"#FFFDF5","on-surface":"#1A1712",
+            "surface-bright":"#FFFFFF","surface-container-lowest":"#FFFFFF","surface-container-low":"#FFF8EC",
+            "surface-container":"#FFF0D5","surface-container-high":"#FFE8BE","surface-container-highest":"#FFDFAA",
+            "surface-variant":"#FFE8BE","on-surface-variant":"#4A3A1E",
+            "outline":"#7A6848","outline-variant":"#D4C5A0",
+            "inverse-surface":"#342A18","inverse-on-surface":"#F5EEDF","inverse-primary":"#FF9A7A",
           },
-          fontFamily: {
-            "headline": ["Nunito", "Manrope", "sans-serif"],
-            "display": ["Pacifico", "cursive"],
-            "body": ["Manrope", "sans-serif"],
+          fontFamily:{
+            "headline":["Nunito","Manrope","sans-serif"],
+            "display":["Pacifico","cursive"],
+            "body":["Manrope","sans-serif"],
           },
         },
       },
     }
   </script>
   <style>
-    /* ---- Lock screen ---- */
-    #lockScreen {
-      position: fixed; inset: 0; z-index: 9999;
-      background: linear-gradient(135deg, #FF5C35 0%, #FF8050 40%, #FFD60A 100%);
-      display: flex; align-items: center; justify-content: center;
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-    #lockScreen.out { opacity: 0; transform: scale(1.04); pointer-events: none; }
+    /* Lock */
+    #lockScreen{position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#FF5C35 0%,#FF8050 45%,#FFD60A 100%);display:flex;align-items:center;justify-content:center;transition:opacity .6s ease,transform .6s ease;}
+    #lockScreen.out{opacity:0;transform:scale(1.04);pointer-events:none;}
 
-    /* ---- Nav ---- */
-    .service-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
-    .service-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.16); }
+    /* Confetti */
+    @keyframes cfFall{0%{transform:translateY(-12px) rotate(0deg) scaleX(1);opacity:1;}80%{opacity:.8;}100%{transform:translateY(110vh) rotate(680deg) scaleX(-1);opacity:0;}}
+    .cf{position:absolute;border-radius:3px;animation:cfFall linear infinite;}
+    @keyframes cfDrop{0%{transform:translateY(-8px) rotate(0deg);opacity:1;}100%{transform:translateY(110vh) rotate(720deg);opacity:0;}}
+    .cdrop{position:fixed;z-index:8900;border-radius:2px;animation:cfDrop linear forwards;pointer-events:none;}
 
-    /* ---- Animations ---- */
-    @keyframes slideUp { from { opacity:0; transform:translateY(32px); } to { opacity:1; transform:translateY(0); } }
-    @keyframes fadeIn  { from { opacity:0; } to { opacity:1; } }
-    @keyframes confettiFall {
-      0%{transform:translateY(-12px) rotate(0deg) scaleX(1);opacity:1;}
-      80%{opacity:.8;}
-      100%{transform:translateY(110vh) rotate(680deg) scaleX(-1);opacity:0;}
-    }
-    .cf { position:absolute; border-radius:3px; animation:confettiFall linear infinite; }
-    .slide-up { animation: slideUp 0.45s cubic-bezier(.22,1,.36,1) both; }
-    .fade-in  { animation: fadeIn 0.3s ease both; }
+    /* Slide animations */
+    @keyframes slideUp{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes slideIn{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:translateX(0);}}
+    @keyframes popIn{from{opacity:0;transform:scale(.92);}to{opacity:1;transform:scale(1);}}
+    .slide-up{animation:slideUp .42s cubic-bezier(.22,1,.36,1) both;}
+    .slide-in{animation:slideIn .38s cubic-bezier(.22,1,.36,1) both;}
+    .pop-in{animation:popIn .3s cubic-bezier(.22,1,.36,1) both;}
 
-    /* ---- Choice tiles ---- */
-    .choice-tile {
-      cursor:pointer; border:2px solid transparent;
-      transition: border-color .2s, box-shadow .2s, transform .2s;
-    }
-    .choice-tile:hover { transform: translateY(-3px); }
-    .choice-tile.selected { border-color: #FF5C35; box-shadow: 0 0 0 4px rgba(255,92,53,.12); }
-    .choice-tile.selected .tile-check { opacity:1; transform:scale(1); }
-    .tile-check { opacity:0; transform:scale(.6); transition: opacity .2s, transform .2s; }
+    /* Service-card hover (same as index.html) */
+    .service-card{transition:transform .25s ease,box-shadow .25s ease;}
+    .service-card:hover{transform:translateY(-6px);box-shadow:0 20px 40px -10px rgba(0,0,0,.18);}
 
-    /* ---- Extra toggle ---- */
-    .extra-card { cursor:pointer; border:2px solid #D4C5A0; transition: border-color .2s, background .2s, transform .2s; }
-    .extra-card:hover { transform: translateY(-2px); }
-    .extra-card.on { border-color:#2EAA62; background:#f0fbf5; }
-    .extra-card .xchk { opacity:0; transform:scale(.7); transition: opacity .2s, transform .2s; }
-    .extra-card.on .xchk { opacity:1; transform:scale(1); }
+    /* Choice tile */
+    .ctile{cursor:pointer;border:2px solid transparent;transition:border-color .2s,box-shadow .2s,transform .2s;}
+    .ctile:hover{transform:translateY(-4px);}
+    .ctile.on{border-color:#FF5C35;box-shadow:0 0 0 4px rgba(255,92,53,.12);}
+    .ctile .ck{opacity:0;transform:scale(.6);transition:opacity .2s,transform .2s;}
+    .ctile.on .ck{opacity:1;transform:scale(1);}
 
-    /* ---- Progress ---- */
-    .progress-fill { transition: width .5s cubic-bezier(.22,1,.36,1); }
+    /* Extra toggle */
+    .xtile{cursor:pointer;border:2px solid #D4C5A0;transition:border-color .2s,background .2s,transform .15s;}
+    .xtile:hover{transform:translateY(-2px);}
+    .xtile.on{border-color:#2EAA62;background:#f0fbf5;}
+    .xtile .xk{opacity:0;transform:scale(.7);transition:opacity .2s,transform .2s;}
+    .xtile.on .xk{opacity:1;transform:scale(1);}
 
-    /* ---- Qty stepper ---- */
-    .qty-btn { width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.4rem; font-weight:900; cursor:pointer; transition: background .15s, transform .1s; }
-    .qty-btn:hover { transform:scale(1.08); }
-    .qty-btn:active { transform:scale(.93); }
+    /* Cart panel */
+    #cartPanel{transition:transform .4s cubic-bezier(.22,1,.36,1),opacity .4s;}
+    #cartPanel.hidden-cart{transform:translateY(8px);opacity:0;pointer-events:none;}
 
-    /* ---- WA pulse ---- */
-    .wa-btn { animation: waPulse 2.5s ease-in-out infinite; }
-    @keyframes waPulse {
-      0%,100% { box-shadow: 0 6px 30px -4px rgba(37,211,102,.5); }
-      50%      { box-shadow: 0 12px 44px -4px rgba(37,211,102,.8); }
-    }
+    /* Progress */
+    .pbar{transition:width .5s cubic-bezier(.22,1,.36,1);}
 
-    /* ---- Confetti pieces (resumen) ---- */
-    .cpiece { position:fixed; border-radius:2px; animation:confettiFall linear forwards; pointer-events:none; z-index:8000; }
+    /* Qty buttons */
+    .qbtn{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:900;cursor:pointer;transition:background .15s,transform .1s;user-select:none;}
+    .qbtn:hover{transform:scale(1.1);}
+    .qbtn:active{transform:scale(.9);}
 
-    /* ---- Organic border ---- */
-    .organic { border-radius: 30px 12px 26px 16px / 16px 26px 12px 30px; }
-    .organic-wrap { border-radius: 38px 18px 32px 22px / 22px 32px 18px 38px; }
+    /* WA pulse */
+    .wa-pulse{animation:waPulse 2.5s ease-in-out infinite;}
+    @keyframes waPulse{0%,100%{box-shadow:0 6px 28px -4px rgba(37,211,102,.5);}50%{box-shadow:0 12px 44px -4px rgba(37,211,102,.85);}}
 
-    /* ---- Section dot deco ---- */
-    .dot-deco span { display:inline-block; border-radius:9999px; }
+    /* Organic border radius (matches index.html) */
+    .org1{border-radius:30px 12px 26px 16px / 16px 26px 12px 30px;}
+    .org2{border-radius:38px 18px 32px 22px / 22px 32px 18px 38px;}
+    .org3{border-radius:28px 12px 24px 18px / 18px 24px 12px 28px;}
 
-    /* ---- Avail ---- */
-    .avail-badge { transition: all .3s; }
+    /* Availability badge */
+    .avbadge{transition:all .3s;}
+
+    /* Floating cart button (mobile) */
+    #floatCart{transition:transform .3s,opacity .3s;bottom:1.5rem;right:1.5rem;}
+    #floatCart.hide{transform:scale(0);opacity:0;}
+
+    /* Step header consistent look */
+    .step-hdr{border-radius:1.5rem 1.5rem 0 0;}
   </style>
 </head>
 <body class="font-body bg-background text-on-background antialiased">
 
-<!-- ===================================================
+<!-- =========================================================
      LOCK SCREEN
-     =================================================== -->
+     ========================================================= -->
 <div id="lockScreen">
-  <!-- Confetti in lock -->
-  <div id="lockConfetti" class="absolute inset-0 pointer-events-none overflow-hidden"></div>
-  <!-- Blobs -->
-  <div class="absolute top-0 left-0 w-72 h-72 rounded-full bg-white/10 blur-3xl pointer-events-none"></div>
-  <div class="absolute bottom-0 right-0 w-96 h-96 rounded-full bg-[#FFD60A]/20 blur-3xl pointer-events-none"></div>
-  <!-- Spheres -->
-  <div class="absolute top-16 left-10 w-5 h-5 rounded-full bg-[#FFD60A] opacity-70"></div>
-  <div class="absolute top-28 left-24 w-3 h-3 rounded-full bg-white opacity-50"></div>
-  <div class="absolute top-12 right-16 w-4 h-4 rounded-full bg-[#2EAA62] opacity-60"></div>
-  <div class="absolute bottom-20 right-10 w-6 h-6 rounded-full bg-[#0099BF] opacity-50"></div>
-
+  <div id="lcf" class="absolute inset-0 pointer-events-none overflow-hidden"></div>
+  <div class="absolute top-20 right-10 w-64 h-64 rounded-full bg-white/10 blur-3xl pointer-events-none"></div>
+  <div class="absolute bottom-10 left-0  w-80 h-80 rounded-full bg-[#FFD60A]/20 blur-3xl pointer-events-none"></div>
+  <div class="absolute top-24 left-6   w-5 h-5 rounded-full bg-[#FFD60A] opacity-70"></div>
+  <div class="absolute top-32 left-16  w-3 h-3 rounded-full bg-white    opacity-50"></div>
+  <div class="absolute top-16 right-32 w-4 h-4 rounded-full bg-[#2EAA62] opacity-60"></div>
+  <div class="absolute bottom-24 right-12 w-6 h-6 rounded-full bg-[#0099BF] opacity-50"></div>
   <div class="relative z-10 w-full max-w-sm mx-auto px-6 text-center">
     <img src="/assets/img/LogoLoDeJuan.png" alt="Lo de Juan" class="h-24 w-auto mx-auto mb-4 drop-shadow-xl" />
-    <h1 class="font-display text-white text-4xl mb-1" style="text-shadow:0 2px 12px rgba(0,0,0,.2);">Cotizador</h1>
-    <p class="text-white/80 text-sm mb-8 font-medium">Acceso privado — ingresá la contraseña</p>
+    <h1 class="font-display text-white text-4xl mb-1" style="text-shadow:0 2px 12px rgba(0,0,0,.22)">Cotizador</h1>
+    <p class="text-white/80 text-sm mb-8 font-medium">Acceso privado · ingresá la contraseña</p>
     <div class="bg-white/20 backdrop-blur-md rounded-3xl p-6 shadow-2xl border border-white/30">
       <input id="pwInput" type="password" placeholder="Contraseña" autocomplete="current-password"
         class="w-full px-4 py-3.5 rounded-2xl bg-white text-on-surface font-semibold text-base placeholder-on-surface-variant/50 border-2 border-transparent focus:border-primary focus:outline-none transition-all mb-3" />
-      <div id="pwError" class="text-white font-bold text-sm mb-3 hidden">❌ Contraseña incorrecta</div>
-      <button onclick="checkPassword()"
-        class="w-full py-3.5 bg-white text-primary font-black text-base rounded-2xl hover:bg-primary-fixed transition-all shadow-xl uppercase tracking-wide active:scale-95">
+      <div id="pwErr" class="text-white font-bold text-sm mb-3 hidden">❌ Contraseña incorrecta</div>
+      <button onclick="unlock()" class="w-full py-3.5 bg-white text-primary font-black text-base rounded-2xl hover:bg-primary-fixed transition-all shadow-xl uppercase tracking-wide active:scale-95">
         Ingresar →
       </button>
     </div>
@@ -162,117 +134,106 @@
   </div>
 </div>
 
-<!-- ===================================================
+<!-- =========================================================
      MAIN APP
-     =================================================== -->
-<div id="app" class="hidden">
+     ========================================================= -->
+<div id="app" class="hidden min-h-screen">
 
-<!-- NAV -->
-<nav class="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm" id="mainNav">
+<!-- NAV (exact copy from index.html) -->
+<nav class="fixed top-0 left-0 right-0 z-50 bg-white" id="mainNav">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between h-20">
       <a href="/" class="flex items-center">
         <img src="/assets/img/LogoLoDeJuan.png" alt="Lo de Juan" class="h-20 w-auto object-contain" />
       </a>
       <div class="hidden md:flex items-center gap-7">
-        <a href="/" class="text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors uppercase tracking-wide">Inicio</a>
-        <a href="/#servicios" class="text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors uppercase tracking-wide">Servicios</a>
-        <a href="/galeria.html" class="text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors uppercase tracking-wide">Galería</a>
+        <a href="/"               class="text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors uppercase tracking-wide">Inicio</a>
+        <a href="/#servicios"     class="text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors uppercase tracking-wide">Servicios</a>
+        <a href="/galeria.html"   class="text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors uppercase tracking-wide">Galería</a>
         <a href="/#disponibilidad" class="text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors uppercase tracking-wide">Disponibilidad</a>
+        <a href="/#contacto"      class="text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors uppercase tracking-wide">Contacto</a>
       </div>
-      <a href="#wizard" class="inline-flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-full text-sm font-bold hover:bg-primary-container transition-colors shadow-lg shadow-primary/25">
-        <span class="material-symbols-outlined text-[18px]">calculate</span>
-        Cotizar ahora
-      </a>
+      <div class="hidden md:flex items-center gap-3">
+        <a href="/admin/login.html" class="inline-flex items-center gap-1.5 text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors px-3 py-2 rounded-lg hover:bg-surface-container-high">
+          <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span>Admin
+        </a>
+        <a href="#wizard" class="inline-flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-full text-sm font-bold hover:bg-primary-container transition-colors shadow-lg shadow-primary/25">
+          <span class="material-symbols-outlined text-[18px]">calculate</span>Cotizar
+        </a>
+      </div>
+      <button id="menuBtn" class="md:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-surface-container-high transition-colors">
+        <span class="material-symbols-outlined text-on-surface">menu</span>
+      </button>
     </div>
   </div>
-  <svg aria-hidden="true" focusable="false" class="absolute left-0 w-full pointer-events-none" style="top:calc(100% - 1px);height:22px;z-index:50;" viewBox="0 0 1440 22" preserveAspectRatio="none">
+  <svg aria-hidden="true" class="absolute left-0 w-full pointer-events-none" style="top:calc(100% - 1px);height:22px;z-index:50;" viewBox="0 0 1440 22" preserveAspectRatio="none">
     <path d="M0,0 C180,22 360,4 540,16 C720,28 900,6 1080,14 C1260,22 1380,8 1440,12 L1440,0 Z" fill="#ffffff"/>
   </svg>
 </nav>
 
-<!-- HERO -->
+<!-- HERO (same as index.html, adapted) -->
 <section class="relative pt-20 overflow-hidden">
   <div class="absolute inset-0 bg-gradient-to-br from-[#FF5C35] via-[#FF8050] to-[#FFD60A]"></div>
   <div class="absolute top-20 right-10 w-64 h-64 rounded-full bg-white/10 blur-3xl pointer-events-none"></div>
-  <div class="absolute bottom-10 left-0 w-80 h-80 rounded-full bg-[#FFD60A]/20 blur-3xl pointer-events-none"></div>
-  <!-- Confetti -->
-  <div id="confetti-box" class="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true"></div>
-  <!-- Spheres -->
-  <div class="absolute top-24 left-6 w-5 h-5 rounded-full bg-[#FFD60A] opacity-70 pointer-events-none"></div>
-  <div class="absolute top-32 left-16 w-3 h-3 rounded-full bg-white opacity-50 pointer-events-none"></div>
+  <div class="absolute bottom-10 left-0  w-80 h-80 rounded-full bg-[#FFD60A]/20 blur-3xl pointer-events-none"></div>
+  <div id="cfbox" class="absolute inset-0 pointer-events-none overflow-hidden"></div>
+  <div class="absolute top-24 left-6   w-5 h-5 rounded-full bg-[#FFD60A] opacity-70 pointer-events-none"></div>
+  <div class="absolute top-32 left-16  w-3 h-3 rounded-full bg-white    opacity-50 pointer-events-none"></div>
   <div class="absolute top-16 right-32 w-4 h-4 rounded-full bg-[#2EAA62] opacity-60 pointer-events-none"></div>
   <div class="absolute bottom-24 right-12 w-6 h-6 rounded-full bg-[#0099BF] opacity-50 pointer-events-none"></div>
   <div class="absolute bottom-32 right-40 w-3 h-3 rounded-full bg-[#FFD60A] opacity-60 pointer-events-none"></div>
 
-  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-32 md:pt-20 md:pb-40">
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-10 items-center">
-      <!-- Text -->
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-28 md:pt-20 md:pb-36">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
       <div class="md:col-span-7 text-center md:text-left">
         <div class="flex justify-center md:justify-start mb-6">
           <span class="inline-flex items-center gap-2 bg-white/25 backdrop-blur-sm text-white px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest border border-white/30">
-            🎊 Cotizador — Bahía Blanca
+            🧮 Cotizador de Eventos — Bahía Blanca
           </span>
         </div>
         <h1 class="font-headline text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight mb-6 uppercase tracking-tight drop-shadow-sm">
-          Simulá tu evento<br><span class="font-display text-[#FFE566] normal-case" style="font-size:.85em;letter-spacing:-.5px;">y conocé el precio</span>
+          Simulá tu evento<br><span class="font-display text-[#FFE566] normal-case" style="font-size:.82em;letter-spacing:-.5px;">conocé el precio</span>
         </h1>
         <p class="text-white/85 text-lg leading-relaxed max-w-xl mb-8 font-medium mx-auto md:mx-0">
-          Elegí el tipo de evento, el pack, la fecha y los adicionales. En segundos tenés el total y podés reservar por WhatsApp.
+          Elegí el tipo de fiesta, el pack, la fecha y los adicionales. En segundos tenés el presupuesto y podés reservar directo por WhatsApp.
         </p>
         <div class="flex flex-wrap gap-4 justify-center md:justify-start">
           <a href="#wizard" class="inline-flex items-center gap-2 bg-white text-primary px-7 py-3.5 rounded-full font-black text-sm hover:bg-[#FFF5E0] transition-colors shadow-xl shadow-black/20 uppercase tracking-wide">
-            <span class="material-symbols-outlined text-[18px]">calculate</span>
-            Armar mi cotización
+            <span class="material-symbols-outlined text-[18px]">calculate</span>Armar mi cotización
           </a>
           <a href="/#servicios" class="inline-flex items-center gap-2 border-2 border-white/60 text-white px-7 py-3.5 rounded-full font-bold text-sm hover:bg-white/15 transition-colors uppercase tracking-wide">
-            <span class="material-symbols-outlined text-[18px]">celebration</span>
-            Ver todos los servicios
+            <span class="material-symbols-outlined text-[18px]">celebration</span>Ver servicios
           </a>
         </div>
-        <!-- Stats -->
         <div class="flex flex-wrap items-center gap-6 mt-10 justify-center md:justify-start">
-          <div class="flex items-center gap-2 text-white/90">
-            <span class="text-2xl">🎂</span>
-            <span class="text-sm font-semibold">Infantiles<br><span class="font-black text-white">y Teens</span></span>
-          </div>
+          <div class="flex items-center gap-2 text-white/90"><span class="text-2xl">🎂</span><span class="text-sm font-semibold">Cumpleaños<br><span class="font-black text-white">Infantiles</span></span></div>
           <div class="w-px h-8 bg-white/30 hidden sm:block"></div>
-          <div class="flex items-center gap-2 text-white/90">
-            <span class="text-2xl">🎓</span>
-            <span class="text-sm font-semibold">Egresados<br><span class="font-black text-white">de Jardín y 6°</span></span>
-          </div>
+          <div class="flex items-center gap-2 text-white/90"><span class="text-2xl">🎓</span><span class="text-sm font-semibold">Egresados<br><span class="font-black text-white">y Teens</span></span></div>
           <div class="w-px h-8 bg-white/30 hidden sm:block"></div>
-          <div class="flex items-center gap-2 text-white/90">
-            <span class="text-2xl">🌙</span>
-            <span class="text-sm font-semibold">Fiestas<br><span class="font-black text-white">de Noche</span></span>
-          </div>
+          <div class="flex items-center gap-2 text-white/90"><span class="text-2xl">🕺</span><span class="text-sm font-semibold">Fiestas<br><span class="font-black text-white">de Noche</span></span></div>
         </div>
       </div>
-      <!-- Image carousel -->
       <div class="md:col-span-5 flex justify-center">
         <div class="relative w-full max-w-sm md:max-w-none">
           <div class="absolute -inset-3 bg-white/20 rounded-3xl blur-xl"></div>
-          <div class="relative p-2 bg-white/25 backdrop-blur-sm border border-white/40 organic-wrap">
-            <div id="heroCarousel" class="relative overflow-hidden shadow-xl organic" style="aspect-ratio:9/14;">
-              <img src="/assets/img/hero/02.jpg" alt="Cumple Infantil" class="hero-slide absolute inset-0 w-full h-full object-cover" style="opacity:1;transition:opacity .8s ease;" />
-              <img src="/assets/img/hero/03.jpg" alt="Deck Lo de Juan"  class="hero-slide absolute inset-0 w-full h-full object-cover" style="opacity:0;transition:opacity .8s ease;" />
-              <img src="/assets/img/hero/04.jpg" alt="Egresaditos"      class="hero-slide absolute inset-0 w-full h-full object-cover" style="opacity:0;transition:opacity .8s ease;" />
-              <img src="/assets/img/hero/05.jpg" alt="Fiesta de Noche"  class="hero-slide absolute inset-0 w-full h-full object-cover" style="opacity:0;transition:opacity .8s ease;" />
-              <img src="/assets/img/hero/06.jpg" alt="Patio"            class="hero-slide absolute inset-0 w-full h-full object-cover" style="opacity:0;transition:opacity .8s ease;" />
+          <div class="relative p-2 bg-white/25 backdrop-blur-sm border border-white/40 org2">
+            <div id="heroCarousel" class="relative overflow-hidden shadow-xl org1" style="aspect-ratio:9/14;">
+              <img src="/assets/img/hero/02.jpg" alt="" class="hs absolute inset-0 w-full h-full object-cover" style="opacity:1;transition:opacity .8s;" />
+              <img src="/assets/img/hero/03.jpg" alt="" class="hs absolute inset-0 w-full h-full object-cover" style="opacity:0;transition:opacity .8s;" />
+              <img src="/assets/img/hero/04.jpg" alt="" class="hs absolute inset-0 w-full h-full object-cover" style="opacity:0;transition:opacity .8s;" />
+              <img src="/assets/img/hero/05.jpg" alt="" class="hs absolute inset-0 w-full h-full object-cover" style="opacity:0;transition:opacity .8s;" />
+              <img src="/assets/img/hero/06.jpg" alt="" class="hs absolute inset-0 w-full h-full object-cover" style="opacity:0;transition:opacity .8s;" />
             </div>
           </div>
-          <div class="absolute -bottom-4 -left-4 bg-white shadow-xl px-4 py-3 flex items-center gap-2" style="border-radius:28px 12px 24px 18px / 18px 24px 12px 28px;">
+          <div class="absolute -bottom-4 -left-4 bg-white shadow-xl px-4 py-3 flex items-center gap-2 org3">
             <span class="text-2xl">✨</span>
-            <div>
-              <div class="text-xs font-black text-on-surface uppercase tracking-wide">Precio en segundos</div>
-              <div class="text-xs text-on-surface-variant font-medium">Sin compromiso</div>
-            </div>
+            <div><div class="text-xs font-black text-on-surface uppercase tracking-wide">Precio al instante</div>
+            <div class="text-xs text-on-surface-variant font-medium">Sin compromiso</div></div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <!-- Wave divider -->
   <div class="absolute bottom-0 left-0 right-0">
     <svg viewBox="0 0 1440 70" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:70px;">
       <path d="M0,35 C240,70 480,0 720,35 C960,70 1200,0 1440,35 L1440,70 L0,70 Z" fill="#FFFDF5"/>
@@ -280,19 +241,19 @@
   </div>
 </section>
 
-<!-- ===================================================
-     WIZARD SECTION
-     =================================================== -->
-<section id="wizard" class="py-16 md:py-24 bg-background">
+<!-- =========================================================
+     WIZARD APP
+     ========================================================= -->
+<section id="wizard" class="py-16 md:py-20 bg-background">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-    <!-- Section header -->
+    <!-- Section header (same style as servicios) -->
     <div class="text-center mb-14">
-      <div class="dot-deco flex items-end justify-center gap-2 mb-3" aria-hidden="true">
-        <span class="w-3 h-3 bg-primary"></span>
-        <span class="w-2 h-2 bg-[#FFD60A] mb-1"></span>
-        <span class="w-3.5 h-3.5 bg-[#0099BF]"></span>
-        <span class="w-2 h-2 bg-[#2EAA62] mb-0.5"></span>
+      <div class="flex items-end justify-center gap-2 mb-3" aria-hidden="true">
+        <span class="w-3 h-3 rounded-full bg-primary inline-block"></span>
+        <span class="w-2 h-2 rounded-full bg-[#FFD60A] mb-1 inline-block"></span>
+        <span class="w-3.5 h-3.5 rounded-full bg-[#0099BF] inline-block"></span>
+        <span class="w-2 h-2 rounded-full bg-[#2EAA62] mb-0.5 inline-block"></span>
       </div>
       <span class="inline-flex items-center gap-2 bg-primary-fixed text-on-primary-fixed-variant px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-4">
         🧮 Armá tu presupuesto
@@ -301,71 +262,143 @@
         ¿Qué <span class="font-display text-primary normal-case" style="font-size:1.1em;letter-spacing:-.5px;">celebrás</span>?
       </h2>
       <p class="text-on-surface-variant text-base max-w-2xl mx-auto font-medium">
-        Seguí los pasos para armar tu cotización. Seña del <span class="font-black text-on-surface">40%</span> para confirmar la fecha.
+        Seguí los pasos y armá tu cotización. Con la seña del <span class="font-black text-on-surface">40%</span> reservás la fecha.
       </p>
     </div>
 
-    <!-- Progress strip -->
-    <div class="max-w-2xl mx-auto mb-8">
+    <!-- Progress (full width) -->
+    <div class="max-w-3xl mx-auto mb-10">
       <div class="flex items-center justify-between mb-2">
-        <span id="stepLabel" class="text-xs font-black text-primary uppercase tracking-widest"></span>
-        <span id="stepCounter" class="text-xs text-on-surface-variant font-semibold"></span>
+        <span id="stepLbl" class="text-xs font-black text-primary uppercase tracking-widest"></span>
+        <span id="stepCnt" class="text-xs text-on-surface-variant font-semibold"></span>
       </div>
-      <div class="h-2.5 bg-outline-variant/30 rounded-full overflow-hidden">
-        <div id="progressBar" class="progress-fill h-full rounded-full bg-gradient-to-r from-primary to-[#FFD60A]" style="width:0%"></div>
+      <div class="h-2.5 bg-outline-variant/30 rounded-full overflow-hidden mb-2">
+        <div id="pbar" class="pbar h-full rounded-full bg-gradient-to-r from-primary to-[#FFD60A]" style="width:0%"></div>
       </div>
-      <div id="stepDots" class="flex gap-1.5 mt-2 justify-between"></div>
+      <div id="pdots" class="flex gap-1.5"></div>
     </div>
 
-    <!-- Wizard content -->
-    <div class="max-w-2xl mx-auto" id="wizardContainer"></div>
+    <!-- Two-column layout: wizard + cart -->
+    <div class="flex gap-8 items-start max-w-7xl mx-auto">
 
+      <!-- LEFT: Wizard steps -->
+      <div class="flex-1 min-w-0" id="wizardContainer"></div>
+
+      <!-- RIGHT: Cart panel (desktop) -->
+      <div class="hidden lg:block w-80 flex-shrink-0">
+        <div id="cartPanel" class="sticky top-28">
+          <div id="cartInner" class="bg-white rounded-3xl shadow-xl overflow-hidden border-2 border-[#FFD60A]/30">
+            <!-- Cart header -->
+            <div class="bg-gradient-to-br from-[#FF5C35] to-[#FF8050] px-5 py-4">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-white text-[20px]">shopping_cart</span>
+                  <span class="font-headline font-black text-white uppercase tracking-wide text-sm">Tu cotización</span>
+                </div>
+                <button onclick="resetWizard()" class="text-white/70 hover:text-white transition-colors text-xs font-semibold flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[14px]">refresh</span>Reiniciar
+                </button>
+              </div>
+            </div>
+            <!-- Cart body -->
+            <div id="cartBody" class="px-5 py-4 space-y-3 min-h-[120px]">
+              <p id="cartEmpty" class="text-xs text-on-surface-variant text-center py-4 font-medium">Empezá seleccionando un tipo de evento</p>
+            </div>
+            <!-- Cart footer -->
+            <div id="cartFooter" class="hidden px-5 py-4 border-t border-outline-variant/20">
+              <div class="flex justify-between items-center mb-1">
+                <span class="text-xs text-on-surface-variant font-semibold uppercase tracking-wide">Total</span>
+                <span id="cartTotal" class="font-headline font-black text-xl text-on-surface"></span>
+              </div>
+              <div class="rounded-xl px-4 py-2.5 flex justify-between items-center bg-gradient-to-r from-primary to-[#FF8050] mb-3">
+                <span class="text-white/80 text-xs font-bold">Seña (40%)</span>
+                <span id="cartSena" class="text-white font-headline font-black text-lg"></span>
+              </div>
+              <div id="cartWABtn"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /two-col -->
   </div>
 </section>
 
-<!-- Footer simple -->
-<footer class="bg-on-surface text-surface-container-low py-8 text-center text-sm">
-  <img src="/assets/img/LogoLoDeJuan.png" alt="Lo de Juan" class="h-12 w-auto mx-auto mb-3 opacity-80" />
-  <p class="font-medium opacity-60">© 2024 Lo de Juan · Bahía Blanca</p>
+<!-- FOOTER -->
+<footer class="bg-inverse-surface text-inverse-on-surface py-10 text-center">
+  <img src="/assets/img/LogoLoDeJuan.png" alt="Lo de Juan" class="h-12 w-auto mx-auto mb-3 opacity-70" />
+  <p class="text-sm font-medium opacity-50">© 2024 Lo de Juan · Bahía Blanca</p>
+  <p class="text-xs opacity-30 mt-1">Catering & Organización de Eventos</p>
 </footer>
 
 </div><!-- /app -->
 
-<!-- ===================================================
-     CONFETTI CONTAINER
-     =================================================== -->
-<div id="confettiContainer" class="pointer-events-none fixed inset-0 z-[9000] overflow-hidden"></div>
+<!-- Floating cart button (mobile) -->
+<button id="floatCart" onclick="scrollToCart()" class="hide fixed z-40 bg-primary text-white rounded-full shadow-2xl shadow-primary/40 px-4 py-3 flex items-center gap-2 font-bold text-sm">
+  <span class="material-symbols-outlined text-[20px]">shopping_cart</span>
+  <span id="floatTotal">$0</span>
+</button>
 
+<!-- Confetti -->
+<div id="cbox" class="fixed inset-0 z-[9000] pointer-events-none overflow-hidden"></div>
+
+<!-- =========================================================
+     DATA & LOGIC
+     ========================================================= -->
 <script>
-// ============================================================
-// DATA
-// ============================================================
+// ---- DATA ----
 const TIPOS = [
-  { id:"infantil",      label:"Cumple Infantil",       icon:"🎂", desc:"Para los más chiquitos", color:"from-[#FFD60A] to-[#FFA800]", accent:"#E8B800" },
-  { id:"teens",         label:"Fiesta Teens",           icon:"🕺", desc:"12 a 17 años",           color:"from-[#0099BF] to-[#0075A0]", accent:"#0099BF" },
-  { id:"egresaditos",   label:"Egresaditos de Jardín",  icon:"🎓", desc:"El primer gran festejo", color:"from-[#2EAA62] to-[#1A8A48]", accent:"#2EAA62" },
-  { id:"egresados",     label:"Egresados 6° Grado",     icon:"🏆", desc:"El fin de una etapa",    color:"from-[#FF5C35] to-[#CC3310]", accent:"#FF5C35" },
-  { id:"cumple_tarde",  label:"Cumpleaños de Tarde",    icon:"☕", desc:"Merienda y celebración", color:"from-[#9C54D4] to-[#7A3AB0]", accent:"#9C54D4" },
-  { id:"cumple_noche",  label:"Fiesta de Noche",        icon:"🌙", desc:"La noche es tuya",       color:"from-[#1A1A2E] to-[#16213E]", accent:"#0099BF" },
+  {id:"infantil",     lbl:"Cumpleaños Infantil",    icon:"🎂", sub:"Para los más chicos, con juegos, animación y toda la diversión", grad:"from-[#FFD60A] to-[#FFA800]", acc:"#E8B800", light:"bg-[#FFF5C2]", badge:"3 Packs"},
+  {id:"teens",        lbl:"Fiesta Teens",            icon:"🕺", sub:"4 horas de diversión épica con pizza libre y música",           grad:"from-[#0099BF] to-[#0075A0]", acc:"#0099BF", light:"bg-[#CCF0FA]", badge:"Mín. 30"},
+  {id:"egresaditos",  lbl:"Egresaditos de Jardín",   icon:"🎓", sub:"El primer gran festejo con juegos, animación y diploma",        grad:"from-[#2EAA62] to-[#1A8A48]", acc:"#2EAA62", light:"bg-[#C8F0DC]", badge:"2 Packs"},
+  {id:"egresados",    lbl:"Egresados de 6° Grado",   icon:"🏆", sub:"4hs de diversión con DJ, menú y desafíos grupales",            grad:"from-[#FF5C35] to-[#CC3310]", acc:"#FF5C35", light:"bg-[#FFE8E0]", badge:"1 Pack"},
+  {id:"cumple_tarde", lbl:"Cumpleaños de Tarde",     icon:"☕", sub:"Merienda artesanal, petit desserts y mucha alegría",            grad:"from-[#9C54D4] to-[#7A3AB0]", acc:"#9C54D4", light:"bg-[#EDE0FF]", badge:"Mín. 30"},
+  {id:"cumple_noche", lbl:"Fiesta de Noche",         icon:"🌙", sub:"La noche es tuya — DJ, menú completo y opción barra libre",     grad:"from-[#1A1A2E] to-[#16213E]", acc:"#0099BF", light:"bg-[#CCF0FA]", badge:"Mín. 50"},
 ];
 
 const SERVICIOS = [
-  { id:"infantil_pack_aventura",    cat:"infantil",     nombre:"Pack Aventura",                  precio_total:450000, precio_pp:null,  min:null, incluye:["3hs de cumple + animación + ayudante","Piñata, castillo inflable, metegol y mangrullo","Plaza blanda, sala de baile y acrobacia"], no_incluye:"Comida (la trae el cliente)" },
-  { id:"infantil_pack_full",        cat:"infantil",     nombre:"Pack Full",                      precio_total:690000, precio_pp:null,  min:null, incluye:["Todo del Pack Aventura","Menú 25 peques: snacks, patitas, pizza","Bebida incluida"], no_incluye:null },
-  { id:"infantil_pack_experiencia", cat:"infantil",     nombre:"Pack Experiencia Lo de Juan",    precio_total:790000, precio_pp:null,  min:null, incluye:["Todo del Pack Full","Circuito Multiaventura","Mega Inflable"], no_incluye:null, dest:true },
-  { id:"teens_pack_fun",            cat:"teens",        nombre:"Pack Fun",                       precio_total:550000, precio_pp:null,  min:null, incluye:["4hs de evento con personal","Vajilla y baños completos","Coordinación durante todo el evento"], no_incluye:"Comida, bebida, DJ y sonido" },
-  { id:"teens_pack_night",          cat:"teens",        nombre:"Pack Night",                     precio_total:null,   precio_pp:29000, min:30,   incluye:["4hs con DJ + luces + sonido","Menú: snacks + pizza libre","Gaseosas y aguas"], no_incluye:null },
-  { id:"teens_pack_ultimate",       cat:"teens",        nombre:"Pack Ultimate (con Flúor)",      precio_total:null,   precio_pp:39000, min:30,   incluye:["Todo del Night","Barra sin alcohol (licuados o daiquiris)","¡Fiesta Flúor completa!"], no_incluye:null, dest:true },
-  { id:"egresaditos_con_menu",      cat:"egresaditos",  nombre:"Con Menú Incluido",              precio_total:null,   precio_pp:34000, min:null, incluye:["4hs con juegos al aire libre","Multiaventura, bowling, tobogán, animación","Pizza libre + bebida + helado de postre"], no_incluye:null, dest:true },
-  { id:"egresaditos_sin_menu",      cat:"egresaditos",  nombre:"Sin Menú (canasta propia)",      precio_total:null,   precio_pp:29000, min:null, incluye:["4hs con juegos al aire libre","Multiaventura, bowling, tobogán, animación","Birrete y diploma simbólico"], no_incluye:"Comida (la trae la familia)" },
-  { id:"egresados_6_grado",         cat:"egresados",    nombre:"Egresados de 6° Grado",          precio_total:null,   precio_pp:40000, min:null, incluye:["4hs con DJ + luces + sonido","Baile, desafíos grupales, coordinación","Pizza libre + gaseosas + helado"], no_incluye:null },
-  { id:"cumple_tarde_merienda",     cat:"cumple_tarde", nombre:"Pack Merienda",                  precio_total:null,   precio_pp:40000, min:30,   incluye:["4hs con personal y vajilla","Sándwiches, chipá, muffins, shots, petit desserts","Café, té, gaseosas y aguas"], no_incluye:null },
-  { id:"cumple_noche_premium",      cat:"cumple_noche", nombre:"Pack Premium (con Barra Libre)", precio_total:null,   precio_pp:99000, min:50,   incluye:["21:30–04:00 con DJ y personal","Menú completo + vinos en cena","Barra libre: cerveza, Fernet, Gin, Campari"], no_incluye:null, dest:true },
-  { id:"cumple_noche_gold",         cat:"cumple_noche", nombre:"Pack Gold (sin Barra Libre)",    precio_total:null,   precio_pp:79000, min:50,   incluye:["21:30–04:00 con DJ y personal","Menú completo + vinos en cena","Gaseosas, aguas y soda"], no_incluye:"Barra libre" },
-  { id:"cumple_noche_silver",       cat:"cumple_noche", nombre:"Pack Silver (Salón Solo)",       precio_total:1600000, precio_pp:null, min:50,  incluye:["21:30–04:00 con personal","Vajilla, copas, baños, limpieza","DJ, luces y sonido"], no_incluye:"Comida y bebida (la trae el cliente)" },
+  {id:"infantil_pack_aventura",    cat:"infantil",     nom:"Pack Aventura",                 pt:450000, pp:null,  min:null, dest:false,
+   inc:["Castillo inflable + metegol + mangrullo","Animación + piñata + sala de baile","Plaza blanda + sala de acrobacia","3hs de cumple con invitaciones virtuales"],
+   ni:"Comida (la trae el cliente)"},
+  {id:"infantil_pack_full",        cat:"infantil",     nom:"Pack Full",                     pt:690000, pp:null,  min:null, dest:false,
+   inc:["Todo del Pack Aventura","Menú 25 peques: snacks, patitas, pizza","Bebida incluida para los chicos"],
+   ni:null},
+  {id:"infantil_pack_experiencia", cat:"infantil",     nom:"Pack Experiencia Lo de Juan",   pt:790000, pp:null,  min:null, dest:true,
+   inc:["Todo del Pack Full","+ Circuito Multiaventura","+ Mega Inflable"],
+   ni:null},
+  {id:"teens_pack_fun",            cat:"teens",        nom:"Pack Fun",                      pt:550000, pp:null,  min:null, dest:false,
+   inc:["4hs con personal de cocina y coordinación","Vajilla, copas y baños completos","Limpieza incluida"],
+   ni:"Comida, bebida, DJ y sonido"},
+  {id:"teens_pack_night",          cat:"teens",        nom:"Pack Night",                    pt:null,   pp:29000, min:30,   dest:false,
+   inc:["4hs con DJ + luces + sonido","Menú: snacks + pizza libre","Gaseosas, saborizadas y agua"],
+   ni:null},
+  {id:"teens_pack_ultimate",       cat:"teens",        nom:"Pack Ultimate (con Flúor)",     pt:null,   pp:39000, min:30,   dest:true,
+   inc:["Todo del Night + barra sin alcohol","Licuados o daiquiris","¡Fiesta Flúor completa! 🎉"],
+   ni:null},
+  {id:"egresaditos_con_menu",      cat:"egresaditos",  nom:"Con Menú Incluido",             pt:null,   pp:34000, min:null, dest:true,
+   inc:["4hs de juegos al aire libre","Multiaventura, bowling, tobogán, rueda","Pizza libre + bebida + helado de postre"],
+   ni:null},
+  {id:"egresaditos_sin_menu",      cat:"egresaditos",  nom:"Sin Menú (canasta propia)",     pt:null,   pp:29000, min:null, dest:false,
+   inc:["4hs de juegos al aire libre","Multiaventura, bowling, tobogán, rueda","Birrete y diploma simbólico"],
+   ni:"Comida (la trae la familia)"},
+  {id:"egresados_6_grado",         cat:"egresados",    nom:"Egresados de 6° Grado",         pt:null,   pp:40000, min:null, dest:false,
+   inc:["4hs con DJ + luces + sonido","Baile y desafíos grupales","Pizza libre + gaseosas + helado"],
+   ni:null},
+  {id:"cumple_tarde_merienda",     cat:"cumple_tarde", nom:"Pack Merienda",                 pt:null,   pp:40000, min:30,   dest:false,
+   inc:["4hs con personal y vajilla completa","Sándwiches, chipá, muffins, shots, petit desserts","Café, té, gaseosas y aguas saborizadas"],
+   ni:null},
+  {id:"cumple_noche_premium",      cat:"cumple_noche", nom:"Pack Premium (con Barra Libre)",pt:null,   pp:99000, min:50,   dest:true,
+   inc:["21:30–04:00 con DJ y personal","Menú completo + vinos en cena","Barra libre: cerveza, Fernet, Gin, Campari"],
+   ni:null},
+  {id:"cumple_noche_gold",         cat:"cumple_noche", nom:"Pack Gold (sin Barra Libre)",   pt:null,   pp:79000, min:50,   dest:false,
+   inc:["21:30–04:00 con DJ y personal","Menú completo + vinos en cena","Gaseosas, saborizadas, agua y soda"],
+   ni:"Barra libre de alcohólicos"},
+  {id:"cumple_noche_silver",       cat:"cumple_noche", nom:"Pack Silver (Salón Solo)",      pt:1600000,pp:null,  min:50,   dest:false,
+   inc:["21:30–04:00 con personal completo","Vajilla, copas, baños y limpieza","DJ, luces y sonido incluidos"],
+   ni:"Comida y bebida (la trae el cliente)"},
 ];
 
-const EXTRAS_POR_TIPO = {
+const EXTRAS_MAP = {
   infantil:    ["rueda_hamster","tobogan_pelotas","circuito_multiaventura","cuatris","tobogan_acuatico","bowling_humano","combo_tobogan_pile","super_combo_verano"],
   egresaditos: ["rueda_hamster","tobogan_pelotas","circuito_multiaventura","cuatris","tobogan_acuatico","bowling_humano","combo_tobogan_pile","super_combo_verano"],
   teens:       ["barra_tragos","dj_noche"],
@@ -375,648 +408,580 @@ const EXTRAS_POR_TIPO = {
 };
 
 const EXTRAS = [
-  { id:"rueda_hamster",          nombre:"Rueda de Hámster",                 icon:"🐹", precio:60000  },
-  { id:"tobogan_pelotas",        nombre:"Tobogán Gigante con Pelotas",      icon:"🎿", precio:60000  },
-  { id:"circuito_multiaventura", nombre:"Circuito Multiaventura",           icon:"🧗", precio:60000  },
-  { id:"cuatris",                nombre:"Cuatriciclos Eléctricos",          icon:"⚡", precio:60000  },
-  { id:"tobogan_acuatico",       nombre:"Tobogán Acuático",                 icon:"💧", precio:60000  },
-  { id:"bowling_humano",         nombre:"Bowling Humano",                   icon:"🎳", precio:50000  },
-  { id:"combo_tobogan_pile",     nombre:"Tobogán + Cilindro + Pileta",      icon:"🌊", precio:130000, combo:true },
-  { id:"super_combo_verano",     nombre:"Super Combo Verano (todos los juegos de agua)", icon:"☀️", precio:130000, combo:true },
-  { id:"barra_tragos",           nombre:"Barra de Tragos",                  icon:"🍹", precio:null, aConsultar:true },
-  { id:"dj_noche",               nombre:"DJ, Luces y Sonido",               icon:"🎧", precio:400000 },
+  {id:"rueda_hamster",          nom:"Rueda de Hámster",               icon:"🐹", p:60000},
+  {id:"tobogan_pelotas",        nom:"Tobogán Gigante con Pelotas",    icon:"🎿", p:60000},
+  {id:"circuito_multiaventura", nom:"Circuito Multiaventura",         icon:"🧗", p:60000},
+  {id:"cuatris",                nom:"Cuatriciclos Eléctricos",        icon:"⚡", p:60000},
+  {id:"tobogan_acuatico",       nom:"Tobogán Acuático",               icon:"💧", p:60000},
+  {id:"bowling_humano",         nom:"Bowling Humano",                 icon:"🎳", p:50000},
+  {id:"combo_tobogan_pile",     nom:"Tobogán + Cilindro + Pileta",   icon:"🌊", p:130000},
+  {id:"super_combo_verano",     nom:"Super Combo Verano",             icon:"☀️", p:130000},
+  {id:"barra_tragos",           nom:"Barra de Tragos",                icon:"🍹", p:null, ask:true},
+  {id:"dj_noche",               nom:"DJ, Luces y Sonido",             icon:"🎧", p:400000},
 ];
 
 const TURNOS = {
-  manana: { label:"Turno Medio Día", hora:"11:30 – 15:30" },
-  tarde:  { label:"Turno Tarde",     hora:"16:30 – 20:30" },
-  noche:  { label:"Turno Noche",     hora:"21:30 – 04:00" },
+  manana:{lbl:"Turno Medio Día",h:"11:30 – 15:30"},
+  tarde: {lbl:"Turno Tarde",    h:"16:30 – 20:30"},
+  noche: {lbl:"Turno Noche",    h:"21:30 – 04:00"},
 };
 
-const WA = "5492915773859";
-const ALIAS = "parquesinlimites";
-const TEL_COMP = "+54 9 2914 16-2814";
-const SENA_PCT = 40;
+const WA="5492915773859", ALIAS="parquesinlimites", TELC="+54 9 2914 16-2814", SENA=40;
+const STEPS=5, LABELS=["Tipo de evento","Elegí tu pack","Fecha y personas","Adicionales","Tu cotización"];
 
-// ============================================================
-// STATE
-// ============================================================
-let S = { step:1, tipo:null, servicio:null, personas:30, fecha:"", turno:null, extras:[], dispon:null, checking:false };
-const STEPS = 5;
-const STEP_LABELS = ["Tipo de evento","Elegí tu pack","Fecha y personas","Adicionales","Tu cotización"];
+// ---- STATE ----
+let S={step:1,tipo:null,serv:null,pax:30,fecha:"",turno:null,extras:[],dispon:null,chk:false};
 
-// ============================================================
-// UTILS
-// ============================================================
-const fmt = n => n != null ? n.toLocaleString('es-AR') : null;
-
-function calcTotal() {
-  if (!S.servicio) return 0;
-  const s = SERVICIOS.find(x => x.id === S.servicio);
-  let base = s.precio_total || (s.precio_pp * Math.max(S.personas, s.min || 0));
-  let ext = 0;
-  S.extras.forEach(eid => { const e = EXTRAS.find(x=>x.id===eid); if(e && e.precio) ext += e.precio; });
-  return base + ext;
+// ---- UTILS ----
+const $=id=>document.getElementById(id);
+const fmt=n=>n!=null?n.toLocaleString('es-AR'):null;
+function calcTotal(){
+  if(!S.serv) return 0;
+  const s=SERVICIOS.find(x=>x.id===S.serv);
+  let b=s.pt||(s.pp*Math.max(S.pax,s.min||0));
+  S.extras.forEach(eid=>{const e=EXTRAS.find(x=>x.id===eid);if(e&&e.p)b+=e.p;});
+  return b;
 }
-function calcSena() { return Math.round(calcTotal() * SENA_PCT / 100); }
-function tipoData() { return TIPOS.find(t=>t.id===S.tipo) || {}; }
-function servData() { return SERVICIOS.find(x=>x.id===S.servicio) || {}; }
+function calcSena(){return Math.round(calcTotal()*SENA/100);}
+function tipo(){return TIPOS.find(t=>t.id===S.tipo)||{};}
+function serv(){return SERVICIOS.find(x=>x.id===S.serv)||{};}
 
-function precioLabel(s) {
-  if (s.precio_total) return { main:`$${fmt(s.precio_total)}`, sub:"total" };
-  if (s.precio_pp)    return { main:`$${fmt(s.precio_pp)}`, sub:"/persona" };
-  return { main:"A consultar", sub:"" };
+// ---- LOCK ----
+function unlock(){
+  if($('pwInput').value==='lodejuan2025'){
+    $('lockScreen').classList.add('out');
+    setTimeout(()=>{$('lockScreen').style.display='none';$('app').classList.remove('hidden');renderStep();},600);
+  }else{$('pwErr').classList.remove('hidden');$('pwInput').value='';$('pwInput').focus();}
 }
 
-// ============================================================
-// PASSWORD
-// ============================================================
-function checkPassword() {
-  if (document.getElementById('pwInput').value === 'lodejuan2025') {
-    document.getElementById('lockScreen').classList.add('out');
-    setTimeout(()=>{
-      document.getElementById('lockScreen').style.display='none';
-      document.getElementById('app').classList.remove('hidden');
-      renderStep();
-    }, 600);
-  } else {
-    document.getElementById('pwError').classList.remove('hidden');
-    document.getElementById('pwInput').value = '';
-    document.getElementById('pwInput').focus();
-  }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  // Lock confetti
-  const colors = ['#ffffff','#FFD60A','#2EAA62','#0099BF','#fff','#FFE566'];
-  const box = document.getElementById('lockConfetti');
-  for (let i = 0; i < 28; i++) {
-    const el = document.createElement('div');
-    el.className = 'cf';
-    const w = Math.random()*7+4, h = Math.random()*10+5, dur = Math.random()*5+4;
-    el.style.cssText = `width:${w}px;height:${h}px;left:${Math.random()*100}%;top:0;background:${colors[~~(Math.random()*colors.length)]};opacity:${Math.random()*.5+.4};animation-duration:${dur}s;animation-delay:${-Math.random()*dur}s;transform-origin:center;`;
-    box.appendChild(el);
-  }
-
-  // Hero confetti
-  const hbox = document.getElementById('confetti-box');
-  if (hbox) for (let i = 0; i < 32; i++) {
-    const el = document.createElement('div');
-    el.className = 'cf';
-    const w = Math.random()*7+4, h = Math.random()*10+5, dur = Math.random()*5+4;
-    el.style.cssText = `width:${w}px;height:${h}px;left:${Math.random()*100}%;top:0;background:${colors[~~(Math.random()*colors.length)]};opacity:${Math.random()*.5+.4};animation-duration:${dur}s;animation-delay:${-Math.random()*dur}s;transform-origin:center;`;
-    hbox.appendChild(el);
-  }
-
+// ---- INIT ----
+document.addEventListener('DOMContentLoaded',()=>{
+  const cols=['#ffffff','#FFD60A','#2EAA62','#0099BF','#FFE566','#FF8C20'];
+  ['lcf','cfbox'].forEach(id=>{
+    const box=$(id); if(!box) return;
+    for(let i=0;i<30;i++){
+      const el=document.createElement('div');
+      el.className='cf';
+      const w=Math.random()*7+4,h=Math.random()*10+5,d=Math.random()*5+4;
+      el.style.cssText=`width:${w}px;height:${h}px;left:${Math.random()*100}%;top:0;background:${cols[~~(Math.random()*cols.length)]};opacity:${Math.random()*.5+.4};animation-duration:${d}s;animation-delay:${-Math.random()*d}s;`;
+      box.appendChild(el);
+    }
+  });
   // Hero carousel
-  const carousel = document.getElementById('heroCarousel');
-  if (carousel) {
-    const slides = carousel.querySelectorAll('.hero-slide');
-    let cur = 0;
-    if (slides.length > 1) setInterval(()=>{ slides[cur].style.opacity='0'; cur=(cur+1)%slides.length; slides[cur].style.opacity='1'; }, 3500);
-  }
-
-  document.getElementById('pwInput').addEventListener('keydown', e=>{ if(e.key==='Enter') checkPassword(); });
+  const slides=document.querySelectorAll('.hs');
+  let cur=0;
+  if(slides.length>1) setInterval(()=>{slides[cur].style.opacity='0';cur=(cur+1)%slides.length;slides[cur].style.opacity='1';},3500);
+  // Password enter key
+  $('pwInput').addEventListener('keydown',e=>{if(e.key==='Enter')unlock();});
 });
 
-// ============================================================
-// PROGRESS
-// ============================================================
-function renderProgress() {
-  const pct = ((S.step-1)/(STEPS-1))*100;
-  document.getElementById('progressBar').style.width = pct+'%';
-  document.getElementById('stepLabel').textContent = STEP_LABELS[S.step-1];
-  document.getElementById('stepCounter').textContent = `Paso ${S.step} de ${STEPS}`;
-  const dots = document.getElementById('stepDots');
-  dots.innerHTML = '';
-  for (let i=1;i<=STEPS;i++) {
-    const d = document.createElement('div');
-    d.className = 'flex-1 h-1.5 rounded-full transition-all duration-500 '+(i<S.step?'bg-primary':i===S.step?'bg-[#FFD60A]':'bg-outline-variant/30');
+// ---- PROGRESS ----
+function renderProgress(){
+  const pct=((S.step-1)/(STEPS-1))*100;
+  $('pbar').style.width=pct+'%';
+  $('stepLbl').textContent=LABELS[S.step-1];
+  $('stepCnt').textContent=`Paso ${S.step} de ${STEPS}`;
+  const dots=$('pdots'); dots.innerHTML='';
+  for(let i=1;i<=STEPS;i++){
+    const d=document.createElement('div');
+    d.className='flex-1 h-1.5 rounded-full transition-all duration-500 '+(i<S.step?'bg-primary':i===S.step?'bg-[#FFD60A]':'bg-outline-variant/30');
     dots.appendChild(d);
   }
 }
 
-// ============================================================
-// RENDER STEP
-// ============================================================
-function renderStep() {
-  renderProgress();
-  const c = document.getElementById('wizardContainer');
-  c.innerHTML = '';
-  if (S.step===1) step1(c);
-  else if (S.step===2) step2(c);
-  else if (S.step===3) step3(c);
-  else if (S.step===4) step4(c);
-  else if (S.step===5) step5(c);
-  window.scrollTo({top: document.getElementById('wizard').offsetTop - 80, behavior:'smooth'});
+// ---- CART PANEL ----
+function updateCart(){
+  const t=tipo(), s=serv();
+  const total=calcTotal(), sena=calcSena();
+  const hasItems=S.tipo&&S.serv;
+  const extSel=S.extras.map(eid=>EXTRAS.find(e=>e.id===eid)).filter(Boolean);
+  const body=$('cartBody'), footer=$('cartFooter'), empty=$('cartEmpty');
+
+  // Float button
+  const fb=$('floatCart'), ft=$('floatTotal');
+  if(S.tipo){fb.classList.remove('hide');if(ft)ft.textContent=total?'$'+fmt(total):'Armar...';}
+  else fb.classList.add('hide');
+
+  if(!S.tipo){if(empty)empty.style.display='block';if(footer)footer.classList.add('hidden');return;}
+
+  // Build cart items
+  let html='';
+  html+=`<div class="flex items-center gap-2 pb-2 border-b border-outline-variant/15">
+    <span class="text-xl">${t.icon}</span>
+    <div><div class="font-bold text-xs text-on-surface">${t.lbl}</div>
+    ${S.serv?`<div class="text-xs font-bold" style="color:${t.acc}">${s.nom}</div>`:'<div class="text-xs text-on-surface-variant">Eligiendo pack…</div>'}
+    </div></div>`;
+
+  if(S.serv){
+    const pl=S.pax?' · '+S.pax+' personas':'';
+    const fe=S.fecha?formatFecha(S.fecha,true):'';
+    const tu=S.turno?TURNOS[S.turno].lbl:'';
+    if(pl||fe||tu) html+=`<div class="space-y-1">`;
+    if(S.pax) html+=`<div class="flex justify-between text-xs"><span class="text-on-surface-variant">Personas</span><span class="font-bold">${S.pax}</span></div>`;
+    if(S.fecha) html+=`<div class="flex justify-between text-xs"><span class="text-on-surface-variant">Fecha</span><span class="font-bold text-right max-w-[110px] leading-tight">${fe}</span></div>`;
+    if(S.turno) html+=`<div class="flex justify-between text-xs"><span class="text-on-surface-variant">Turno</span><span class="font-bold">${tu}</span></div>`;
+    if(S.pax||S.fecha||S.turno) html+=`</div>`;
+  }
+
+  if(extSel.length){
+    html+=`<div class="border-t border-outline-variant/15 pt-2"><div class="text-[10px] font-black text-on-surface-variant uppercase tracking-wider mb-1.5">Adicionales</div>`;
+    extSel.forEach(e=>{
+      html+=`<div class="flex justify-between text-xs py-0.5"><span class="flex items-center gap-1">${e.icon} ${e.nom}</span><span class="font-bold text-success">${e.ask?'Consultar':'+$'+fmt(e.p)}</span></div>`;
+    });
+    html+=`</div>`;
+  }
+
+  if(empty) empty.style.display='none';
+  // Replace only the dynamic content
+  const existing=body.querySelectorAll('.cart-item');
+  existing.forEach(el=>el.remove());
+  const div=document.createElement('div');
+  div.className='cart-item space-y-3';
+  div.innerHTML=html;
+  body.appendChild(div);
+
+  if(S.serv){
+    footer.classList.remove('hidden');
+    $('cartTotal').textContent='$'+fmt(total);
+    $('cartSena').textContent='$'+fmt(sena);
+    const wb=$('cartWABtn');
+    if(S.fecha&&S.turno){
+      wb.innerHTML=`<a href="https://wa.me/${WA}?text=${encodeURIComponent(buildMsg())}" target="_blank"
+        class="wa-pulse w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-white font-black text-xs bg-[#25D366] hover:bg-[#1DAA55] active:scale-95 transition-all uppercase tracking-wide">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Reservar por WhatsApp
+      </a>`;
+    } else {
+      wb.innerHTML=`<div class="text-[10px] text-center text-on-surface-variant/70 font-medium">Completá fecha y turno para reservar</div>`;
+    }
+  } else {
+    footer.classList.add('hidden');
+  }
 }
 
-function goTo(n) { S.step=n; renderStep(); }
-function resetWizard() { S={step:1,tipo:null,servicio:null,personas:30,fecha:"",turno:null,extras:[],dispon:null,checking:false}; renderStep(); }
+function scrollToCart(){document.getElementById('wizard').scrollIntoView({behavior:'smooth'});}
 
-function backBtn(target) {
-  const d = document.createElement('div');
-  d.className = 'mt-4';
-  d.innerHTML = `<button onclick="goTo(${target})" class="flex items-center gap-1.5 text-sm text-on-surface-variant hover:text-primary transition-colors py-1 font-semibold">
-    <span class="material-symbols-outlined text-[16px]">arrow_back</span> Volver
-  </button>`;
+// ---- RENDER STEP ----
+function renderStep(){
+  renderProgress();
+  const c=$('wizardContainer'); c.innerHTML='';
+  if(S.step===1) step1(c);
+  else if(S.step===2) step2(c);
+  else if(S.step===3) step3(c);
+  else if(S.step===4) step4(c);
+  else if(S.step===5) step5(c);
+  updateCart();
+  window.scrollTo({top:$('wizard').offsetTop-90,behavior:'smooth'});
+}
+
+function goTo(n){S.step=n;renderStep();}
+function resetWizard(){S={step:1,tipo:null,serv:null,pax:30,fecha:"",turno:null,extras:[],dispon:null,chk:false};renderStep();}
+
+function backBtn(target){
+  const d=document.createElement('div');d.className='mb-5';
+  d.innerHTML=`<button onclick="goTo(${target})" class="flex items-center gap-1.5 text-sm text-on-surface-variant hover:text-primary transition-colors font-semibold"><span class="material-symbols-outlined text-[16px]">arrow_back</span>Volver</button>`;
   return d;
 }
 
-// ============================================================
-// STEP 1: Tipo
-// ============================================================
-function step1(c) {
-  const wrap = document.createElement('div');
-  wrap.className = 'slide-up';
-
-  // Header card (matches servicios style)
-  wrap.innerHTML = `
-    <div class="rounded-3xl overflow-hidden shadow-md border-2 border-primary/20 mb-6">
-      <div class="bg-gradient-to-br from-[#FF5C35] to-[#CC3310] px-6 pt-7 pb-5">
-        <span class="text-4xl">🎊</span>
-        <h3 class="font-headline text-2xl font-black text-white uppercase tracking-tight mt-2">¿Qué tipo de evento querés organizar?</h3>
-        <p class="text-white/80 text-sm mt-1 font-medium">Elegí y te mostramos los packs disponibles</p>
-      </div>
-    </div>
-  `;
-
-  const grid = document.createElement('div');
-  grid.className = 'grid grid-cols-1 sm:grid-cols-2 gap-4';
-
-  TIPOS.forEach(t => {
-    const tile = document.createElement('div');
-    tile.className = `service-card rounded-3xl overflow-hidden shadow-md border-2 ${S.tipo===t.id ? 'border-primary' : 'border-transparent'} choice-tile ${S.tipo===t.id?'selected':''}`;
-    tile.innerHTML = `
-      <div class="bg-gradient-to-br ${t.color} px-6 pt-6 pb-5">
-        <div class="flex items-center justify-between mb-2">
+// ---- STEP 1: Tipo ----
+function step1(c){
+  const wrap=document.createElement('div');wrap.className='slide-up';
+  const grid=document.createElement('div');
+  grid.className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6';
+  TIPOS.forEach(t=>{
+    const packs=SERVICIOS.filter(s=>s.cat===t.id);
+    const fromPrice=packs.reduce((min,s)=>{const p=s.pt||(s.pp*(s.min||30));return p<min?p:min;},Infinity);
+    const tile=document.createElement('div');
+    tile.className=`service-card ctile rounded-3xl overflow-hidden shadow-md border-2 ${S.tipo===t.id?'border-primary on':'border-transparent'}`;
+    tile.innerHTML=`
+      <div class="bg-gradient-to-br ${t.grad} px-6 pt-7 pb-5">
+        <div class="flex items-center justify-between mb-3">
           <span class="text-4xl">${t.icon}</span>
-          <div class="tile-check w-7 h-7 bg-white rounded-full flex items-center justify-center">
+          <div class="flex items-center gap-2">
+            <span class="bg-white/25 text-white text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full">${t.badge}</span>
+            <div class="ck w-6 h-6 bg-white rounded-full flex items-center justify-center">
+              <span class="material-symbols-outlined text-primary text-[14px]">check</span>
+            </div>
+          </div>
+        </div>
+        <h3 class="font-headline text-xl font-black text-white uppercase tracking-tight">${t.lbl}</h3>
+        <p class="text-white/80 text-sm mt-1 font-medium">${t.sub}</p>
+      </div>
+      <div class="bg-white flex-1 px-6 py-4 flex items-center justify-between">
+        <div>
+          <div class="text-xs text-on-surface-variant font-semibold">Desde</div>
+          <div class="font-headline font-black text-lg leading-none" style="color:${t.acc}">$${fmt(fromPrice)}</div>
+        </div>
+        <span class="text-xs font-bold text-on-surface-variant flex items-center gap-1 hover:text-primary transition-colors">Ver packs <span class="material-symbols-outlined text-[14px]">arrow_forward</span></span>
+      </div>
+    `;
+    tile.addEventListener('click',()=>{S.tipo=t.id;S.serv=null;S.extras=[];goTo(2);});
+    grid.appendChild(tile);
+  });
+  wrap.appendChild(grid);
+  c.appendChild(wrap);
+}
+
+// ---- STEP 2: Pack ----
+function step2(c){
+  const t=tipo();
+  const packs=SERVICIOS.filter(s=>s.cat===S.tipo);
+  const wrap=document.createElement('div');wrap.className='slide-up';
+  wrap.appendChild(backBtn(1));
+  const grid=document.createElement('div');grid.className='grid grid-cols-1 sm:grid-cols-2 gap-6';
+  packs.forEach(s=>{
+    const pl=s.pt?{main:'$'+fmt(s.pt),sub:'total'}:s.pp?{main:'$'+fmt(s.pp),sub:'/persona'}:{main:'A consultar',sub:''};
+    const tile=document.createElement('div');
+    tile.className=`service-card ctile rounded-3xl overflow-hidden shadow-md border-2 ${S.serv===s.id?'border-primary on':'border-[rgba(0,0,0,.06)]'}`;
+    tile.innerHTML=`
+      <div class="bg-gradient-to-br ${t.grad} px-6 pt-6 pb-5">
+        <div class="flex items-start justify-between mb-2">
+          <div>
+            ${s.dest?`<span class="inline-block bg-white/25 text-white text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full mb-2">⭐ Más elegido</span><br/>`:''}
+            <h3 class="font-headline text-lg font-black text-white uppercase tracking-tight">${s.nom}</h3>
+          </div>
+          <div class="ck w-7 h-7 bg-white rounded-full flex items-center justify-center flex-shrink-0 mt-1">
             <span class="material-symbols-outlined text-primary text-[16px]">check</span>
           </div>
         </div>
-        <h3 class="font-headline text-lg font-black text-white uppercase tracking-tight">${t.label}</h3>
-        <p class="text-white/80 text-xs mt-0.5 font-medium">${t.desc}</p>
       </div>
-      <div class="bg-white px-6 py-3">
-        <span class="text-xs font-bold text-on-surface-variant">${SERVICIOS.filter(s=>s.cat===t.id).length} packs disponibles →</span>
-      </div>
-    `;
-    tile.addEventListener('click', ()=>{ S.tipo=t.id; S.servicio=null; S.extras=[]; goTo(2); });
-    grid.appendChild(tile);
-  });
-
-  wrap.appendChild(grid);
-  c.appendChild(wrap);
-}
-
-// ============================================================
-// STEP 2: Pack
-// ============================================================
-function step2(c) {
-  const tipo = tipoData();
-  const packs = SERVICIOS.filter(s=>s.cat===S.tipo);
-
-  const wrap = document.createElement('div');
-  wrap.className = 'slide-up';
-  wrap.innerHTML = `
-    <div class="rounded-3xl overflow-hidden shadow-md border-2 border-transparent mb-4">
-      <div class="bg-gradient-to-br ${tipo.color} px-6 pt-7 pb-5">
-        <span class="text-4xl">${tipo.icon}</span>
-        <h3 class="font-headline text-2xl font-black text-white uppercase tracking-tight mt-2">${tipo.label}</h3>
-        <p class="text-white/80 text-sm mt-1 font-medium">Elegí el pack que más se adapta a tu evento</p>
-      </div>
-    </div>
-  `;
-  wrap.appendChild(backBtn(1));
-
-  const grid = document.createElement('div');
-  grid.className = 'mt-4 flex flex-col gap-4';
-
-  packs.forEach(s => {
-    const pl = precioLabel(s);
-    const tile = document.createElement('div');
-    tile.className = `service-card rounded-3xl overflow-hidden shadow-md border-2 ${S.servicio===s.id?'border-primary':'border-['+tipo.accent+'/20]'} choice-tile ${S.servicio===s.id?'selected':''}`;
-    tile.innerHTML = `
-      <div class="bg-white px-6 pt-5 pb-5">
-        <div class="flex items-start justify-between gap-3">
-          <div class="flex-1">
-            ${s.dest ? `<span class="inline-block bg-[#FFD60A] text-[#2A2200] text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-full mb-2">⭐ Más elegido</span>` : ''}
-            <div class="font-headline font-black text-lg text-on-surface uppercase tracking-tight">${s.nombre}</div>
-            <div class="flex items-end gap-1.5 mt-1">
-              <span class="font-headline text-2xl font-black leading-none" style="color:${tipo.accent}">${pl.main}</span>
-              <span class="text-xs text-on-surface-variant font-semibold pb-0.5">${pl.sub}</span>
-            </div>
-            ${s.min ? `<div class="text-xs text-on-surface-variant mt-0.5 font-medium">Mínimo ${s.min} personas</div>` : ''}
-          </div>
-          <div class="tile-check w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1" style="background:${tipo.accent}">
-            <span class="material-symbols-outlined text-white text-[17px]">check</span>
-          </div>
+      <div class="bg-white px-6 py-5 flex-1">
+        <div class="flex items-end gap-1.5 mb-4">
+          <span class="font-headline text-3xl font-black leading-none" style="color:${t.acc}">${pl.main}</span>
+          <span class="text-xs text-on-surface-variant font-semibold pb-0.5">${pl.sub}</span>
         </div>
-        <ul class="mt-4 space-y-1.5">
-          ${s.incluye.map(item=>`<li class="flex items-start gap-2 text-sm text-on-surface-variant"><span class="font-black mt-0.5" style="color:${tipo.accent}">✦</span>${item}</li>`).join('')}
-          ${s.no_incluye ? `<li class="flex items-start gap-2 text-sm text-on-surface-variant/70"><span class="font-black mt-0.5 text-primary">✗</span>${s.no_incluye}</li>` : ''}
+        ${s.min?`<div class="text-xs text-on-surface-variant mb-3 font-semibold">Mínimo ${s.min} personas</div>`:''}
+        <ul class="space-y-2 mb-4">
+          ${s.inc.map(i=>`<li class="flex items-start gap-2 text-sm text-on-surface-variant"><span class="font-black mt-0.5" style="color:${t.acc}">✦</span>${i}</li>`).join('')}
+          ${s.ni?`<li class="flex items-start gap-2 text-sm text-on-surface-variant/60"><span class="font-black mt-0.5 text-primary">✗</span>${s.ni}</li>`:''}
         </ul>
+        <div class="w-full py-2.5 rounded-full text-center text-sm font-black uppercase tracking-wide text-white transition-all" style="background:${t.acc}">Elegir este pack →</div>
       </div>
     `;
-    tile.addEventListener('click', ()=>{ S.servicio=s.id; goTo(3); });
+    tile.addEventListener('click',()=>{S.serv=s.id;S.pax=Math.max(S.pax,s.min||1);goTo(3);});
     grid.appendChild(tile);
   });
-
   wrap.appendChild(grid);
   c.appendChild(wrap);
 }
 
-// ============================================================
-// STEP 3: Fecha & Personas
-// ============================================================
-function step3(c) {
-  const tipo = tipoData();
-  const serv = servData();
-  const turnosDisp = getTurnos(S.tipo);
-  if (S.personas < (serv.min||1)) S.personas = serv.min||1;
+// ---- STEP 3: Fecha & Personas ----
+function step3(c){
+  const t=tipo();const sv=serv();
+  const turnosDisp={infantil:['manana','tarde'],teens:['tarde','noche'],egresaditos:['manana','tarde'],egresados:['tarde','noche'],cumple_tarde:['tarde'],cumple_noche:['noche']}[S.tipo]||['manana','tarde','noche'];
+  if(S.pax<(sv.min||1))S.pax=sv.min||1;
+  const today=new Date().toISOString().split('T')[0];
 
-  const wrap = document.createElement('div');
-  wrap.className = 'slide-up';
-  wrap.innerHTML = `
-    <div class="rounded-3xl overflow-hidden shadow-md mb-4">
-      <div class="bg-gradient-to-br from-[#E8B800] to-[#FFD60A] px-6 pt-7 pb-5">
-        <span class="text-4xl">📅</span>
-        <h3 class="font-headline text-2xl font-black text-[#2A2200] uppercase tracking-tight mt-2">Fecha y personas</h3>
-        <p class="text-[#2A2200]/70 text-sm mt-1 font-medium">Decinos cuándo y con cuántos</p>
-      </div>
-    </div>
-  `;
+  const wrap=document.createElement('div');wrap.className='slide-up';
   wrap.appendChild(backBtn(2));
 
+  const grid=document.createElement('div');grid.className='grid grid-cols-1 sm:grid-cols-2 gap-6';
+
   // Personas card
-  const pCard = document.createElement('div');
-  pCard.className = 'mt-4 rounded-3xl overflow-hidden shadow-md border-2 border-[#FFD60A]/30 bg-white';
-  pCard.innerHTML = `
-    <div class="px-6 py-5">
-      <div class="flex items-end justify-between mb-1">
-        <span class="text-xs font-black text-on-surface-variant uppercase tracking-widest">Cantidad de personas</span>
-        ${serv.min ? `<span class="text-xs text-on-surface-variant font-semibold">Mín. ${serv.min}</span>` : ''}
-      </div>
-      <div class="flex items-center justify-center gap-6 mt-4">
-        <button class="qty-btn bg-primary-fixed text-primary hover:bg-primary-fixed-dim" onclick="changeP(-5)">−</button>
-        <div class="text-center min-w-[80px]">
-          <div id="pNum" class="font-headline font-black text-5xl text-primary transition-all">${S.personas}</div>
+  const pc=document.createElement('div');
+  pc.className='rounded-3xl overflow-hidden shadow-md border-2 border-[#FFD60A]/30 bg-white';
+  pc.innerHTML=`
+    <div class="bg-gradient-to-br from-[#E8B800] to-[#FFD60A] px-6 pt-6 pb-4">
+      <span class="text-3xl">👥</span>
+      <h3 class="font-headline font-black text-xl text-[#2A2200] uppercase tracking-tight mt-1">Personas</h3>
+      ${sv.min?`<p class="text-[#2A2200]/60 text-xs font-semibold">Mínimo ${sv.min} personas</p>`:''}
+    </div>
+    <div class="px-6 py-6">
+      <div class="flex items-center justify-center gap-5">
+        <button class="qbtn bg-primary-fixed text-primary hover:bg-primary-fixed-dim" onclick="chgPax(-5)">−</button>
+        <div class="text-center min-w-[70px]">
+          <div id="paxNum" class="font-headline font-black text-5xl text-primary transition-all">${S.pax}</div>
           <div class="text-xs text-on-surface-variant font-semibold mt-1">personas</div>
         </div>
-        <button class="qty-btn bg-primary-fixed text-primary hover:bg-primary-fixed-dim" onclick="changeP(5)">+</button>
+        <button class="qbtn bg-primary-fixed text-primary hover:bg-primary-fixed-dim" onclick="chgPax(5)">+</button>
       </div>
     </div>
   `;
-  wrap.appendChild(pCard);
 
   // Fecha card
-  const today = new Date().toISOString().split('T')[0];
-  const fCard = document.createElement('div');
-  fCard.className = 'mt-4 rounded-3xl overflow-hidden shadow-md border-2 border-[#FFD60A]/30 bg-white';
-  fCard.innerHTML = `
-    <div class="px-6 py-5">
-      <div class="text-xs font-black text-on-surface-variant uppercase tracking-widest mb-3">Fecha del evento</div>
-      <input type="date" id="fechaInput" min="${today}" value="${S.fecha}"
+  const fc=document.createElement('div');
+  fc.className='rounded-3xl overflow-hidden shadow-md border-2 border-[#FFD60A]/30 bg-white';
+  fc.innerHTML=`
+    <div class="bg-gradient-to-br from-[#0099BF] to-[#0075A0] px-6 pt-6 pb-4">
+      <span class="text-3xl">📅</span>
+      <h3 class="font-headline font-black text-xl text-white uppercase tracking-tight mt-1">Fecha</h3>
+      <p class="text-white/70 text-xs font-semibold">¿Cuándo es el evento?</p>
+    </div>
+    <div class="px-6 py-6">
+      <input type="date" id="fechaIn" min="${today}" value="${S.fecha}"
         class="w-full px-4 py-3.5 rounded-2xl border-2 border-outline-variant/50 bg-surface-container-low text-on-surface font-semibold text-base focus:border-primary focus:outline-none transition-all"
         oninput="onFecha(this.value)" />
     </div>
   `;
-  wrap.appendChild(fCard);
 
-  // Turno card
-  const tCard = document.createElement('div');
-  tCard.className = 'mt-4 rounded-3xl overflow-hidden shadow-md border-2 border-[#FFD60A]/30 bg-white';
-  tCard.innerHTML = `
+  grid.appendChild(pc);
+  grid.appendChild(fc);
+  wrap.appendChild(grid);
+
+  // Turno card (full width)
+  const tc=document.createElement('div');
+  tc.className='mt-6 rounded-3xl overflow-hidden shadow-md border-2 border-[#FFD60A]/30 bg-white';
+  tc.innerHTML=`
+    <div class="bg-gradient-to-br from-[#2EAA62] to-[#1A8A48] px-6 pt-6 pb-4">
+      <span class="text-3xl">🕐</span>
+      <h3 class="font-headline font-black text-xl text-white uppercase tracking-tight mt-1">Turno del evento</h3>
+    </div>
     <div class="px-6 py-5">
-      <div class="text-xs font-black text-on-surface-variant uppercase tracking-widest mb-3">Turno</div>
-      <div class="flex flex-col gap-2" id="turnosGrid">
+      <div class="grid grid-cols-1 sm:grid-cols-${turnosDisp.length} gap-3" id="turnosGrid">
         ${turnosDisp.map(tid=>`
-          <div class="choice-tile rounded-2xl px-4 py-3 flex items-center justify-between bg-surface-container-low ${S.turno===tid?'selected':''}" onclick="selTurno('${tid}')">
-            <div>
-              <div class="font-bold text-sm text-on-surface">${TURNOS[tid].label}</div>
-              <div class="text-xs text-on-surface-variant">${TURNOS[tid].hora}</div>
-            </div>
-            <div class="tile-check w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-              <span class="material-symbols-outlined text-white text-[13px]">check</span>
+          <div class="ctile rounded-2xl p-4 text-center bg-surface-container-low ${S.turno===tid?'on':''}" onclick="selTurno('${tid}')">
+            <div class="font-bold text-sm text-on-surface">${TURNOS[tid].lbl}</div>
+            <div class="text-xs text-on-surface-variant mt-0.5">${TURNOS[tid].h}</div>
+            <div class="ck mt-2 w-5 h-5 bg-primary rounded-full flex items-center justify-center mx-auto">
+              <span class="material-symbols-outlined text-white text-[12px]">check</span>
             </div>
           </div>
         `).join('')}
       </div>
     </div>
   `;
-  wrap.appendChild(tCard);
+  wrap.appendChild(tc);
 
   // Availability
-  const aDiv = document.createElement('div');
-  aDiv.id = 'availDiv'; aDiv.className = 'mt-3';
-  wrap.appendChild(aDiv);
-  renderAvail();
+  const av=document.createElement('div');av.id='avDiv';av.className='mt-4';
+  wrap.appendChild(av);renderAvail();
 
-  // Next button
-  const nDiv = document.createElement('div');
-  nDiv.id = 'step3next'; nDiv.className = 'mt-4';
-  wrap.appendChild(nDiv);
-  renderStep3Next();
+  // Next
+  const nxt=document.createElement('div');nxt.id='step3nxt';nxt.className='mt-4';
+  wrap.appendChild(nxt);renderS3btn();
 
   c.appendChild(wrap);
 }
 
-function getTurnos(cat) {
-  return { infantil:['manana','tarde'], teens:['tarde','noche'], egresaditos:['manana','tarde'], egresados:['tarde','noche'], cumple_tarde:['tarde'], cumple_noche:['noche'] }[cat] || ['manana','tarde','noche'];
+function chgPax(d){
+  const min=serv().min||1;S.pax=Math.max(min,S.pax+d);
+  const el=$('paxNum');if(el){el.textContent=S.pax;el.style.transform='scale(1.18)';setTimeout(()=>el.style.transform='',150);}
+  updateCart();renderS3btn();
 }
-
-function changeP(delta) {
-  const min = servData().min || 1;
-  S.personas = Math.max(min, S.personas + delta);
-  const el = document.getElementById('pNum');
-  if (el) { el.textContent = S.personas; el.style.transform='scale(1.18)'; setTimeout(()=>el.style.transform='',150); }
-  const mt = document.getElementById('miniTotal');
-  if (mt) mt.textContent = '$'+fmt(calcTotal());
-  renderStep3Next();
-}
-
-function onFecha(v) {
-  S.fecha=v; S.dispon=null;
-  renderAvail(); renderStep3Next();
-  if (v && S.turno) checkDispon();
-}
-
-function selTurno(tid) {
+function onFecha(v){S.fecha=v;S.dispon=null;renderAvail();renderS3btn();if(v&&S.turno)checkDispon();}
+function selTurno(tid){
   S.turno=tid;
-  document.querySelectorAll('#turnosGrid .choice-tile').forEach(el=>{
-    const sel = el.getAttribute('onclick').includes(`'${tid}'`);
-    el.classList.toggle('selected',sel);
-    const chk = el.querySelector('.tile-check');
-    if(chk){ chk.style.opacity=sel?'1':'0'; chk.style.transform=sel?'scale(1)':'scale(.6)'; }
+  document.querySelectorAll('#turnosGrid .ctile').forEach(el=>{
+    const sel=el.getAttribute('onclick').includes(`'${tid}'`);
+    el.classList.toggle('on',sel);
+    const ck=el.querySelector('.ck');if(ck){ck.style.opacity=sel?'1':'0';ck.style.transform=sel?'scale(1)':'scale(.6)';}
   });
-  renderStep3Next();
-  if (S.fecha) checkDispon();
+  updateCart();renderS3btn();if(S.fecha)checkDispon();
 }
-
-async function checkDispon() {
-  if (!S.fecha||!S.turno) return;
-  S.checking=true; S.dispon=null; renderAvail();
-  try {
-    const r = await fetch(`https://chat.complejolodejuan.com/api/disponibilidad?fecha=${S.fecha}&turno=${S.turno}`);
-    S.dispon = r.ok ? (await r.json()).disponible !== false : true;
-  } catch(e) { S.dispon=true; }
-  S.checking=false; renderAvail(); renderStep3Next();
+async function checkDispon(){
+  if(!S.fecha||!S.turno)return;
+  S.chk=true;S.dispon=null;renderAvail();
+  try{const r=await fetch(`https://chat.complejolodejuan.com/api/disponibilidad?fecha=${S.fecha}&turno=${S.turno}`);S.dispon=r.ok?(await r.json()).disponible!==false:true;}
+  catch{S.dispon=true;}
+  S.chk=false;renderAvail();renderS3btn();updateCart();
 }
-
-function renderAvail() {
-  const d = document.getElementById('availDiv'); if(!d) return;
-  if (!S.fecha||!S.turno) { d.innerHTML=''; return; }
-  if (S.checking) {
-    d.innerHTML=`<div class="avail-badge bg-surface-container rounded-2xl px-4 py-3 flex items-center gap-2 text-sm text-on-surface-variant font-semibold"><div class="w-4 h-4 border-2 border-primary/40 border-t-primary rounded-full animate-spin"></div> Verificando disponibilidad…</div>`;
-    return;
-  }
-  if (S.dispon===null) { d.innerHTML=''; return; }
-  d.innerHTML = S.dispon
-    ? `<div class="avail-badge bg-success-fixed rounded-2xl px-4 py-3 flex items-center gap-2 text-sm font-black text-success"><span class="material-symbols-outlined text-[18px]">check_circle</span>¡Fecha disponible! 🎉</div>`
-    : `<div class="avail-badge bg-primary-fixed rounded-2xl px-4 py-3 flex items-center gap-2 text-sm font-black text-primary"><span class="material-symbols-outlined text-[18px]">event_busy</span>Esa fecha ya está reservada. Elegí otra.</div>`;
+function renderAvail(){
+  const d=$('avDiv');if(!d)return;
+  if(!S.fecha||!S.turno){d.innerHTML='';return;}
+  if(S.chk){d.innerHTML=`<div class="avbadge flex items-center gap-2 text-sm text-on-surface-variant font-semibold bg-surface-container rounded-2xl px-4 py-3"><div class="w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>Verificando disponibilidad…</div>`;return;}
+  if(S.dispon===null){d.innerHTML='';return;}
+  d.innerHTML=S.dispon
+    ?`<div class="avbadge flex items-center gap-2 text-sm font-black text-success bg-success-fixed rounded-2xl px-4 py-3"><span class="material-symbols-outlined text-[18px]">check_circle</span>¡Fecha disponible! 🎉</div>`
+    :`<div class="avbadge flex items-center gap-2 text-sm font-black text-primary bg-primary-fixed rounded-2xl px-4 py-3"><span class="material-symbols-outlined text-[18px]">event_busy</span>Esa fecha ya está reservada. Elegí otra.</div>`;
 }
-
-function renderStep3Next() {
-  const d = document.getElementById('step3next'); if(!d) return;
-  const ok = S.fecha && S.turno && S.dispon !== false;
-  d.innerHTML = `<button onclick="goTo(4)" ${ok?'':'disabled'}
-    class="w-full py-4 rounded-full font-headline font-black text-base uppercase tracking-wide transition-all shadow-lg ${ok?'bg-primary text-white hover:bg-primary-container shadow-primary/30 active:scale-95':'bg-outline-variant/40 text-on-surface-variant/50 cursor-not-allowed'}">
+function renderS3btn(){
+  const d=$('step3nxt');if(!d)return;
+  const ok=S.fecha&&S.turno&&S.dispon!==false;
+  d.innerHTML=`<button onclick="goTo(4)" ${ok?'':'disabled'}
+    class="w-full py-4 rounded-full font-headline font-black text-base uppercase tracking-wide transition-all shadow-lg ${ok?'bg-primary text-white hover:bg-primary-container shadow-primary/30 active:scale-95':'bg-outline-variant/40 text-on-surface-variant/40 cursor-not-allowed'}">
     Continuar — Adicionales →
   </button>`;
 }
 
-// ============================================================
-// STEP 4: Extras
-// ============================================================
-function step4(c) {
-  const tipo = tipoData();
-  const extIds = EXTRAS_POR_TIPO[S.tipo] || [];
-  const extDisp = EXTRAS.filter(e=>extIds.includes(e.id));
-
-  const wrap = document.createElement('div');
-  wrap.className = 'slide-up';
-  wrap.innerHTML = `
-    <div class="rounded-3xl overflow-hidden shadow-md mb-4">
-      <div class="bg-gradient-to-br from-[#2EAA62] to-[#1A8A48] px-6 pt-7 pb-5">
-        <span class="text-4xl">✨</span>
-        <h3 class="font-headline text-2xl font-black text-white uppercase tracking-tight mt-2">Adicionales opcionales</h3>
-        <p class="text-white/80 text-sm mt-1 font-medium">Sumá más diversión a tu ${tipo.label}</p>
-      </div>
-    </div>
-  `;
+// ---- STEP 4: Extras ----
+function step4(c){
+  const t=tipo();
+  const extIds=EXTRAS_MAP[S.tipo]||[];
+  const extDisp=EXTRAS.filter(e=>extIds.includes(e.id));
+  const wrap=document.createElement('div');wrap.className='slide-up';
   wrap.appendChild(backBtn(3));
 
-  if (!extDisp.length) {
-    const nd = document.createElement('div');
-    nd.className = 'mt-4 bg-white rounded-3xl p-6 text-center text-on-surface-variant shadow-md';
-    nd.innerHTML = '<p class="font-semibold">No hay adicionales disponibles para este tipo de evento.</p>';
+  if(!extDisp.length){
+    const nd=document.createElement('div');
+    nd.className='rounded-3xl bg-white p-8 text-center shadow-md';
+    nd.innerHTML='<p class="font-semibold text-on-surface-variant">No hay adicionales para este tipo de evento.</p>';
     wrap.appendChild(nd);
   } else {
-    const grid = document.createElement('div');
-    grid.className = 'mt-4 rounded-3xl overflow-hidden shadow-md border-2 border-success-fixed bg-white';
+    const card=document.createElement('div');
+    card.className='rounded-3xl overflow-hidden shadow-md bg-white border-2 border-success-fixed';
+    card.innerHTML=`
+      <div class="bg-gradient-to-br from-[#2EAA62] to-[#1A8A48] px-6 pt-6 pb-5">
+        <span class="text-3xl">✨</span>
+        <h3 class="font-headline font-black text-xl text-white uppercase tracking-tight mt-1">Adicionales</h3>
+        <p class="text-white/75 text-sm font-medium">Sumá más diversión a tu ${t.lbl}</p>
+      </div>
+      <div class="p-4 grid grid-cols-1 sm:grid-cols-2 gap-2" id="extGrid"></div>
+    `;
+    wrap.appendChild(card);
 
-    const gHead = document.createElement('div');
-    gHead.className = 'px-6 pt-5 pb-2';
-    gHead.innerHTML = '<div class="text-xs font-black text-on-surface-variant uppercase tracking-widest">Seleccioná lo que querés agregar</div>';
-    grid.appendChild(gHead);
-
-    const list = document.createElement('div');
-    list.className = 'px-4 pb-4 flex flex-col gap-2';
-
-    extDisp.forEach(e => {
-      const on = S.extras.includes(e.id);
-      const priceLabel = e.aConsultar ? 'A consultar' : `+$${fmt(e.precio)}`;
-      const el = document.createElement('div');
-      el.className = `extra-card rounded-2xl px-4 py-3 flex items-center justify-between ${on?'on':''}`;
-      el.innerHTML = `
-        <div class="flex items-center gap-3">
-          <span class="text-2xl">${e.icon}</span>
-          <div>
-            <div class="font-bold text-sm text-on-surface">${e.nombre}</div>
-            <div class="text-xs font-bold ${e.aConsultar?'text-on-surface-variant':'text-success'}">${priceLabel}</div>
-          </div>
-        </div>
-        <div class="xchk w-7 h-7 bg-success rounded-full flex items-center justify-center flex-shrink-0">
-          <span class="material-symbols-outlined text-white text-[15px]">check</span>
-        </div>
-      `;
-      el.addEventListener('click', ()=>{
-        if (S.extras.includes(e.id)) S.extras = S.extras.filter(x=>x!==e.id);
-        else S.extras.push(e.id);
-        el.classList.toggle('on', S.extras.includes(e.id));
-        const chk = el.querySelector('.xchk');
-        chk.style.opacity = S.extras.includes(e.id)?'1':'0';
-        chk.style.transform = S.extras.includes(e.id)?'scale(1)':'scale(.7)';
-        const mt = document.getElementById('miniTotal2');
-        if (mt) mt.textContent = '$'+fmt(calcTotal());
+    setTimeout(()=>{
+      const g=$('extGrid');if(!g)return;
+      extDisp.forEach(e=>{
+        const on=S.extras.includes(e.id);
+        const pl=e.ask?'A consultar':'+$'+fmt(e.p);
+        const el=document.createElement('div');
+        el.className=`xtile rounded-2xl px-4 py-3 flex items-center justify-between ${on?'on':''}`;
+        el.innerHTML=`<div class="flex items-center gap-3"><span class="text-2xl">${e.icon}</span><div><div class="font-bold text-sm text-on-surface">${e.nom}</div><div class="text-xs font-bold ${e.ask?'text-on-surface-variant':'text-success'}">${pl}</div></div></div>
+          <div class="xk w-7 h-7 bg-success rounded-full flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-white text-[15px]">check</span></div>`;
+        el.addEventListener('click',()=>{
+          if(S.extras.includes(e.id))S.extras=S.extras.filter(x=>x!==e.id);else S.extras.push(e.id);
+          el.classList.toggle('on',S.extras.includes(e.id));
+          const xk=el.querySelector('.xk');xk.style.opacity=S.extras.includes(e.id)?'1':'0';xk.style.transform=S.extras.includes(e.id)?'scale(1)':'scale(.7)';
+          updateCart();const mt=$('miniT');if(mt)mt.textContent='$'+fmt(calcTotal());
+        });
+        g.appendChild(el);
       });
-      list.appendChild(el);
-    });
-    grid.appendChild(list);
-    wrap.appendChild(grid);
+    },10);
 
     // Mini total
-    const mt = document.createElement('div');
-    mt.className = 'mt-3 bg-white rounded-3xl px-6 py-4 shadow-md border-2 border-[#FFD60A]/30 flex items-center justify-between';
-    mt.innerHTML = `<span class="text-sm font-bold text-on-surface-variant">Total estimado:</span><span id="miniTotal2" class="font-headline font-black text-xl text-primary">$${fmt(calcTotal())}</span>`;
+    const mt=document.createElement('div');
+    mt.className='mt-4 bg-white rounded-3xl px-6 py-4 shadow-md border-2 border-[#FFD60A]/30 flex items-center justify-between';
+    mt.innerHTML=`<span class="text-sm font-bold text-on-surface-variant">Total estimado:</span><span id="miniT" class="font-headline font-black text-xl text-primary">$${fmt(calcTotal())}</span>`;
     wrap.appendChild(mt);
   }
 
-  const btns = document.createElement('div');
-  btns.className = 'mt-4 flex flex-col gap-2';
-  btns.innerHTML = `
-    <button onclick="goTo(5)" class="w-full py-4 rounded-full bg-primary text-white font-headline font-black text-base uppercase tracking-wide hover:bg-primary-container active:scale-95 transition-all shadow-lg shadow-primary/30">
-      Ver mi cotización →
-    </button>
-    ${extDisp.length ? `<button onclick="S.extras=[];goTo(5)" class="text-center text-sm text-on-surface-variant hover:text-primary transition-colors py-1 font-semibold">Sin adicionales, continuar →</button>` : ''}
-  `;
+  const btns=document.createElement('div');btns.className='mt-4 flex flex-col gap-2';
+  btns.innerHTML=`<button onclick="goTo(5)" class="w-full py-4 rounded-full bg-primary text-white font-headline font-black text-base uppercase tracking-wide hover:bg-primary-container active:scale-95 transition-all shadow-lg shadow-primary/30">Ver mi cotización →</button>
+    ${extDisp.length?`<button onclick="S.extras=[];goTo(5)" class="text-center text-sm text-on-surface-variant hover:text-primary transition-colors font-semibold py-1">Continuar sin adicionales →</button>`:''}`;
   wrap.appendChild(btns);
   c.appendChild(wrap);
 }
 
-// ============================================================
-// STEP 5: Resumen
-// ============================================================
-function step5(c) {
-  const tipo = tipoData();
-  const serv = servData();
-  const turno = TURNOS[S.turno];
-  const total = calcTotal();
-  const sena = calcSena();
-  const extSel = S.extras.map(eid=>EXTRAS.find(e=>e.id===eid)).filter(Boolean);
-  const hayConsultar = extSel.some(e=>e.aConsultar);
+// ---- STEP 5: Resumen ----
+function step5(c){
+  const t=tipo(),sv=serv(),tu=TURNOS[S.turno];
+  const total=calcTotal(),sena=calcSena();
+  const extSel=S.extras.map(eid=>EXTRAS.find(e=>e.id===eid)).filter(Boolean);
+  const ask=extSel.some(e=>e.ask);
 
-  setTimeout(()=>launchConfetti(), 400);
+  setTimeout(()=>confetti(),400);
 
-  const wrap = document.createElement('div');
-  wrap.className = 'slide-up';
-
-  // Hero card resumen
-  wrap.innerHTML = `
-    <div class="rounded-3xl overflow-hidden shadow-xl mb-4">
-      <div class="bg-gradient-to-br from-[#FF5C35] via-[#FF8050] to-[#FFD60A] px-6 pt-7 pb-6 text-center">
-        <div class="text-5xl mb-3">🎊</div>
-        <h3 class="font-headline text-3xl font-black text-white uppercase tracking-tight">¡Tu cotización!</h3>
-        <p class="text-white/80 text-sm mt-1 font-medium">Revisá el resumen y reservá por WhatsApp</p>
-      </div>
-    </div>
-  `;
+  const wrap=document.createElement('div');wrap.className='slide-up';
   wrap.appendChild(backBtn(4));
 
+  // Hero del resumen
+  const hero=document.createElement('div');
+  hero.className='rounded-3xl overflow-hidden shadow-xl mb-6';
+  hero.innerHTML=`
+    <div class="bg-gradient-to-135 from-[#FF5C35] via-[#FF8050] to-[#FFD60A] px-6 py-8 text-center" style="background:linear-gradient(135deg,#FF5C35,#FF8050 50%,#FFD60A)">
+      <div class="text-5xl mb-3">🎊</div>
+      <h2 class="font-headline text-3xl font-black text-white uppercase tracking-tight">¡Tu cotización!</h2>
+      <p class="text-white/80 text-sm mt-1 font-medium">Revisá y reservá por WhatsApp</p>
+    </div>
+  `;
+  wrap.appendChild(hero);
+
+  // Two-col on desktop
+  const cols=document.createElement('div');
+  cols.className='grid grid-cols-1 sm:grid-cols-2 gap-6';
+
   // Detalle card
-  const detCard = document.createElement('div');
-  detCard.className = 'mt-4 bg-white rounded-3xl shadow-md overflow-hidden border-2 border-[#FFD60A]/30';
-  detCard.innerHTML = `
-    <div class="px-6 pt-5 pb-4 border-b border-outline-variant/15 flex items-center gap-3">
-      <span class="text-3xl">${tipo.icon}</span>
+  const det=document.createElement('div');
+  det.className='rounded-3xl overflow-hidden shadow-md bg-white border-2 border-[#FFD60A]/30';
+  det.innerHTML=`
+    <div class="bg-gradient-to-br ${t.grad} px-5 py-4 flex items-center gap-3">
+      <span class="text-3xl">${t.icon}</span>
       <div>
-        <div class="font-headline font-black text-lg text-on-surface uppercase tracking-tight">${tipo.label}</div>
-        <div class="font-semibold text-sm" style="color:${tipo.accent}">${serv.nombre}</div>
+        <div class="font-headline font-black text-base text-white uppercase">${t.lbl}</div>
+        <div class="text-white/80 text-xs font-semibold">${sv.nom}</div>
       </div>
     </div>
-    <div class="px-6 py-4 grid grid-cols-2 gap-3 border-b border-outline-variant/15">
-      <div class="bg-surface-container-low rounded-2xl p-3">
-        <div class="text-[10px] font-black text-on-surface-variant uppercase tracking-wider mb-1">Fecha</div>
-        <div class="font-bold text-sm text-on-surface leading-tight">${fmtFecha(S.fecha)}</div>
-      </div>
-      <div class="bg-surface-container-low rounded-2xl p-3">
-        <div class="text-[10px] font-black text-on-surface-variant uppercase tracking-wider mb-1">Turno</div>
-        <div class="font-bold text-sm text-on-surface">${turno.label}</div>
-        <div class="text-xs text-on-surface-variant">${turno.hora}</div>
-      </div>
-      <div class="bg-surface-container-low rounded-2xl p-3 col-span-2">
-        <div class="text-[10px] font-black text-on-surface-variant uppercase tracking-wider mb-1">Personas</div>
-        <div class="font-bold text-sm text-on-surface">${S.personas} personas</div>
-      </div>
+    <div class="px-5 py-4 space-y-2">
+      <div class="flex justify-between text-sm"><span class="text-on-surface-variant font-semibold">Personas</span><span class="font-black">${S.pax}</span></div>
+      <div class="flex justify-between text-sm"><span class="text-on-surface-variant font-semibold">Fecha</span><span class="font-black text-right max-w-[150px] leading-tight">${formatFecha(S.fecha,false)}</span></div>
+      <div class="flex justify-between text-sm"><span class="text-on-surface-variant font-semibold">Turno</span><span class="font-black">${tu.lbl}</span></div>
+      <div class="flex justify-between text-sm"><span class="text-on-surface-variant font-semibold">Horario</span><span class="font-bold">${tu.h}</span></div>
+      ${extSel.length?`<div class="border-t border-outline-variant/20 pt-2 mt-2">${extSel.map(e=>`<div class="flex justify-between text-sm py-0.5"><span class="flex items-center gap-1">${e.icon} ${e.nom}</span><span class="font-bold ${e.ask?'text-on-surface-variant':'text-success'}">${e.ask?'A consultar':'+$'+fmt(e.p)}</span></div>`).join('')}</div>`:''}
     </div>
-    ${extSel.length ? `
-    <div class="px-6 py-4 border-b border-outline-variant/15">
-      <div class="text-[10px] font-black text-on-surface-variant uppercase tracking-wider mb-3">Adicionales</div>
-      ${extSel.map(e=>`<div class="flex justify-between items-center py-1.5 text-sm">
-        <span class="flex items-center gap-2"><span>${e.icon}</span>${e.nombre}</span>
-        <span class="font-bold ${e.aConsultar?'text-on-surface-variant':'text-success'}">${e.aConsultar?'A consultar':'+$'+fmt(e.precio)}</span>
-      </div>`).join('')}
-    </div>` : ''}
-    <div class="px-6 py-5">
-      <div class="flex justify-between items-center mb-4">
-        <span class="text-sm font-semibold text-on-surface-variant">Total estimado</span>
-        <span class="font-headline font-black text-2xl text-on-surface">${hayConsultar?'~':''}$${fmt(total)}</span>
+  `;
+
+  // Precio card
+  const precio=document.createElement('div');
+  precio.className='rounded-3xl overflow-hidden shadow-md bg-white border-2 border-primary/20 flex flex-col';
+  precio.innerHTML=`
+    <div class="bg-gradient-to-br from-primary to-[#FF8050] px-5 py-4">
+      <div class="text-3xl mb-1">💰</div>
+      <div class="font-headline font-black text-white text-lg uppercase">Resumen de precios</div>
+    </div>
+    <div class="px-5 py-4 flex-1 flex flex-col justify-between">
+      <div class="space-y-2 mb-4">
+        <div class="flex justify-between text-sm"><span class="text-on-surface-variant font-semibold">Pack base</span>
+          <span class="font-bold">${sv.pt?'$'+fmt(sv.pt):'$'+fmt(sv.pp)+' × '+S.pax}</span></div>
+        ${extSel.filter(e=>!e.ask).map(e=>`<div class="flex justify-between text-sm"><span class="text-on-surface-variant">${e.icon} ${e.nom}</span><span class="font-bold text-success">+$${fmt(e.p)}</span></div>`).join('')}
       </div>
-      <div class="rounded-2xl p-4 flex items-center justify-between bg-gradient-to-r from-primary to-[#FF8050]">
-        <div>
-          <div class="text-white/80 text-xs font-bold uppercase tracking-wide">Seña para reservar</div>
-          <div class="text-white/70 text-xs">${SENA_PCT}% del total</div>
+      <div>
+        <div class="flex justify-between items-end mb-3 border-t border-outline-variant/20 pt-3">
+          <span class="font-black text-on-surface text-sm uppercase tracking-wide">Total</span>
+          <span class="font-headline font-black text-2xl text-on-surface">${ask?'~':''}$${fmt(total)}</span>
         </div>
-        <div class="text-white font-headline font-black text-3xl">${hayConsultar?'~':''}$${fmt(sena)}</div>
+        <div class="rounded-2xl p-4 flex justify-between items-center" style="background:linear-gradient(135deg,#FF5C35,#FFD60A)">
+          <div><div class="text-white/80 text-xs font-bold uppercase">Seña para reservar</div><div class="text-white/60 text-xs">${SENA}% del total</div></div>
+          <div class="text-white font-headline font-black text-2xl">${ask?'~':''}$${fmt(sena)}</div>
+        </div>
       </div>
     </div>
   `;
-  wrap.appendChild(detCard);
+
+  cols.appendChild(det);cols.appendChild(precio);
+  wrap.appendChild(cols);
 
   // Cómo reservar
-  const howCard = document.createElement('div');
-  howCard.className = 'mt-4 bg-secondary-fixed rounded-3xl px-6 py-5 shadow-sm';
-  howCard.innerHTML = `
-    <div class="font-headline font-black text-sm text-on-surface mb-3 uppercase tracking-wide">📲 ¿Cómo reservo?</div>
-    <ol class="space-y-2">
-      ${['Tocá el botón de WhatsApp abajo','El bot te confirma y te envía los datos bancarios','Transferís la seña al alias <strong>${ALIAS}</strong>','Mandás el comprobante al ${TEL_COMP}','¡Fecha reservada! 🎉'].map((s,i)=>`<li class="flex items-start gap-3 text-sm text-on-surface-variant"><span class="font-black text-secondary min-w-[20px]">${i+1}.</span>${s}</li>`).join('')}
-    </ol>
-  `.replace('${ALIAS}', ALIAS).replace('${TEL_COMP}', TEL_COMP);
-  wrap.appendChild(howCard);
+  const how=document.createElement('div');
+  how.className='mt-6 rounded-3xl bg-secondary-fixed px-6 py-5 shadow-sm';
+  how.innerHTML=`<div class="font-headline font-black text-sm text-on-surface uppercase tracking-wide mb-3">📲 ¿Cómo reservo?</div>
+    <ol class="space-y-2">${['Tocá el botón de WhatsApp','El bot te confirma y te manda los datos de pago','Transferís la seña al alias <strong>${ALIAS}</strong>','Mandás el comprobante al ${TELC}','¡Fecha reservada! 🎉'].map((s,i)=>`<li class="flex items-start gap-3 text-sm text-on-surface-variant"><span class="font-black text-secondary min-w-[18px]">${i+1}.</span>${s}</li>`).join('')}</ol>`
+    .replace('${ALIAS}',ALIAS).replace('${TELC}',TELC);
+  wrap.appendChild(how);
 
-  // WA Button
-  const waMsg = buildMsg();
-  const waDiv = document.createElement('div');
-  waDiv.className = 'mt-4';
-  waDiv.innerHTML = `
-    <a href="https://wa.me/${WA}?text=${encodeURIComponent(waMsg)}" target="_blank"
-      class="wa-btn w-full flex items-center justify-center gap-3 py-4 px-6 rounded-full text-white font-headline font-black text-base bg-[#25D366] hover:bg-[#1DAA55] active:scale-95 transition-all shadow-xl uppercase tracking-wide">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  // WA CTA
+  const wa=document.createElement('div');
+  wa.className='mt-6';
+  wa.innerHTML=`
+    <a href="https://wa.me/${WA}?text=${encodeURIComponent(buildMsg())}" target="_blank"
+      class="wa-pulse w-full flex items-center justify-center gap-3 py-5 px-6 rounded-3xl text-white font-headline font-black text-lg bg-[#25D366] hover:bg-[#1DAA55] active:scale-95 transition-all shadow-xl uppercase tracking-wide">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
       Enviar al bot y reservar
     </a>
-    <p class="text-center text-xs text-on-surface-variant mt-3 font-medium">Te atiende nuestro asistente virtual, luego un coordinador confirma todo 🎉</p>
+    <p class="text-center text-xs text-on-surface-variant mt-3 font-medium">Te atiende nuestro asistente virtual y un coordinador confirma todo 🎉</p>
   `;
-  wrap.appendChild(waDiv);
+  wrap.appendChild(wa);
 
-  // Restart
-  const rst = document.createElement('div');
-  rst.className = 'mt-3 text-center';
-  rst.innerHTML = `<button onclick="resetWizard()" class="text-sm text-on-surface-variant hover:text-primary transition-colors font-semibold">← Cotizar otro evento</button>`;
+  const rst=document.createElement('div');rst.className='mt-3 text-center';
+  rst.innerHTML=`<button onclick="resetWizard()" class="text-sm text-on-surface-variant hover:text-primary transition-colors font-semibold">← Cotizar otro evento</button>`;
   wrap.appendChild(rst);
-
   c.appendChild(wrap);
 }
 
-function fmtFecha(dateStr) {
-  if (!dateStr) return 'Sin fecha';
-  const [y,m,d] = dateStr.split('-').map(Number);
-  return new Date(y,m-1,d).toLocaleDateString('es-AR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+// ---- HELPERS ----
+function formatFecha(ds,short=false){
+  if(!ds)return'Sin fecha';
+  const[y,m,d]=ds.split('-').map(Number);
+  return new Date(y,m-1,d).toLocaleDateString('es-AR',short?{day:'numeric',month:'short',year:'numeric'}:{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 }
 
-function buildMsg() {
-  const tipo = tipoData(), serv = servData(), turno = TURNOS[S.turno];
-  const extSel = S.extras.map(eid=>EXTRAS.find(e=>e.id===eid)).filter(Boolean);
-  let m = `¡Hola! Me armé una cotización desde el cotizador web 🎉\n\n📋 *COTIZACIÓN LO DE JUAN*\n━━━━━━━━━━━━━━━━━━\n`;
-  m += `🎊 *Tipo:* ${tipo.label}\n📦 *Pack:* ${serv.nombre}\n📅 *Fecha:* ${fmtFecha(S.fecha)}\n🕐 *Turno:* ${turno.label} (${turno.hora})\n👥 *Personas:* ${S.personas}\n`;
-  if (extSel.length) { m += `\n✨ *Adicionales:*\n`; extSel.forEach(e=>{ m += `  • ${e.nombre} (${e.aConsultar?'a consultar':'$'+fmt(e.precio)})\n`; }); }
-  m += `\n💰 *Total estimado:* $${fmt(calcTotal())}\n💳 *Seña (${SENA_PCT}%):* $${fmt(calcSena())}\n━━━━━━━━━━━━━━━━━━\n¿Me podés confirmar la disponibilidad y los datos para transferir? 🙏`;
+function buildMsg(){
+  const t=tipo(),sv=serv(),tu=TURNOS[S.turno];
+  const extSel=S.extras.map(eid=>EXTRAS.find(e=>e.id===eid)).filter(Boolean);
+  let m=`¡Hola! Me armé una cotización desde el cotizador web 🎉\n\n📋 *COTIZACIÓN LO DE JUAN*\n━━━━━━━━━━━━━━━━━━\n`;
+  m+=`🎊 *Tipo:* ${t.lbl}\n📦 *Pack:* ${sv.nom}\n📅 *Fecha:* ${formatFecha(S.fecha)}\n🕐 *Turno:* ${tu.lbl} (${tu.h})\n👥 *Personas:* ${S.pax}\n`;
+  if(extSel.length){m+=`\n✨ *Adicionales:*\n`;extSel.forEach(e=>{m+=`  • ${e.nom} (${e.ask?'a consultar':'$'+fmt(e.p)})\n`;});}
+  m+=`\n💰 *Total estimado:* $${fmt(calcTotal())}\n💳 *Seña (${SENA}%):* $${fmt(calcSena())}\n━━━━━━━━━━━━━━━━━━\n¿Me podés confirmar la disponibilidad y los datos para transferir? 🙏`;
   return m;
 }
 
-// ============================================================
-// CONFETTI
-// ============================================================
-function launchConfetti() {
-  const colors = ['#FF5C35','#FFD60A','#0099BF','#2EAA62','#FF8C5A','#ffffff','#FFE566'];
-  const box = document.getElementById('confettiContainer');
-  for (let i=0;i<90;i++) {
-    const p = document.createElement('div');
-    p.className = 'cpiece';
-    const size = 6+Math.random()*9, dur = 2.5+Math.random()*2, delay = Math.random()*1.8;
-    p.style.cssText = `left:${Math.random()*100}vw;background:${colors[~~(Math.random()*colors.length)]};width:${size}px;height:${size}px;animation-name:confettiFall;animation-duration:${dur}s;animation-delay:${delay}s;animation-fill-mode:forwards;border-radius:${Math.random()>.5?'50%':'2px'};`;
-    box.appendChild(p);
-    setTimeout(()=>p.remove(),(dur+delay)*1000+300);
+function confetti(){
+  const cols=['#FF5C35','#FFD60A','#0099BF','#2EAA62','#FF8C5A','#ffffff','#FFE566'];
+  const box=$('cbox');
+  for(let i=0;i<100;i++){
+    const p=document.createElement('div');p.className='cdrop';
+    const sz=6+Math.random()*9,dur=2.5+Math.random()*2,del=Math.random()*2;
+    p.style.cssText=`left:${Math.random()*100}vw;background:${cols[~~(Math.random()*cols.length)]};width:${sz}px;height:${sz}px;animation-duration:${dur}s;animation-delay:${del}s;border-radius:${Math.random()>.5?'50%':'2px'};`;
+    box.appendChild(p);setTimeout(()=>p.remove(),(dur+del)*1000+300);
   }
 }
 </script>
